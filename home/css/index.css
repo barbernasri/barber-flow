@@ -1,0 +1,11 @@
+/* ==================== المتغيرات العامة ==================== */
+:root {
+    --gold-solid: #D4AF37;
+    --gold-light: #F4E5C3;
+    --dark-bg: #1a1a1a;
+    --card-bg: #2a2a2a;
+    --text-primary: #fff;
+    --text-secondary: #ccc;
+    --success: #4CAF50;
+    --danger: #f44336;
+}

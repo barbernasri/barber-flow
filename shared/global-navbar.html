@@ -1,0 +1,45 @@
+<nav class="navbar">
+    <div class="nav-right">
+        <button onclick="history.back()" class="nav-btn"><i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <div class="logo">
+        <a href="/index.html" class="logo-link">
+            <i class="fas fa-scissors"></i>
+            <span>BarberFlow-Pro</span>
+        </a>
+    </div>
+
+    <div class="nav-left">
+        <button id="navMenuBtn" class="nav-btn"><i class="fas fa-bars"></i></button>
+    </div>
+</nav>
+
+<div id="premiumDropdownMenu" class="premium-dropdown">
+    <div class="dropdown-header">
+        <button id="closeMenuBtn"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <div class="menu-content">
+        <div id="dynamic-auth-buttons"></div> <hr>
+        <button onclick="location.href='../support/survey.html'" class="dropdown-item-btn"><i class="fas fa-chart-bar"></i> استطلاع الرأي</button>
+        <button onclick="location.href='../support/about.html'" class="dropdown-item-btn"><i class="fas fa-info-circle"></i> عن المنصة</button>
+        <button onclick="location.href='../support/contact.html'" class="dropdown-item-btn"><i class="fas fa-headset"></i> الدعم الفني</button>
+    </div>
+</div>
+
+<style>
+    /* التنسيق يعتمد على متغيرات global.css */
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: var(--bg-secondary); border-bottom: 1px solid var(--brand-accent); height: 70px; position: fixed; top: 0; width: 100%; z-index: 1000; color: var(--brand-primary); }
+    .nav-btn { background: none; border: none; color: var(--brand-primary); font-size: 1.5rem; cursor: pointer; }
+    .logo-link { text-decoration: none; color: var(--brand-primary); display: flex; align-items: center; gap: 8px; font-weight: bold; }
+    
+    .premium-dropdown { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: var(--bg-secondary); transition: 0.4s; z-index: 9999; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.2); }
+    .show-premium-dropdown { left: 0; }
+.dropdown-header { display: flex !important; justify-content: flex-start !important;direction: ltr !important; important }
+#closeMenuBtn { font-size: 1.2rem !important; cursor: pointer;color: var(--brand-accent) !important;
+ }
+
+    .dropdown-item-btn { width: 100%; padding: 12px; margin-top: 10px; background: none; border: 1px solid var(--brand-accent); color: var(--brand-primary); cursor: pointer; text-align: right; }
+    .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9998; }
+</style>

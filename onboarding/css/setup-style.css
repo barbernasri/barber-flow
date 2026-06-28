@@ -1,0 +1,252 @@
+:root {
+    --gold-primary: #d4af37;
+    --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f2d06b 100%);
+    --bg-dark: #0a0a0a;
+    --card-bg: #161616;
+    --border-color: #2a2a2a;
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+}
+
+/* التمرير الحر عند تمدد المحتوى الشاشات المتنقلة */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    direction: rtl;
+    margin: 0;
+    padding: 30px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    padding-bottom: 40px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* بطاقات الكروت الحاضنة للبيانات */
+.section-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold-primary);
+    margin-bottom: 12px;
+    margin-top: 10px;
+}
+
+/* كارت حوايا صورة الواجهة الرئيسية الكبيرة */
+.cover-uploader {
+    width: 100%;
+    height: 180px;
+    background: #0f0f0f;
+    border: 2px dashed #333;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.cover-uploader:hover {
+    border-color: var(--gold-primary);
+}
+
+.placeholder-icon {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.inner-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.delete-img {
+    transition: transform 0.2s;
+}
+.delete-img:hover {
+    transform: scale(1.1);
+}
+
+/* هندسة الشبكة التكرارية لصفوف معارض الصور */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* زر إلحاق ورفع مادة بصرية إضافية بالتناسب الهندسي المربع */
+.add-photo-btn {
+    aspect-ratio: 1 / 1;
+    background: #0f0f0f;
+    border: 2px dashed #333;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-photo-btn:hover {
+    border-color: var(--gold-primary);
+}
+
+/* الكادر المربع النقي 1:1 المحقون بداخله مخرجات الصور */
+.gallery-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0f0f0f;
+    box-sizing: border-box;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* يثبت محاذاة الصور دون تشويه أو تمدد */
+    display: block;
+}
+
+/* زر إزالة وحذف عنصر من مصفوفة المعرض الحالية */
+.gallery-item .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 77, 77, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: 0.2s;
+    z-index: 5;
+}
+
+.gallery-item .delete-btn:hover {
+    background: #ff3333;
+    transform: scale(1.1);
+}
+
+/* المدخلات والنصوص */
+textarea, select, input[type="text"] {
+    width: 100%;
+    background: #0f0f0f;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 15px;
+    color: white;
+    font-family: inherit;
+    margin-top: 8px;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+textarea:focus, input[type="text"]:focus, select:focus {
+    border-color: var(--gold-primary);
+    outline: none;
+}
+
+textarea {
+    resize: none;
+}
+
+/* الأزرار وأنظمة الألوان الفاخرة المعتمدة */
+.primary-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--gold-gradient);
+    border: none;
+    border-radius: 15px;
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: 0.3s;
+    margin-bottom: 12px;
+}
+
+.primary-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.primary-btn:disabled {
+    background: #444;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.outline-btn {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    color: var(--text-muted);
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.outline-btn:hover {
+    background: #111;
+    color: #fff;
+    border-color: #555;
+}
+
+.outline-btn:disabled {
+    color: #444;
+    border-color: #222;
+    cursor: not-allowed;
+}

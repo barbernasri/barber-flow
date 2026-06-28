@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدعم الفني | BarberFlow Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="../shared/css/global.css">
+    <link rel="stylesheet" href="css/contact.css">
+</head>
+<body>
+
+    <div id="global-navbar-container"></div>
+
+    <div class="support-container">
+        <h1 class="page-title">مركز الدعم الفني</h1>
+        <p class="page-subtitle">فريقنا الاستشاري في خدمتك لضمان استمرارية تميز أعمالك</p>
+
+        <div class="contact-methods">
+            <a href="tel:+212600000000" class="contact-box">
+                <i class="fas fa-phone-volume"></i>
+                <h4>الاتصال المباشر</h4>
+                <p>دعم هاتفي VIP على مدار 7/24</p>
+            </a>
+            <a href="https://wa.me/212600000000" target="_blank" class="contact-box">
+                <i class="fab fa-whatsapp"></i>
+                <h4>محادثة الواتساب</h4>
+                <p>تواصل فوري وحلول ذكية</p>
+            </a>
+        </div>
+
+        <div class="premium-card">
+            <h2 class="section-title"><i class="fas fa-paper-plane"></i> فتح تذكرة دعم فني جديدة</h2>
+            <form id="contactSupportForm">
+                <div class="form-group">
+                    <label class="form-label">نوع الإشكالية أو القسم المختص</label>
+                    <select id="contactReason" class="form-control" required>
+                        <option value="technical">مشكلة تقنية / خلل في الواجهة</option>
+                        <option value="billing">المدفوعات، الاشتراكات والمحفظة</option>
+                        <option value="account">توثيق الحساب وإعدادات الصالون</option>
+                        <option value="suggestion">اقتراح ميزة جديدة للمنصة</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">موضوع التذكرة</label>
+                    <input type="text" id="contactSubject" class="form-control" placeholder="اكتب عنواناً موجزاً وموضحاً للمشكلة" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">شرح تفصيلي للمشكلة أو الطلب</label>
+                    <textarea id="contactMessage" class="form-control" rows="5" placeholder="يرجى كتابة كافة التفاصيل والخطوات لنتمكن من حل المشكلة بدقة متناهية..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-gold-submit">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>إرسال التذكرة السحابية</span>
+                </button>
+            </form>
+        </div>
+    </div>
+   <script type="module" src="../shared/js/navbar-controller.js"></script>
+    <script type="module" src="js/contact.js"></script>
+</body>
+</html>

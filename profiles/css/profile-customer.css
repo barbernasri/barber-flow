@@ -1,0 +1,327 @@
+:root {
+    --gold-primary: #d4af37;
+    --bg-dark: #0a0a0a;
+    --bg-card: #141414;
+    --text-light: #ffffff;
+    --text-muted: #888888;
+    --border-color: #222222;
+    --topbar-height: 65px;
+    --sidebar-width: 290px;
+    --transition-speed: 0.3s;
+}
+
+body.profile-body {
+    margin: 0;
+    padding: var(--topbar-height) 0 0 0;
+    background-color: var(--bg-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-light);
+}
+
+/* تنسيق شريط التنقل العلوي المشترك */
+.global-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-height);
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.bar-title {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.bar-action-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background var(--transition-speed), color var(--transition-speed);
+}
+
+.bar-action-btn:hover {
+    background-color: var(--bg-card);
+    color: var(--gold-primary);
+}
+
+/* القائمة الجانبية المنبثقة */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1049;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.global-sidebar {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--sidebar-width));
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: var(--bg-dark);
+    border-left: 1px solid var(--border-color);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    transition: right var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.global-sidebar.open {
+    right: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-card);
+}
+
+.sidebar-user-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-badge-icon {
+    font-size: 1.5rem;
+    color: var(--gold-primary);
+}
+
+.sidebar-user-meta h3 {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin: 0 0 4px 0;
+}
+
+.role-badge {
+    font-size: 0.75rem;
+    color: var(--gold-primary);
+    background-color: rgba(212, 175, 55, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.close-sidebar-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.sidebar-nav-menu {
+    flex-grow: 1;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+}
+
+.menu-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 15px;
+    background-color: var(--bg-card);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    text-align: right;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+
+.menu-item-btn i {
+    color: var(--gold-primary);
+    width: 20px;
+    text-align: center;
+}
+
+.menu-item-btn:hover {
+    border-color: var(--gold-primary);
+    background-color: rgba(212, 175, 55, 0.05);
+    transform: translateX(-3px);
+}
+
+.sidebar-footer {
+    padding: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.sidebar-logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(211, 47, 47, 0.1);
+    border: 1px solid rgba(211, 47, 47, 0.3);
+    border-radius: 8px;
+    color: #ff5252;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sidebar-logout-btn:hover {
+    background-color: #ff5252;
+    color: #ffffff;
+}
+
+/* تنسيقات كرت معلومات الزبون والإحصائيات */
+.main-profile-content {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.user-header {
+    text-align: center;
+    padding: 30px 20px;
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 15px;
+}
+
+.user-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--gold-primary);
+}
+
+.edit-photo-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--gold-primary);
+    border: none;
+    color: var(--bg-dark);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.user-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.4rem;
+}
+
+.user-contact {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.user-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.stat-box {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.stat-box span {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--gold-primary);
+    margin-bottom: 4px;
+}
+
+.stat-box small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* أزرار التنقل السريع */
+.menu-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 15px 20px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-align: right;
+    transition: border-color var(--transition-speed);
+}
+
+.menu-btn i {
+    color: var(--gold-primary);
+    font-size: 1.1rem;
+}
+
+.menu-btn:hover {
+    border-color: var(--gold-primary);
+}

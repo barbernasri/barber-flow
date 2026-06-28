@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد الهوية | BarberFlow-Pro</title>
+    <link rel="stylesheet" href="css/setup-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!--<script type="module" src="../auth/js/router.js"></script>-->
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">الخطوة الأخيرة 🪄</h1>
+            <p class="subtitle">دعنا نجعل متجرك يبدو احترافياً أمام الزبائن</p>
+        </header>
+
+        <form id="setupStoreForm">
+            <label class="section-label">صورة الواجهة الرئيسية للمتجر</label>
+            <div class="section-card">
+                <div class="cover-uploader" id="coverUploader" style="position: relative; cursor: pointer;">
+                    <div id="placeholderIcon" class="placeholder-icon">
+                        <i class="fas fa-camera-retro"></i>
+                    </div>
+                    <img id="storeImg" src="" alt="preview" style="display: none; width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                    <span class="inner-label" id="coverUploaderLabel">اضغط لاختيار صورة مميزة للمتجر</span>
+                    <button type="button" id="deleteCoverBtn" style="display: none; position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10;">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+            </div>
+
+            <div class="section-card">
+                <label class="section-label"><i class="fas fa-info-circle"></i> نبذة عن المتجر</label>
+                <textarea id="storeAbout" rows="3" placeholder="تحدث عن متجرك، المنتجات التي توفرها، جودة الخدمة، أو سرعة التوصيل..."></textarea>
+            </div>
+
+            <div class="section-card">
+                <label class="section-label"><i class="fas fa-th"></i> معرض صور المنتجات والمعروضات</label>
+                <div class="gallery-grid" id="storePhotosGrid">
+                    <div class="add-photo-btn" style="cursor: pointer;">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                </div>
+                <input type="file" id="galleryInput" accept="image/*" multiple hidden>
+            </div>
+
+            <div class="section-card">
+                <label class="section-label"><i class="fas fa-award"></i> السجل التجاري والشهادات الرسمية</label>
+                <input type="text" id="licenseText" placeholder="مثال: سجل تجاري رقم 2024/XXXX">
+                
+                <div style="margin-top: 15px;">
+                    <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 8px;">إرفاق صور الشهادات أو السجل المهني الموثق:</label>
+                    <div class="gallery-grid" id="certPhotosGrid"></div>
+                    <input type="file" id="certInput" accept="image/*" multiple hidden>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button type="submit" id="submitBtn" class="primary-btn">حفظ وإنشاء الملف الشخصي</button>
+                <button type="button" id="skipBtn" class="outline-btn">تخطي هذه الخطوة مؤقتاً</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script type="module" src="js/setup-store.js"></script>
+</body>
+</html>

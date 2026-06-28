@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberFlow-Pro | تفاصيل الصالون</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="./css/details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- الهيدر مع زر العودة وزر القلب -->
+<header class="details-header">
+    <!-- ✅ زر العودة المصحح -->
+    <button class="back-btn" onclick="window.history.back()" type="button">
+        <i class="fas fa-arrow-right"></i>
+    </button>
+    <h1 class="header-title">تفاصيل الصالون</h1>
+    <!-- زر الإعجاب -->
+    <button id="favBtn" class="fav-btn" type="button">
+        <i class="far fa-heart"></i>
+    </button>
+</header>
+
+<!-- قسم البطل (Hero) -->
+<section class="hero-section">
+    <div id="heroPlaceholder" class="hero-placeholder">
+        <i class="fas fa-store"></i>
+    </div>
+    <img id="salonImage" class="hero-image" style="display:none;" alt="صورة الصالون">
+    
+    <!-- شارات الحالة -->
+    <div class="hero-badges">
+        <span id="currentStatusBadge"></span>
+        <span id="verifiedBadge" class="verified-badge" style="display:none;">
+            <i class="fas fa-check-circle"></i> موثق
+        </span>
+    </div>
+
+    <!-- معلومات سريعة فوق الصورة -->
+    <div class="hero-info-overlay">
+        <h2 id="salonName" class="salon-title">جاري التحميل...</h2>
+        <div id="typesContainer" class="types-container"></div>
+        <div class="quick-stats">
+            <span class="stat-item">
+                <i class="fas fa-star"></i> <span id="ratingValue">5.0</span>
+            </span>
+            <span class="stat-item">
+                <i class="fas fa-map-marker-alt"></i> <span id="locationValue">-</span>
+            </span>
+        </div>
+    </div>
+</section>
+
+<!-- أزرار التواصل السريع -->
+<section class="quick-actions">
+    <a id="btnCall" href="#" class="action-btn">
+        <i class="fas fa-phone"></i>
+        <span>اتصال</span>
+    </a>
+    <a id="btnWhatsapp" href="#" target="_blank" class="action-btn whatsapp">
+        <i class="fab fa-whatsapp"></i>
+        <span>واتساب</span>
+    </a>
+    <button id="btnMap" class="action-btn" type="button">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>الخريطة</span>
+    </button>
+    <a id="btnEmail" href="#" class="action-btn" style="display:none;">
+        <i class="fas fa-envelope"></i>
+        <span>بريد</span>
+    </a>
+</section>
+
+<!-- بطاقة صاحب الصالون -->
+<section id="ownerCard" class="owner-card" style="display:none;">
+    <div class="owner-avatar">
+        <i class="fas fa-user-tie"></i>
+    </div>
+    <div class="owner-info">
+        <h4>صاحب الصالون</h4>
+        <p id="ownerName">-</p>
+        <small id="ownerSince">عضو منذ -</small>
+    </div>
+</section>
+
+<!-- عن الصالون -->
+<section class="info-section">
+    <h3 class="section-title">
+        <i class="fas fa-info-circle"></i> عن الصالون
+    </h3>
+    <p id="salonAbout" class="about-text">مرحباً بكم في صالوننا المميز.</p>
+</section>
+
+<!-- أوقات العمل -->
+<section class="info-section">
+    <h3 class="section-title">
+        <i class="fas fa-clock"></i> أوقات العمل
+    </h3>
+    <div class="working-hours-card">
+        <div class="hours-row">
+            <i class="fas fa-calendar-week"></i>
+            <span id="workingDays">أيامنا: -</span>
+        </div>
+        <div class="hours-row">
+            <i class="fas fa-hourglass-half"></i>
+            <span id="workingHours">ساعاتنا: -</span>
+        </div>
+    </div>
+</section>
+
+<!-- الخدمات والأسعار -->
+<section class="info-section">
+    <h3 class="section-title">
+        <i class="fas fa-cut"></i> الخدمات والأسعار
+    </h3>
+    <div id="servicesList" class="services-list"></div>
+</section>
+
+<!-- معرض الأعمال -->
+<section class="info-section">
+    <h3 class="section-title">
+        <i class="fas fa-images"></i> معرض الأعمال
+    </h3>
+    <div class="gallery-wrapper">
+        <div id="gallerySlider" class="gallery-slider"></div>
+        <p class="scroll-hint" style="display:none;">← اسحب لليمين واليسار →</p>
+    </div>
+</section>
+
+<!-- الشهادات والاعتمادات -->
+<section class="info-section">
+    <h3 class="section-title">
+        <i class="fas fa-certificate"></i> الشهادات والاعتمادات
+    </h3>
+    <div id="certificatesContainer" class="certificates-container"></div>
+</section>
+
+<!-- تقييمات الزبائن -->
+<section class="info-section">
+    <h3 class="section-title">
+        <i class="fas fa-star"></i> تقييمات الزبائن
+    </h3>
+    <div id="reviewsContainer" class="reviews-container"></div>
+    <button id="openReviewModal" class="add-review-btn" type="button">
+        <i class="fas fa-plus"></i> إضافة تقييم
+    </button>
+</section>
+
+<!-- زر الحجز العائم -->
+<button id="mainBookingBtn" class="floating-booking-btn" type="button">
+    <i class="fas fa-calendar-check"></i>
+    <span>حجز موعد الآن</span>
+</button>
+
+<!-- مودال إضافة تقييم -->
+<div id="reviewModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>شاركنا تجربتك</h3>
+        <textarea id="reviewText" placeholder="اكتب تجربتك هنا..." rows="4"></textarea>
+        <div class="modal-actions">
+            <button id="closeModal" class="btn-cancel" type="button">إلغاء</button>
+            <button id="submitReview" class="btn-submit" type="button">إرسال</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/details-salon.js"></script>
+</body>
+</html>
+

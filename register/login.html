@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | BarberFlow Pro</title>
+    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="notification-container"></div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>مرحباً بعودتك</h2>
+            <p class="step-desc">سجل دخولك لإدارة حسابك في BarberFlow Pro</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group" id="identifierGroup">
+                <label for="loginEmail">البريد الإلكتروني أو رقم الهاتف</label>
+                <input type="text" id="loginEmail" placeholder="example@mail.com أو 0600000000" required>
+            </div>
+
+            <div class="input-group hidden-step" id="passwordGroup">
+                <label for="loginPassword">كلمة المرور</label>
+                <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور الخاصة بك">
+                <button type="button" id="forgotPassBtn" class="back-link-btn">نسيت كلمة المرور؟</button>
+            </div>
+
+            <button type="submit" id="mainSubmitBtn" class="auth-btn">
+                <span>متابعة</span> <i class="fas fa-arrow-left"></i>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>أو الدخول السريع</span>
+        </div>
+
+        <div class="social-login-container">
+            <button type="button" id="googleBtn" class="google-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                <span>Google</span>
+            </button>
+        </div>
+
+        <div class="auth-footer">
+            <p>ليس لديك حساب معنا؟</p>
+            <button type="button" id="showRegisterOptions" class="outline-btn">
+                <i class="fas fa-user-plus"></i> <span>إنشاء حساب جديد</span>
+            </button>
+        </div>
+
+        <div class="back-home-container">
+            <button type="button" id="backToHomeBtn" class="outline-btn">
+                <i class="fas fa-sign-in-alt"></i> <span>العودة للرئيسية</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="recaptcha-container"></div>
+
+    <div id="forgotModal" class="modal-overlay hidden-step">
+        <div class="auth-container">
+            <h2>استعادة الحساب</h2>
+            <p class="step-desc">أدخل بريدك الإلكتروني لإرسال رابط التعيين</p>
+            
+            <div class="input-group">
+                <input type="text" id="resetIdentifier" placeholder="example@mail.com">
+            </div>
+            <button type="button" id="sendResetBtn" class="auth-btn">إرسال رابط التعيين</button>
+            <button type="button" id="closeModal" class="back-link-btn">إلغاء والعودة</button>
+        </div>
+    </div>
+
+    <script type="module" src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+/**
+حزمة إدارة مكون بطاقة الصالون
+المسار: home/components/js/card-salon.js
+*/
+import { db } from "../../../core/firebase-init.js";
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+let cachedTemplate = null;
+
+async function getTemplate() {
+    if (cachedTemplate) return cachedTemplate;
+    try {
+        const response = await fetch('/home/components/card-salon.html');
+        if (!response.ok) throw new Error("Template file not found");
+        const htmlText = await response.text();
+        const parser = new DOMParser();
+        const docParsed = parser.parseFromString(htmlText, 'text/html');
+        cachedTemplate = docParsed.querySelector('.salon-card');
+        return cachedTemplate;
+    } catch (error) {
+        console.error("Technical Error: Failed to fetch component template:", error);
+        return null;
+    }
+}
+
+export async function createSalonCard(salon, id) {
+    console.log('[Card] إنشاء بطاقة للصالون:', {
+        id: id || '⚠️ UNDEFINED',
+        salonName: salon?.salonName
+    });
+
+    const salonId = id || salon?.id;
+    if (!salonId) {
+        console.error('[Card] ❌ المعرف (id) غير مُعرّف!');
+        return null;
+    }
+
+    const template = await getTemplate();
+    if (!template) return null;
+
+    const card = template.cloneNode(true);
+
+    try {
+        // ✅ صورة الغلاف - مع أيقونة بديلة
+        const img = card.querySelector('.salon-img');
+        const placeholder = card.querySelector('.salon-img-placeholder');
+        
+        if (img && placeholder) {
+            if (salon.coverImage) {
+                // إذا كانت هناك صورة، اعرضها وأخفِ الأيقونة
+                img.src = salon.coverImage;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                img.onerror = () => {
+                    // إذا فشل تحميل الصورة، اعرض الأيقونة
+                    img.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                    img.onerror = null;
+                };
+            } else {
+                // لا توجد صورة، اعرض الأيقونة
+                img.style.display = 'none';
+                placeholder.style.display = 'flex';
+            }
+        }
+
+        // اسم الصالون
+        const nameElement = card.querySelector('.salon-name');
+        if (nameElement) {
+            nameElement.textContent = salon.salonName || "صالون غير مسمى";
+        }
+
+        // الموقع
+        const locationElement = card.querySelector('.location-val');
+        if (locationElement) {
+            locationElement.textContent = salon.location || "الموقع غير محدد";
+        }
+
+        // التقييم
+        const ratingElement = card.querySelector('.rating-value');
+        if (ratingElement) {
+            ratingElement.textContent = salon.rating || "5.0";
+        }
+
+        // أقل سعر
+        const minPriceElement = card.querySelector('.amount');
+        if (minPriceElement) {
+            let minPrice = "0";
+            if (salon.services && salon.services.length > 0) {
+                const prices = salon.services.map(s => parseFloat(s.price) || 0);
+                minPrice = Math.min(...prices).toString();
+            }
+            minPriceElement.textContent = `${minPrice} DH`;
+        }
+
+        // حالة الصالون
+        const statusBadge = card.querySelector('.status-badge');
+        if (statusBadge) {
+            const isOpen = isSalonOpen(salon.workingHours);
+            statusBadge.textContent = isOpen ? 'مفتوح الآن' : 'مغلق حالياً';
+            statusBadge.className = `status-badge ${isOpen ? 'open' : 'closed'}`;
+        }
+
+        // ✅ زر الإعجاب
+        const heartBtn = card.querySelector('.heart-btn');
+        const heartIcon = heartBtn?.querySelector('.heart-icon');
+        let isLiked = Boolean(salon.isLiked);
+
+        const updateHeartUI = (liked) => {
+            if (heartIcon) {
+                heartIcon.classList.toggle('fas', liked);
+                heartIcon.classList.toggle('far', !liked);
+            }
+        };
+
+        updateHeartUI(isLiked);
+
+        if (heartBtn) {
+            heartBtn.onclick = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isLiked = !isLiked;
+                updateHeartUI(isLiked);
+
+                try {
+                    await updateDoc(doc(db, "salons", salonId), { isLiked: isLiked });
+                    salon.isLiked = isLiked;
+                } catch (err) {
+                    console.error("Error updating favorite:", err);
+                    isLiked = !isLiked;
+                    updateHeartUI(isLiked);
+                }
+            };
+        }
+
+        // ✅ زر عرض التفاصيل - رابط مباشر مع ID
+        const viewDetailsBtn = card.querySelector('.view-details-btn');
+        if (viewDetailsBtn) {
+            // تعيين الرابط مباشرة في HTML (بدون JavaScript!)
+            viewDetailsBtn.href = `details-salon.html?id=${salonId}`;
+            
+            // منع انتشار الحدث للبطاقة بأكملها
+            viewDetailsBtn.onclick = (e) => {
+                e.stopPropagation();
+            };
+        }
+
+        return card;
+    } catch (error) {
+        console.error("Critical Processing Error:", error);
+        return null;
+    }
+}
+
+function isSalonOpen(hours) {
+    if (!hours?.open || !hours?.close) return true;
+    const now = new Date();
+    const curr = now.getHours() * 60 + now.getMinutes();
+    const [oh, om] = hours.open.split(':').map(Number);
+    const [ch, cm] = hours.close.split(':').map(Number);
+    const ot = oh * 60 + om;
+    const ct = ch * 60 + cm;
+    return ct > ot ? (curr >= ot && curr < ct) : (curr >= ot || curr < ct);
+}
+

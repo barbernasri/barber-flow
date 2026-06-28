@@ -1,0 +1,55 @@
+/* اجبار الصفحة على أخذ كامل العرض المتاح */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: var(--bg-primary);
+}
+
+.profile-wrapper {
+    width: 100%;
+    max-width: 1400px; /* زيادة العرض للشاشات الكبيرة */
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* تغطية الغلاف لكامل العرض */
+#cover-section {
+    width: 100%;
+    height: 350px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 20px;
+}
+
+/* توزيع العناصر بنظام الـ Grid المتجاوب */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+.data-card {
+    background: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* تحسين شكل الصور في المعرض والشهادات */
+.grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.img-frame {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: var(--bg-accent);
+    border-radius: 12px;
+    object-fit: cover;
+}

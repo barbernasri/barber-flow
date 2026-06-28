@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استكشف الصالونات | BarberFlow Pro</title>
+    <link rel="stylesheet" href="../../shared/css/global.css">
+    <link rel="stylesheet" href="../home/css/salons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head> 
+<body>
+    <main class="explore-container">
+        <!-- شريط البحث -->
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن صالون...">
+            </div>
+        </div>
+
+        <!-- أزرار التصفية -->
+        <div class="filter-section">
+            <button class="filter-btn active" data-type="الكل">الكل</button>
+            <button class="filter-btn" data-type="الأكثر رواجاً">الأكثر رواجاً</button>
+            <button class="filter-btn" data-type="المفضلة">المفضلة</button>
+            <button class="filter-btn" data-type="يونيسكس">يونيسكس</button>
+            <button class="filter-btn" data-type="رجال">رجال</button>
+            <button class="filter-btn" data-type="نسائي">نسائي</button>
+            <button class="filter-btn" data-type="أطفال">أطفال</button>
+        </div>
+
+        <!-- حاوية الصالونات -->
+        <div id="salonContainer" class="salons-grid">
+            <!-- سيتم ملؤها ديناميكياً -->
+        </div>
+    </main>
+
+<script type="module" src="js/explore-salon.js"></script>
+</body>
+</html>
+

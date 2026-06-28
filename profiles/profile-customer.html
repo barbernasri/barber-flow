@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الصالون | BarberFlow Pro</title>
+    <link rel="stylesheet" href="../shared/css/global.css">
+
+    <link rel="stylesheet" href="css/profile-salon.css">
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="module" src="../auth/js/router.js"></script>
+</head>
+
+
+<body class="profile-body">
+    
+    <div id="global-navbar-container"></div>
+
+    <div id="notification-container"></div>
+
+    <div id="global-nav-container"></div>
+
+    <div class="admin-header-banner">
+        <div class="cover-wrapper" style="width: 100%; height: 200px; background: #151515; overflow: hidden; position: relative;">
+            <img src="../assets/salon-default-cover.png" id="salonCoverImg" style="width: 100%; height: 100%; object-fit: cover;">
+            <h2 id="salonNameDisplay" style="position: absolute; bottom: 15px; right: 20px; color: #fff; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); font-size: 1.5rem;">جاري التحميل...</h2>
+        </div>
+    </div>
+
+    <div class="salon-about-section" style="padding: 20px;">
+        <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 8px;">عن الصالون</h3>
+        <p id="salonAboutDisplay" style="color: #888; font-size: 0.95rem; margin: 0;">جاري تحميل الوصف والتفاصيل...</p>
+    </div>
+
+    <div class="quick-stats">
+        <div class="stat-card">
+            <i class="fas fa-calendar-check"></i>
+            <span id="totalBookings">0</span>
+            <p>حجز اليوم</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-star"></i>
+            <span id="salonRating">5.0</span>
+            <p>التقييم</p>
+        </div>
+    </div>
+
+    <div class="services-section" style="padding: 0 20px; margin-top: 20px;">
+        <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 12px;">الخدمات المتوفرة</h3>
+        <div id="servicesContainer" class="services-grid"></div>
+    </div>
+
+    <div class="action-list" style="padding: 20px;">
+        <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 12px;">الإدارة السريعة</h3>
+        <button class="action-btn" onclick="location.href='../dashboard/edit-salon.html'">
+            <i class="fas fa-cog"></i> إعدادات الصالون
+        </button>
+        <button class="action-btn" onclick="location.href='../dashboard/manage-services.html'">
+            <i class="fas fa-list-ul"></i> إدارة الخدمات
+        </button>
+    </div>
+<script type="module" src="../shared/js/navbar-controller.js"></script>
+    <script type="module" src="js/profile-salon.js"></script>
+</body>
+</html>

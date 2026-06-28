@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberFlow Pro | الرئيسية</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- الهيدر الرئيسي -->
+<header class="main-header">
+    <div class="header-content">
+        <div class="logo">
+            <i class="fas fa-cut"></i>
+            <span>BarberFlow Pro</span>
+        </div>
+        <nav class="main-nav">
+            <a href="explore-salons.html" class="nav-link">
+                <i class="fas fa-cut"></i>
+                <span>الحجوزات</span>
+            </a>
+            <a href="market.html" class="nav-link">
+                <i class="fas fa-shopping-bag"></i>
+                <span>التسوق</span>
+            </a>
+            <a href="market/cart.html" class="nav-link cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="../register/login.html" class="nav-link profile-link">
+                <i class="fas fa-user"></i>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<!-- القسم الرئيسي -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>احجز صالونك المفضل واشترِ منتجاتك في مكان واحد</h1>
+        <p>منصة BarberFlow Pro تجمع لك بين أفضل الصالونات والمنتجات في المغرب</p>
+    </div>
+</section>
+
+<!-- قسم العروض -->
+<section class="offers-section">
+    <div class="section-header">
+        <h2><i class="fas fa-gift"></i> العروض والهدايا الحصرية</h2>
+    </div>
+    <div id="offersContainer" class="offers-container">
+        <!-- سيتم ملؤه بواسطة card-offer.js -->
+    </div>
+</section>
+
+<!-- قسم الصالونات المميزة -->
+<section class="featured-salons-section">
+    <div class="section-header">
+        <h2><i class="fas fa-cut"></i> أبرز الصالونات المتاحة</h2>
+        <a href="explore-salons.html" class="view-all-link">عرض كل الصالونات <i class="fas fa-arrow-left"></i></a>
+    </div>
+    <div id="featuredSalonsContainer" class="salons-grid">
+        <!-- سيتم ملؤه بواسطة card.js -->
+    </div>
+</section>
+
+<!-- قسم المنتجات المميزة -->
+<section class="featured-products-section">
+    <div class="section-header">
+        <h2><i class="fas fa-shopping-bag"></i> أبرز المتاجر والمنتجات</h2>
+        <a href="market.html" class="view-all-link">عرض المتجر بالكامل <i class="fas fa-arrow-left"></i></a>
+    </div>
+    <div id="featuredProductsContainer" class="products-grid">
+        <!-- سيتم ملؤه بواسطة card-stor.js -->
+    </div>
+</section>
+
+<!-- قسم الخدمات المنزلية -->
+<section class="concierge-section">
+    <div class="section-header">
+        <h2><i class="fas fa-home"></i> خدمات الصالونات المنزلية الفاخرة</h2>
+        <a href="home-services.html" class="view-all-link">تصفح كافة الخدمات <i class="fas fa-arrow-left"></i></a>
+    </div>
+    <div id="conciergeContainer" class="concierge-grid">
+        <!-- سيتم ملؤه بواسطة card-Concierge.js -->
+    </div>
+</section>
+
+<!-- الفوتر -->
+<footer class="main-footer">
+    <div class="footer-content">
+        <p>&copy; 2026 BarberFlow Pro. جميع الحقوق محفوظة</p>
+    </div>
+</footer>
+
+<!-- استدعاء الملفات -->
+<script type="module" src="./js/index.js"></script>
+</body>
+</html>
+

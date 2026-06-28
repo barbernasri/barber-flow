@@ -1,0 +1,377 @@
+/* Project: BarberFlow-Pro 
+   Design System: Gold & Dark Premium 
+   Path: register/css/register.css
+*/
+@import url("../../auth/css/notifications.css");
+
+:root {
+    --primary-gold: #d4af37;
+    --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f1d37e 50%, #b8952d 100%);
+    --dark-bg: #0a0a0a;
+    --card-bg: #161616;
+    --input-bg: #222222;
+    --border-color: rgba(212, 175, 55, 0.2);
+    --text-white: #ffffff;
+    --text-gray: #a0a0a0;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    direction: rtl;
+    padding: 20px;
+}
+
+.auth-container {
+    background-color: var(--card-bg);
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+h2 {
+    text-align: center;
+    color: var(--primary-gold);
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    padding-right: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    border-color: var(--primary-gold);
+    background: #2a2a2a;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* زر العمليات الرئيسي (ذهبي صلب) */
+.auth-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--gold-gradient);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+.auth-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* الفاصل بين الطرق */
+.divider {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.divider span {
+    background: var(--card-bg);
+    padding: 0 15px;
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* زر جوجل الموحد */
+.google-btn {
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-white);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.google-btn:hover {
+    background: rgba(212, 175, 55, 0.05);
+    border-color: var(--primary-gold);
+}
+
+.google-btn i {
+    color: var(--primary-gold);
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+.auth-footer a {
+    color: var(--primary-gold);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* زر العودة للرئيسية */
+.back-home-container {
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.outline-btn {
+    background: transparent;
+    border: 1px solid var(--primary-gold); 
+    color: var(--primary-gold);
+    padding: 12px;
+    border-radius: 12px;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.outline-btn:hover {
+    background: var(--primary-gold);
+    color: #000;
+}
+
+/* خطوات التحقق OTP والتحول ثنائي الخطوة */
+.hidden-step {
+    display: none !important;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* فئة لإظهار العناصر المتحركة بشكل فخم وسلس عند التحويل البرمجي */
+.show-step-animation {
+    display: block !important;
+    animation: slideDownFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.verify-icon {
+    text-align: center;
+    font-size: 4rem;
+    color: var(--primary-gold);
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.step-desc {
+    text-align: center;
+    color: var(--text-gray);
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+}
+
+.back-link-btn {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.back-link-btn:hover {
+    color: var(--primary-gold);
+    text-decoration: underline;
+}
+
+#timerContainer {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-top: 15px;
+}
+
+#timer {
+    color: var(--primary-gold);
+    font-weight: bold;
+}
+
+/* النوافذ المنبثقة المستعملة في استعادة الحساب واختيار رتبة التسجيل */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* تحسين استجابة الهواتف */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 25px;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+}
+
+/* --- التعديل الجراحي: دعم التحقق والمعالجة --- */
+#recaptcha-container {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+#recaptcha-container:empty { display: none; }
+
+.auth-btn:disabled {
+    background: var(--input-bg);
+    color: var(--text-gray);
+    cursor: not-allowed;
+    border: 1px solid var(--border-color);
+}
+
+.fa-spinner { margin-left: 8px; }
+
+/* تحسين شكل أزرار خيارات التسجيل (زبون، صالون، متجر) */
+.suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px; /* مسافة واضحة وممتازة بين الأزرار الثلاثة */
+    margin-top: 20px;
+    width: 100%;
+}
+
+.suggest-link {
+    border: 1px solid var(--border-color); /* إطار حول كل زر */
+    padding: 15px 10px; /* مساحة داخلية مريحة لتسهيل النقر */
+    border-radius: 16px; /* زوايا منحنية متناسقة مع التوجه الفخم */
+    background: rgba(212, 175, 55, 0.03); /* خلفية خفيفة جداً */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text-white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.suggest-link i {
+    font-size: 1.5rem;
+    color: var(--primary-gold);
+    transition: var(--transition);
+}
+
+.suggest-link:hover {
+    border-color: var(--primary-gold); /* تغيير لون الإطار عند التمرير */
+    background: rgba(212, 175, 55, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+}
+
+.suggest-link:hover i {
+    transform: scale(1.1);
+}

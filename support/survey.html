@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استطلاع الرأي | BarberFlow Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="../shared/css/global.css">
+    <link rel="stylesheet" href="css/survey.css">
+</head>
+<body>
+
+    <div id="global-navbar-container"></div>
+
+    <div class="support-container">
+        <h1 class="page-title">تطوير تجربة المستخدم</h1>
+        <p class="page-subtitle">رأيك الإستراتيجي يرسم ملامح وتحديثات ومستقبل المنصة</p>
+
+        <div class="premium-card">
+            <form id="platformSurveyForm">
+                
+                <div class="form-group">
+                    <label class="form-label">1. كيف تقيم تجربتك العامة لواجهات وسلاسة نظام الحجز؟</label>
+                    <div class="survey-options">
+                        <div class="survey-tile">
+                            <input type="radio" id="expExcellent" name="experience" value="excellent" required>
+                            <label for="expExcellent">فاخرة وممتازة</label>
+                        </div>
+                        <div class="survey-tile">
+                            <input type="radio" id="expGood" name="experience" value="good">
+                            <label for="expGood">جيدة ومستقرة</label>
+                        </div>
+                        <div class="survey-tile">
+                            <input type="radio" id="expAverage" name="experience" value="average">
+                            <label for="expAverage">متوسطة وتكفي</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">2. ما مدى رضاك عن سرعة استجابة وسحب البيانات الفورية؟</label>
+                    <div class="survey-options">
+                        <div class="survey-tile">
+                            <input type="radio" id="speedFast" name="speed_rating" value="fast" required>
+                            <label for="speedFast">سريع ومرن جداً</label>
+                        </div>
+                        <div class="survey-tile">
+                            <input type="radio" id="speedAcceptable" name="speed_rating" value="acceptable">
+                            <label for="speedAcceptable">مقبول وعادي</label>
+                        </div>
+                        <div class="survey-tile">
+                            <input type="radio" id="speedSlow" name="speed_rating" value="slow">
+                            <label for="speedSlow">بطيء ويحتاج تحسين</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">3. ميزة إضافية تود رؤيتها مدمجة في شاشات التحديث القادم؟</label>
+                    <textarea id="surveyFeedback" class="form-control" rows="4" placeholder="اكتب لنا مقترحاتك وملاحظاتك الثمينة بكل حرية..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-gold-submit">
+                    <i class="fas fa-check-double"></i>
+                    <span>إرسال وتأكيد البيانات</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="../shared/js/navbar-controller.js"></script>
+    <script type="module" src="js/survey.js"></script>
+</body>
+</html>

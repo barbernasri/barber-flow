@@ -1,0 +1,159 @@
+/* تصميم التنبيهات الذهبي */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100000; /* رفع قيمة z-index لأعلى درجة لضمان الظهور فوق جميع الـ Modals وكروت الصفحات */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: calc(100% - 40px); /* حماية وتأمين أبعاد الهواتف الذكية المتنقلة من الطفح */
+    pointer-events: none; /* تضمن أن حاوية التنبيهات الشفافة لا تحجب النقر على الأزرار الخلفية للواجهة */
+}
+
+.notification {
+    min-width: 280px;
+    max-width: 380px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    background: #1a1a1a;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    /* الاعتماد على الأنيميشن المطور لضمان السلاسة البصرية التامة */
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    direction: rtl;
+    pointer-events: auto; /* إعادة تفعيل التفاعل للأزرار أو الروابط الداخلية للتنبيه */
+}
+
+.notification.success {
+    border-right: 4px solid #d4af37; /* ذهبي للنجاح */
+}
+
+.notification.error {
+    border-right: 4px solid #ff4d4d; /* أحمر خفيف للخطأ */
+}
+
+.notification i {
+    font-size: 1.2rem;
+    flex-shrink: 0; /* حماية الأيقونة من الانكماش أو التشوه البصري عند كتابة نصوص طويلة */
+}
+
+.notification.success i { color: #d4af37; }
+.notification.error i { color: #ff4d4d; }
+
+/* الحل الجذري لمنع هروب الواجهة: الظهور من نفس الموضع بانسيابية رأسية خفيفة */
+@keyframes slideIn {
+    from { 
+        transform: translateY(-15px); /* حركة رأسية خفيفة جداً من الأعلى لأسفل بدلاً من القدوم الكارثي من خارج الشاشة يميناً */
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+.notification.fade-out {
+    animation: fadeOut 0.3s cubic-bezier(0.5, 0, 1, 0.5) forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+}
+
+/* ==========================================================================
+   نافذة منبثقة تفاعلية مشتركة لإدخال رمز التحقق OTP لـ BarberFlow-Pro
+   ========================================================================== */
+.global-otp-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    padding: 20px;
+    box-sizing: border-box;
+    direction: rtl;
+}
+
+.global-otp-modal {
+    background: #111;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 30px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.global-otp-close {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.global-otp-close:hover {
+    color: #ff4d4d;
+}
+
+.global-otp-icon {
+    font-size: 2.5rem;
+    color: #d4af37;
+    margin-bottom: 15px;
+}
+
+.global-otp-title {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.global-otp-input-container {
+    margin: 25px 0;
+}
+
+.global-otp-input {
+    width: 100%;
+    padding: 14px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1.5rem;
+    letter-spacing: 8px;
+    text-align: center;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.global-otp-input:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    outline: none;
+}
