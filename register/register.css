@@ -1,57 +1,88 @@
-/* Project: BarberFlow-Pro 
-   Design System: Gold & Dark Premium 
-   Path: register/css/register.css
-*/
+/* ==========================================================================
+   BarberFlow Pro - Register & Login Pages
+   المسار: register/css/register.css
+   ========================================================================== */
+
+/* استيراد التنسيقات المشتركة */
+@import url("../../shared/css/global.css");
 @import url("../../auth/css/notifications.css");
 
-:root {
-    --primary-gold: #d4af37;
-    --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f1d37e 50%, #b8952d 100%);
-    --dark-bg: #0a0a0a;
-    --card-bg: #161616;
-    --input-bg: #222222;
-    --border-color: rgba(212, 175, 55, 0.2);
-    --text-white: #ffffff;
-    --text-gray: #a0a0a0;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: var(--dark-bg);
-    color: var(--text-white);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ============================================
+   صفحة المصادقة (Login & Register)
+   ============================================ */
+.auth-page {
     min-height: 100vh;
-    direction: rtl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-page::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+    animation: rotate 30s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .auth-container {
-    background-color: var(--card-bg);
+    background: var(--bg-secondary);
     width: 100%;
     max-width: 450px;
     padding: 40px;
-    border-radius: 24px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-gold);
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    z-index: 1;
 }
 
-h2 {
+.auth-header {
     text-align: center;
-    color: var(--primary-gold);
-    font-size: 1.6rem;
     margin-bottom: 30px;
-    font-weight: 800;
 }
 
+.auth-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    color: var(--brand-accent);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.auth-logo i {
+    font-size: 1.8rem;
+}
+
+.auth-header h2 {
+    color: var(--text-primary);
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ============================================
+   حقول الإدخال
+   ============================================ */
 .input-group {
     margin-bottom: 20px;
 }
@@ -59,64 +90,118 @@ h2 {
 .input-group label {
     display: block;
     margin-bottom: 8px;
-    color: var(--text-gray);
+    color: var(--text-secondary);
     font-size: 0.9rem;
-    padding-right: 5px;
+    font-weight: 600;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     width: 100%;
     padding: 14px 18px;
-    background: var(--input-bg);
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    color: white;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
     font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
     outline: none;
-    transition: var(--transition);
+    transition: all var(--transition-fast);
 }
 
-.input-group input:focus {
-    border-color: var(--primary-gold);
-    background: #2a2a2a;
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+.input-group input:focus,
+.input-group select:focus {
+    border-color: var(--brand-accent);
+    background: var(--bg-secondary);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
-/* زر العمليات الرئيسي (ذهبي صلب) */
+.input-group input::placeholder {
+    color: var(--text-muted);
+}
+
+/* ============================================
+   الأزرار الرئيسية
+   ============================================ */
 .auth-btn {
     width: 100%;
     padding: 16px;
-    background: var(--gold-gradient);
+    background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-dark));
     color: #000;
     border: none;
-    border-radius: 12px;
-    font-weight: 900;
-    font-size: 1.1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1.05rem;
+    font-family: 'Cairo', sans-serif;
     cursor: pointer;
-    transition: var(--transition);
-    margin-top: 10px;
+    transition: all var(--transition-fast);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.auth-btn:hover {
-    transform: translateY(-3px);
+.auth-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+.auth-btn:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .auth-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
+    transform: none !important;
 }
 
-/* الفاصل بين الطرق */
+/* ============================================
+   زر Google
+   ============================================ */
+.google-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    transition: all var(--transition-fast);
+}
+
+.google-btn:hover:not(:disabled) {
+    background: var(--bg-accent);
+    border-color: var(--brand-accent);
+}
+
+.google-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+/* ============================================
+   الفاصل
+   ============================================ */
 .divider {
     text-align: center;
     margin: 25px 0;
     position: relative;
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
 
 .divider::before {
@@ -131,59 +216,33 @@ h2 {
 }
 
 .divider span {
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     padding: 0 15px;
-    color: var(--text-gray);
-    font-size: 0.85rem;
     position: relative;
     z-index: 2;
 }
 
-/* زر جوجل الموحد */
-.google-btn {
-    width: 100%;
-    padding: 13px;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-white);
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: var(--transition);
-}
-
-.google-btn:hover {
-    background: rgba(212, 175, 55, 0.05);
-    border-color: var(--primary-gold);
-}
-
-.google-btn i {
-    color: var(--primary-gold);
-}
-
-.google-btn img {
-    width: 20px;
-    height: 20px;
-}
-
+/* ============================================
+   روابط التذييل
+   ============================================ */
 .auth-footer {
     text-align: center;
     margin-top: 25px;
-    color: var(--text-gray);
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }
 
 .auth-footer a {
-    color: var(--primary-gold);
+    color: var(--brand-accent);
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
+    transition: color var(--transition-fast);
 }
 
-/* زر العودة للرئيسية */
+.auth-footer a:hover {
+    color: var(--brand-accent-light);
+}
+
 .back-home-container {
     margin-top: 20px;
     border-top: 1px solid var(--border-color);
@@ -192,10 +251,10 @@ h2 {
 
 .outline-btn {
     background: transparent;
-    border: 1px solid var(--primary-gold); 
-    color: var(--primary-gold);
+    border: 1px solid var(--brand-accent);
+    color: var(--brand-accent);
     padding: 12px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     width: 100%;
     cursor: pointer;
     display: flex;
@@ -203,22 +262,22 @@ h2 {
     align-items: center;
     gap: 10px;
     font-weight: 600;
-    transition: var(--transition);
+    font-family: 'Cairo', sans-serif;
+    transition: all var(--transition-fast);
 }
 
 .outline-btn:hover {
-    background: var(--primary-gold);
+    background: var(--brand-accent);
     color: #000;
 }
 
-/* خطوات التحقق OTP والتحول ثنائي الخطوة */
+/* ============================================
+   خطوات التحقق OTP
+   ============================================ */
 .hidden-step {
     display: none !important;
-    opacity: 0;
-    transform: translateY(-10px);
 }
 
-/* فئة لإظهار العناصر المتحركة بشكل فخم وسلس عند التحويل البرمجي */
 .show-step-animation {
     display: block !important;
     animation: slideDownFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -238,20 +297,19 @@ h2 {
 .verify-icon {
     text-align: center;
     font-size: 4rem;
-    color: var(--primary-gold);
+    color: var(--brand-accent);
     margin-bottom: 20px;
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
+    0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
 }
 
 .step-desc {
     text-align: center;
-    color: var(--text-gray);
+    color: var(--text-secondary);
     margin-bottom: 25px;
     font-size: 0.9rem;
 }
@@ -259,31 +317,34 @@ h2 {
 .back-link-btn {
     background: none;
     border: none;
-    color: var(--text-gray);
+    color: var(--text-muted);
     cursor: pointer;
     width: 100%;
     margin-top: 20px;
     font-size: 0.9rem;
-    transition: var(--transition);
+    font-family: 'Cairo', sans-serif;
+    transition: color var(--transition-fast);
 }
 
 .back-link-btn:hover {
-    color: var(--primary-gold);
-    text-decoration: underline;
+    color: var(--brand-accent);
 }
 
 #timerContainer {
     font-size: 0.85rem;
-    color: var(--text-gray);
+    color: var(--text-secondary);
     margin-top: 15px;
+    text-align: center;
 }
 
 #timer {
-    color: var(--primary-gold);
+    color: var(--brand-accent);
     font-weight: bold;
 }
 
-/* النوافذ المنبثقة المستعملة في استعادة الحساب واختيار رتبة التسجيل */
+/* ============================================
+   النوافذ المنبثقة (Modals)
+   ============================================ */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -305,7 +366,88 @@ h2 {
     to { opacity: 1; }
 }
 
-/* تحسين استجابة الهواتف */
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+}
+
+.modal-content h2 {
+    color: var(--brand-accent);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* ============================================
+   أزرار اختيار الدور
+   ============================================ */
+.suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.suggest-link {
+    border: 1px solid var(--border-color);
+    padding: 15px 10px;
+    border-radius: var(--radius-md);
+    background: var(--bg-tertiary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: 'Cairo', sans-serif;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.suggest-link i {
+    font-size: 1.5rem;
+    color: var(--brand-accent);
+    transition: transform var(--transition-fast);
+}
+
+.suggest-link:hover:not(:disabled) {
+    border-color: var(--brand-accent);
+    background: rgba(212, 175, 55, 0.1);
+    transform: translateY(-3px);
+}
+
+.suggest-link:hover:not(:disabled) i {
+    transform: scale(1.1);
+}
+
+.suggest-link:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   Recaptcha
+   ============================================ */
+#recaptcha-container {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+#recaptcha-container:empty {
+    display: none;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
 @media (max-width: 480px) {
     .auth-container {
         padding: 25px;
@@ -313,65 +455,9 @@ h2 {
         box-shadow: none;
         background: transparent;
     }
+    
+    .suggestion-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* --- التعديل الجراحي: دعم التحقق والمعالجة --- */
-#recaptcha-container {
-    margin: 15px 0;
-    display: flex;
-    justify-content: center;
-}
-
-#recaptcha-container:empty { display: none; }
-
-.auth-btn:disabled {
-    background: var(--input-bg);
-    color: var(--text-gray);
-    cursor: not-allowed;
-    border: 1px solid var(--border-color);
-}
-
-.fa-spinner { margin-left: 8px; }
-
-/* تحسين شكل أزرار خيارات التسجيل (زبون، صالون، متجر) */
-.suggestion-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px; /* مسافة واضحة وممتازة بين الأزرار الثلاثة */
-    margin-top: 20px;
-    width: 100%;
-}
-
-.suggest-link {
-    border: 1px solid var(--border-color); /* إطار حول كل زر */
-    padding: 15px 10px; /* مساحة داخلية مريحة لتسهيل النقر */
-    border-radius: 16px; /* زوايا منحنية متناسقة مع التوجه الفخم */
-    background: rgba(212, 175, 55, 0.03); /* خلفية خفيفة جداً */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: var(--text-white);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: var(--transition);
-}
-
-.suggest-link i {
-    font-size: 1.5rem;
-    color: var(--primary-gold);
-    transition: var(--transition);
-}
-
-.suggest-link:hover {
-    border-color: var(--primary-gold); /* تغيير لون الإطار عند التمرير */
-    background: rgba(212, 175, 55, 0.1);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
-}
-
-.suggest-link:hover i {
-    transform: scale(1.1);
-}

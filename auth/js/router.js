@@ -1,16 +1,21 @@
-/* Firebase Application and Core Database Modules */
+/**
+ * نظام التوجيه والحماية المركزي لـ BarberFlow Pro
+ * المسار: auth/js/router.js
+ * 
+ * الوظيفة:
+ * - التحقق من حالة تسجيل الدخول
+ * - توجيه المستخدمين الجدد لإكمال الإعداد
+ * - عرض نافذة منبثقة اختيارية بدلاً من التوجيه الإجباري
+ */
+
 import { auth, db } from "../../core/firebase-init.js";
-
-/* Cloud Firestore Database Operation Methods */
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-/* Firebase Authentication State Management Observer */
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { showNotification } from "./notifications.js";
 
-/* نظام التنبيهات المخصص لـ BarberFlow-Pro */
-import { showNotification } from "../../auth/js/notifications.js";
-
-// مصفوفة المسارات الثابتة المعتمدة في شجرة مجلدات مرحلة الـ Onboarding
+// ============================================
+// مسارات الـ Onboarding
+// ============================================
 const PATHS = {
     WELCOME: "../onboarding/welcome.html",
     ADD_SALON: "../onboarding/add-salon.html",
@@ -20,153 +25,155 @@ const PATHS = {
     SETUP_STORE: "../onboarding/setup-store.html"
 };
 
-/**
- * نظام التوجيه والحماية المركزي المطوّر (Global Auth Guard & Role-Based Onboarding Router)
- * تم تعديله ليعتمد على التنبيه الاختياري بالكامل بدلاً من التوجيه الإجباري.
- */
+// ============================================
+// المراقب الرئيسي لحالة المصادقة
+// ============================================
 onAuthStateChanged(auth, async (user) => {
     const currentPath = window.location.pathname;
     
-    // التحقق من الصفحات الحالية لمنع التكرار اللانهائي في التحويل
+    // تحديد نوع الصفحة الحالية
     const isWelcomePage = currentPath.includes("welcome.html");
-    const isAddPage = currentPath.includes("add-salon.html") || currentPath.includes("add-store.html") || currentPath.includes("add-customer.html");
-    const isSetupPage = currentPath.includes("setup-salon.html") || currentPath.includes("setup-store.html");
+    const isAddPage = currentPath.includes("add-salon.html") || 
+                      currentPath.includes("add-store.html") || 
+                      currentPath.includes("add-customer.html");
+    const isSetupPage = currentPath.includes("setup-salon.html") || 
+                        currentPath.includes("setup-store.html");
     
-    // هل المستخدم متواجد حالياً داخل إحدى صفحات الـ onboarding؟
     const isOnboardingZone = isWelcomePage || isAddPage || isSetupPage;
-
+    
     if (user) {
         try {
-            // جلب مستند المستخدم المركزي لمعرفة الدور والحالة الحقيقية
+            // جلب بيانات المستخدم من Firestore
             const userDoc = await getDoc(doc(db, "users", user.uid));
             
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                const role = userData.role; // جلب دور المستخدم الحقيقي (salon / store / customer)
+                const role = userData.role;
                 const userStatus = userData.status || "new";
                 const onboardingStatus = userData.onboardingStatus || "none";
 
-                // [القاعدة الذهبية المحدثة]: إذا كان الحساب نشطاً بالكامل وأنهى الإعداد، الـ Router لا يتدخل إطلاقاً
+                // القاعدة الذهبية: إذا كان الحساب نشطاً، لا تتدخل
                 if (userStatus === "active" || onboardingStatus === "completed") {
                     showPageContent();
                     return;
                 }
 
-                // [منطق المعالجة والتوجيه للمستخدمين الجدد فقط والذين لم يكملوا الإعداد]
+                // منطق المستخدمين الجدد
                 if (userStatus === "new" && onboardingStatus !== "completed") {
-                    
-                    // إذا كان المستخدم قد اختار التخطي المؤقت في هذه الجلسة، نتركه يتصفح ولا نضايقه بالتحويل
+                    // إذا اختار التخطي في هذه الجلسة
                     if (sessionStorage.getItem("skipOnboardingAsset")) {
                         showPageContent();
                         return;
                     }
 
-                    // التحقق مما إذا كان المستخدم متواجداً حالياً في صفحة التصفح العادية (خارج منطقة الـ onboarding)
+                    // إذا كان خارج منطقة الـ Onboarding
                     if (!isOnboardingZone) {
-                        // تحديد مسار التوجيه المناسب حسب الدور والخطوة الحالية لإرساله للنافذة المنبثقة
                         let targetPath = PATHS.WELCOME;
 
                         if (onboardingStatus === "none" || !onboardingStatus) {
-                            if (role === "salon") {
-                                targetPath = PATHS.ADD_SALON;
-                            } else if (role === "store") {
-                                targetPath = PATHS.ADD_STORE;
-                            } else if (role === "customer") {
-                                targetPath = PATHS.ADD_CUSTOMER;
-                            } else {
-                                targetPath = PATHS.WELCOME;
-                            }
+                            if (role === "salon") targetPath = PATHS.ADD_SALON;
+                            else if (role === "store") targetPath = PATHS.ADD_STORE;
+                            else if (role === "customer") targetPath = PATHS.ADD_CUSTOMER;
                         } else if (onboardingStatus === "basic_done") {
-                            if (role === "salon") {
-                                targetPath = PATHS.SETUP_SALON;
-                            } else if (role === "store") {
-                                targetPath = PATHS.SETUP_STORE;
-                            } else if (role === "customer") {
-                                // الزبون العادي لا يحتاج خطوة ثانية
+                            if (role === "salon") targetPath = PATHS.SETUP_SALON;
+                            else if (role === "store") targetPath = PATHS.SETUP_STORE;
+                            else if (role === "customer") {
                                 showPageContent();
                                 return;
                             }
                         }
 
-                        // تفعيل التنبيه المنبثق الاختياري وإرسال المسار المستهدف له
+                        // عرض النافذة المنبثقة
                         triggerRecoveryModal(role, onboardingStatus, targetPath);
                     }
                 }
             }
         } catch (error) {
-            console.error("Auth Router System Configuration Error:", error);
+            console.error("❌ خطأ في نظام التوجيه:", error);
         }
     } else {
-        // إذا لم يكن هناك مستخدم مسجل وجلسة العمل فارغة تماماً
+        // المستخدم غير مسجل
         if (isOnboardingZone) {
             window.location.replace("../../register/login.html");
             return;
         }
     }
     
-    // إظهار محتوى الصفحة بأمان
+    // إظهار المحتوى
     showPageContent();
 });
 
-/**
- * دالة لتوليد وعرض النافذة المنبثقة التفاعلية الفاخرة المخصصة حسب دور المستخدم لإكمال الإعداد
- */
+// ============================================
+// عرض النافذة المنبثقة لإكمال الإعداد
+// ============================================
 function triggerRecoveryModal(role, currentStep, targetPath) {
-    // منع تكرار إنشاء النافذة المنبثقة في الصفحة
+    // منع التكرار
     if (document.getElementById('routerRecoveryModal')) return;
-
+    
     let title = "تخصيص حسابك التجاري 🪄";
-    let text = "لم تقم بتهيئة ملفك العملي بالكامل بعد. إكمال هذه البيانات يساعد الزبائن على العثور عليك وحجز خدماتك بسرعة!";
-
-    // تخصيص النصوص ديناميكياً بدقة تامة بناءً على الدور الحالي للمستخدم
+    let text = "لم تقم بتهيئة ملفك العملي بالكامل بعد.";
+    
+    // تخصيص النصوص حسب الدور
     if (role === "salon") {
         title = "إعداد صالونك المحترف 💈";
-        text = "تبقى خطوة واحدة لتفعيل نظام الحجوزات والظهور للزبائن في منطقتك. لنكمل إعداد الصالون الآن.";
+        text = "تبقى خطوة واحدة لتفعيل نظام الحجوزات والظهور للزبائن.";
     } else if (role === "store") {
         title = "تجهيز متجرك الموثق 🛍️";
-        text = "ابدأ في عرض وبيع منتجات الحلاقة والتجميل الخاصة بك. أكمل إعداد المتجر لتنشيط سلة الشراء.";
+        text = "ابدأ في عرض وبيع منتجاتك. أكمل إعداد المتجر لتنشيط سلة الشراء.";
     } else if (role === "customer") {
         title = "إكمال ملفك الشخصي 👤";
-        text = "لنستمتع بتجربة حجز فريدة وسريعة، يرجى إكمال معلومات ملفك الشخصي وعنوانك لتسهيل الخدمة.";
+        text = "لنستمتع بتجربة حجز فريدة، يرجى إكمال معلومات ملفك الشخصي.";
     }
-
+    
     const modal = document.createElement('div');
     modal.id = 'routerRecoveryModal';
-    modal.className = 'modal-overlay'; // استخدام الفئة المتواجدة بملف الـ CSS لإضافة تأثير الـ Blur
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 999999; direction: rtl; font-family: "Cairo", sans-serif;';
+    modal.className = 'global-otp-overlay';
     
     modal.innerHTML = `
-        <div class="auth-container" style="background: #161616; border: 1px solid rgba(212, 175, 55, 0.2); padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-            <h3 style="color: #d4af37; margin-top: 0; font-size: 1.3rem; margin-bottom: 15px;"><i class="fas fa-user-clock" style="color:#d4af37; margin-left: 8px;"></i> ${title}</h3>
-            <p style="color: #ccc; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">${text}</p>
+        <div class="global-otp-modal" style="max-width: 450px;">
+            <div class="global-otp-icon">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            
+            <h2 class="global-otp-title">${title}</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
+                ${text}
+            </p>
+            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button id="modalConfirmBtn" style="padding: 12px; background: linear-gradient(135deg, #d4af37, #aa841b); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; font-size: 0.95rem; transition: all 0.3s;">إكمال الآن 🪄</button>
-                <button id="modalCancelBtn" style="padding: 12px; background: transparent; border: 1px solid #444; border-radius: 8px; color: #aaa; font-weight: bold; cursor: pointer; font-size: 0.95rem; transition: all 0.3s;">لاحقاً، تصفح الموقع</button>
+                <button id="modalConfirmBtn" class="btn btn-accent" style="padding: 12px;">
+                    إكمال الآن 
+                </button>
+                <button id="modalCancelBtn" class="btn btn-outline" style="padding: 12px;">
+                    لاحقاً
+                </button>
             </div>
         </div>
     `;
-
+    
     document.body.appendChild(modal);
-
+    
+    // زر الإكمال
     modal.querySelector('#modalConfirmBtn').onclick = () => {
         modal.remove();
         window.location.href = targetPath;
     };
-
+    
+    // زر التخطي
     modal.querySelector('#modalCancelBtn').onclick = () => {
-        // حفظ خيار التخطي في sessionStorage لمنع إزعاج المستخدم مجدداً أثناء هذه الجلسة الحالية
         sessionStorage.setItem("skipOnboardingAsset", "true");
         modal.remove();
-        showNotification("تم تأجيل إكمال البيانات، يمكنك تصفح الموقع الآن بكل حرية.", "success");
+        showNotification("تم تأجيل إكمال البيانات، يمكنك تصفح الموقع الآن.", "info");
         showPageContent();
     };
 }
 
-/**
- * دالة مركزية آمنة لإظهار محتوى الصفحة الحالي بعد التحقق الكامل
- */
+// ============================================
+// إظهار محتوى الصفحة بأمان
+// ============================================
 function showPageContent() {
     if (document.body) {
         document.body.style.visibility = "visible";
     }
 }
+

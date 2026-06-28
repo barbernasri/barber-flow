@@ -1,12 +1,27 @@
 /**
-أداة معالجة الصور: تقوم بضغط الصور وتحويلها إلى Base64
-@param {File} file - ملف الصورة الأصلي من مدخلات HTML
-@param {number} maxWidth - أقصى عرض للصورة
-@param {number} quality - جودة الضغط من 0.1 إلى 1.0
-@returns {Promise<string>} - تعيد نص Base64 للصورة المعالجة
-*/
-export const processImage = (file, maxWidth = 600, quality = 0.6) => {
+ * أداة معالجة الصور لـ BarberFlow Pro
+ * المسار: auth/js/images-utils.js
+ * 
+ * ملاحظة: هذا حل مؤقت لتخزين الصور كـ Base64
+ * حتى يتم تفعيل Firebase Storage (يحتاج خطة مدفوعة)
+ */
+
+/**
+ * معالجة وضغط الصورة وتحويلها إلى Base64
+ * @param {File} file - ملف الصورة الأصلي
+ * @param {number} maxWidth - أقصى عرض للصورة (افتراضي: 600)
+ * @param {number} quality - جودة الضغط من 0.1 إلى 1.0 (افتراضي: 0.6)
+ * @param {string} format - صيغة الإخراج 'image/jpeg' أو 'image/png' (افتراضي: jpeg)
+ * @returns {Promise<string>} - Base64 للصورة المعالجة
+ */
+export const processImage = (file, maxWidth = 600, quality = 0.6, format = 'image/jpeg') => {
     return new Promise((resolve, reject) => {
+        // التحقق من نوع الملف
+        if (!file.type.startsWith('image/')) {
+            reject(new Error('الملف المحدد ليس صورة صالحة'));
+            return;
+        }
+
         const reader = new FileReader();
         reader.readAsDataURL(file);
         
@@ -19,7 +34,7 @@ export const processImage = (file, maxWidth = 600, quality = 0.6) => {
                 let width = img.width;
                 let height = img.height;
 
-                // الحفاظ على أبعاد الصورة (Aspect Ratio) عند تغيير الحجم
+                // الحفاظ على نسبة الأبعاد (Aspect Ratio)
                 if (width > maxWidth) {
                     height = (maxWidth / width) * height;
                     width = maxWidth;
@@ -29,61 +44,126 @@ export const processImage = (file, maxWidth = 600, quality = 0.6) => {
                 canvas.height = height;
 
                 const ctx = canvas.getContext('2d');
+                
+                // تحسين جودة الرسم
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // تحويل الصورة إلى Base64 بصيغة JPEG لضمان أفضل ضغط وتقليل الحجم
-                const base64String = canvas.toDataURL('image/jpeg', quality);
+                // تحويل إلى Base64
+                const base64String = canvas.toDataURL(format, quality);
                 resolve(base64String);
             };
 
-            img.onerror = (error) => reject(error);
+            img.onerror = () => reject(new Error('فشل تحميل الصورة'));
         };
 
-        reader.onerror = (error) => reject(error);
+        reader.onerror = () => reject(new Error('فشل قراءة الملف'));
     });
 };
 
 /**
-دالة حذف صورة من مصفوفة الصور وتحديث الحاوية في الواجهة وإبلاغ الملف الرئيسي بالتحديث
-@param {string|number} targetId - المعرف الفريد للصورة المراد حذفها
-@param {Array} imagesArray - مصفوفة الصور الحالية التي تحتوي على الكائنات {id, base64}
-@param {HTMLElement} previewContainer - عنصر HTML (الحاوية) المسؤولة عن عرض الصور
-@param {Function} onUpdateCallback - دالة تراجع لتحديث مصفوفة البيانات في الملف الأساسي
-@param {Function} reRenderFormGrid - دالة اختيارية لإعادة بناء الشبكة المخصصة للصفحة الحالية لمنع تشويه التنسيق
-*/
-export const removeImageFromGallery = (targetId, imagesArray, previewContainer, onUpdateCallback, reRenderFormGrid = null) => {
-    // تصفية مصفوفة الصور وحذف العنصر المطابق للمعرف
+ * حذف صورة من مصفوفة الصور وتحديث الواجهة
+ * @param {string|number} targetId - معرف الصورة المراد حذفها
+ * @param {Array} imagesArray - مصفوفة الصور الحالية
+ * @param {HTMLElement} previewContainer - حاوية المعاينة
+ * @param {Function} onUpdateCallback - دالة تحديث المصفوفة الرئيسية
+ * @param {Function} reRenderFormGrid - دالة إعادة بناء الشبكة (اختياري)
+ */
+export const removeImageFromGallery = (
+    targetId, 
+    imagesArray, 
+    previewContainer, 
+    onUpdateCallback, 
+    reRenderFormGrid = null
+) => {
+    // تصفية المصفوفة
     const updatedArray = imagesArray.filter(img => img.id !== targetId);
     
-    // إبلاغ وتحديث المصفوفة الرئيسية في ملفك الخارجي بالبيانات الجديدة
+    // تحديث المصفوفة الرئيسية
     if (typeof onUpdateCallback === 'function') {
         onUpdateCallback(updatedArray);
     }
-    
-    // إذا كانت هناك دالة إعادة بناء مخصصة من الصفحة الأصلية لتأمين التنسيق نقوم باستدعائها
+
+    // إعادة بناء الشبكة إذا توفرت دالة مخصصة
     if (typeof reRenderFormGrid === 'function') {
         reRenderFormGrid(updatedArray);
         return;
     }
-    
-    // fallback للتحديث الافتراضي القديم في حال لم تتوفر دالة مخصصة
-    previewContainer.innerHTML = "";
-    updatedArray.forEach(img => {
-        const div = document.createElement('div');
-        div.className = 'img-item';
-        div.style.position = 'relative';
-        div.style.display = 'inline-block';
-        
-        div.innerHTML = `
-            <img src="${img.base64}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">
-            <span class="delete-img" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px;">&times;</span>
-        `;
 
-        div.querySelector('.delete-img').onclick = () => {
-            removeImageFromGallery(img.id, updatedArray, previewContainer, onUpdateCallback, reRenderFormGrid);
-        };
+    // Fallback: إعادة بناء افتراضية
+    if (previewContainer) {
+        previewContainer.innerHTML = '';
+        updatedArray.forEach(img => {
+            const div = document.createElement('div');
+            div.className = 'img-item';
+            div.style.cssText = `
+                position: relative;
+                display: inline-block;
+                margin: 5px;
+            `;
+            
+            div.innerHTML = `
+                <img src="${img.base64}" style="
+                    width: 100px; 
+                    height: 100px; 
+                    object-fit: cover; 
+                    border-radius: 8px;
+                ">
+                <button type="button" class="delete-img" style="
+                    position: absolute; 
+                    top: -5px; 
+                    right: -5px; 
+                    background: var(--brand-danger, #c92a2a); 
+                    color: white; 
+                    border: none;
+                    border-radius: 50%; 
+                    width: 20px; 
+                    height: 20px; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    cursor: pointer; 
+                    font-size: 12px;
+                ">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
 
-        previewContainer.appendChild(div);
-    });
+            div.querySelector('.delete-img').onclick = () => {
+                removeImageFromGallery(
+                    img.id, 
+                    updatedArray, 
+                    previewContainer, 
+                    onUpdateCallback, 
+                    reRenderFormGrid
+                );
+            };
+
+            previewContainer.appendChild(div);
+        });
+    }
+};
+
+/**
+ * التحقق من حجم الصورة قبل الرفع
+ * @param {File} file - الملف المراد فحصه
+ * @param {number} maxSizeMB - الحد الأقصى بالحجم (MB)
+ * @returns {boolean}
+ */
+export const validateImageSize = (file, maxSizeMB = 5) => {
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    return file.size <= maxSizeBytes;
+};
+
+/**
+ * التحقق من نوع الصورة
+ * @param {File} file
+ * @returns {boolean}
+ */
+export const validateImageType = (file) => {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    return validTypes.includes(file.type);
 };
 

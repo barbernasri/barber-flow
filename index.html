@@ -2,101 +2,445 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberFlow Pro | الرئيسية</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="./css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="BarberFlow Pro - احجز صالونك المفضل واشترِ منتجات العناية في مكان واحد">
+    <title>BarberFlow Pro | الصفحة الرئيسية</title>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="shared/css/global.css">
+    
+    <!-- تنسيقات الصفحة الرئيسية -->
+    <link rel="stylesheet" href="home/css/index.css">
+    
+      <!-- تنسيقات الشريط العلوي -->
+      <link rel="stylesheet" href="shared/css/global-navbar.css">
+
+    <!-- تنسيقات الإشعارات -->
+    <link rel="stylesheet" href="auth/css/notifications.css">
 </head>
-<body>
-
-<!-- الهيدر الرئيسي -->
-<header class="main-header">
-    <div class="header-content">
-        <div class="logo">
-            <i class="fas fa-cut"></i>
-            <span>BarberFlow Pro</span>
-        </div>
-        <nav class="main-nav">
-            <a href="explore-salons.html" class="nav-link">
-                <i class="fas fa-cut"></i>
-                <span>الحجوزات</span>
-            </a>
-            <a href="market.html" class="nav-link">
-                <i class="fas fa-shopping-bag"></i>
-                <span>التسوق</span>
-            </a>
-            <a href="market/cart.html" class="nav-link cart-link">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">0</span>
-            </a>
-            <a href="../register/login.html" class="nav-link profile-link">
-                <i class="fas fa-user"></i>
-            </a>
+<body data-theme="dark">
+    
+    <!-- ============================================
+         شريط التنقل العلوي (جزء من الصفحة - ليس عائماً)
+         ============================================ -->
+    <header class="main-header" id="mainHeader">
+        <nav class="navbar" id="global-navbar-container">
+            <!-- سيتم تحميل محتوى الـ Navbar هنا عبر global-navbar.js -->
         </nav>
-    </div>
-</header>
+    </header>
 
-<!-- القسم الرئيسي -->
-<section class="hero-section">
-    <div class="hero-content">
-        <h1>احجز صالونك المفضل واشترِ منتجاتك في مكان واحد</h1>
-        <p>منصة BarberFlow Pro تجمع لك بين أفضل الصالونات والمنتجات في المغرب</p>
-    </div>
-</section>
+    <!-- حاوية الإشعارات -->
+    <div id="notification-container"></div>
 
-<!-- قسم العروض -->
-<section class="offers-section">
-    <div class="section-header">
-        <h2><i class="fas fa-gift"></i> العروض والهدايا الحصرية</h2>
-    </div>
-    <div id="offersContainer" class="offers-container">
-        <!-- سيتم ملؤه بواسطة card-offer.js -->
-    </div>
-</section>
+    <!-- ============================================
+         قسم البطل (Hero Section)
+         ============================================ -->
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-pattern"></div>
+        
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-crown"></i>
+                <span>المنصة الأولى للحلاقة في المغرب</span>
+            </div>
+            
+            <h1 class="hero-title">
+                BarberFlow <span class="gold-text">Pro</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                احجز صالونك المفضل واشترِ منتجات العناية بأعلى جودة
+                <br>في مكان واحد وبضغطة زر
+            </p>
+            
+            <!-- شريط البحث -->
+            <div class="hero-search">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        id="heroSearchInput" 
+                        placeholder="ابحث عن صالون، منتج، أو خدمة..."
+                        autocomplete="off"
+                    >
+                    <button class="search-btn" id="heroSearchBtn">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+                
+                <div class="search-suggestions" id="searchSuggestions">
+                    <!-- سيتم ملؤها ديناميكياً -->
+                </div>
+            </div>
+            
+            <!-- إحصائيات سريعة -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="statSalons">0</div>
+                    <div class="stat-label">صالون موثق</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number" id="statStores">0</div>
+                    <div class="stat-label">متجر احترافي</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number" id="statServices">0</div>
+                    <div class="stat-label">خدمة متاحة</div>
+                </div>
+            </div>
+            
+            <!-- أزرار التوجيه السريع -->
+            <div class="hero-cta">
+                <a href="home/explore-salon.html" class="cta-btn primary">
+                    <i class="fas fa-cut"></i>
+                    <span>استكشف الصالونات</span>
+                </a>
+                <a href="home/explore-store.html" class="cta-btn secondary">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>تصفح المتجر</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- موجة سفلية -->
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
+            </svg>
+        </div>
+    </section>
 
-<!-- قسم الصالونات المميزة -->
-<section class="featured-salons-section">
-    <div class="section-header">
-        <h2><i class="fas fa-cut"></i> أبرز الصالونات المتاحة</h2>
-        <a href="explore-salons.html" class="view-all-link">عرض كل الصالونات <i class="fas fa-arrow-left"></i></a>
-    </div>
-    <div id="featuredSalonsContainer" class="salons-grid">
-        <!-- سيتم ملؤه بواسطة card.js -->
-    </div>
-</section>
+    <!-- ============================================
+         قسم الفئات السريعة (Categories)
+         ============================================ -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-th-large"></i>
+                    استكشف حسب الفئة
+                </h2>
+                <p class="section-subtitle">اختر الفئة المناسبة لاحتياجاتك</p>
+            </div>
+            
+            <div class="categories-grid">
+                <a href="home/explore-salon.html?type=men" class="category-card">
+                    <div class="category-icon men">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>صالونات رجالية</h3>
+                    <span class="category-count" id="countMenSalons">0 صالون</span>
+                </a>
+                
+                <a href="home/explore-salon.html?type=women" class="category-card">
+                    <div class="category-icon women">
+                        <i class="fas fa-female"></i>
+                    </div>
+                    <h3>صالونات نسائية</h3>
+                    <span class="category-count" id="countWomenSalons">0 صالون</span>
+                </a>
+                
+                <a href="home/explore-salon.html?type=kids" class="category-card">
+                    <div class="category-icon kids">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3>صالونات أطفال</h3>
+                    <span class="category-count" id="countKidsSalons">0 صالون</span>
+                </a>
+                
+                <a href="home/explore-store.html?cat=cosmetics" class="category-card">
+                    <div class="category-icon cosmetics">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>مستحضرات تجميل</h3>
+                    <span class="category-count">متعدد</span>
+                </a>
+                
+                <a href="home/explore-store.html?cat=tools" class="category-card">
+                    <div class="category-icon tools">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>أدوات ومعدات</h3>
+                    <span class="category-count">متعدد</span>
+                </a>
+                
+                <a href="home/home-services.html" class="category-card">
+                    <div class="category-icon home-service">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>خدمة منزلية</h3>
+                    <span class="category-count">جديد</span>
+                </a>
+            </div>
+        </div>
+    </section>
 
-<!-- قسم المنتجات المميزة -->
-<section class="featured-products-section">
-    <div class="section-header">
-        <h2><i class="fas fa-shopping-bag"></i> أبرز المتاجر والمنتجات</h2>
-        <a href="market.html" class="view-all-link">عرض المتجر بالكامل <i class="fas fa-arrow-left"></i></a>
-    </div>
-    <div id="featuredProductsContainer" class="products-grid">
-        <!-- سيتم ملؤه بواسطة card-stor.js -->
-    </div>
-</section>
+    <!-- ============================================
+         قسم العروض والهدايا (Offers)
+         ============================================ -->
+    <section class="offers-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">
+                        <i class="fas fa-gift"></i>
+                        العروض والهدايا الحصرية
+                    </h2>
+                    <span class="offers-badge">محدودة</span>
+                </div>
+                <p class="section-subtitle">استفد من أقوى العروض قبل انتهائها</p>
+            </div>
+            
+            <div class="offers-grid" id="offersGrid">
+                <!-- سيتم ملؤها ديناميكياً عبر card-offer.js -->
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- قسم الخدمات المنزلية -->
-<section class="concierge-section">
-    <div class="section-header">
-        <h2><i class="fas fa-home"></i> خدمات الصالونات المنزلية الفاخرة</h2>
-        <a href="home-services.html" class="view-all-link">تصفح كافة الخدمات <i class="fas fa-arrow-left"></i></a>
-    </div>
-    <div id="conciergeContainer" class="concierge-grid">
-        <!-- سيتم ملؤه بواسطة card-Concierge.js -->
-    </div>
-</section>
+    <!-- ============================================
+         قسم أبرز الصالونات (Featured Salons)
+         ============================================ -->
+    <section class="salons-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">
+                        <i class="fas fa-cut"></i>
+                        أبرز الصالونات المتاحة
+                    </h2>
+                </div>
+                <a href="home/explore-salon.html" class="view-all-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <!-- فلاتر أنواع الصالونات -->
+            <div class="filter-chips" id="salonFilters">
+                <button class="filter-chip active" data-filter="all">الكل</button>
+                <button class="filter-chip" data-filter="men">رجالي</button>
+                <button class="filter-chip" data-filter="women">نسائي</button>
+                <button class="filter-chip" data-filter="kids">أطفال</button>
+                <button class="filter-chip" data-filter="mixed">مختلط</button>
+            </div>
+            
+            <div class="salons-grid" id="salonsGrid">
+                <!-- سيتم ملؤها ديناميكياً عبر card-salon.js -->
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+            
+            <div class="empty-state hidden" id="salonsEmptyState">
+                <i class="fas fa-store-slash"></i>
+                <h3>لا توجد صالونات متاحة حالياً</h3>
+                <p>يرجى التحقق لاحقاً أو تغيير الفلتر</p>
+            </div>
+        </div>
+    </section>
 
-<!-- الفوتر -->
-<footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 BarberFlow Pro. جميع الحقوق محفوظة</p>
-    </div>
-</footer>
+    <!-- ============================================
+         قسم أبرز المتاجر والمنتجات (Featured Stores)
+         ============================================ -->
+    <section class="stores-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">
+                        <i class="fas fa-shopping-bag"></i>
+                        أبرز المتاجر والمنتجات
+                    </h2>
+                </div>
+                <a href="home/explore-store.html" class="view-all-link">
+                    عرض المتجر بالكامل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <!-- فلاتر أقسام المتجر -->
+            <div class="filter-chips" id="storeFilters">
+                <button class="filter-chip active" data-filter="all">الكل</button>
+                <button class="filter-chip" data-filter="cosmetics">مستحضرات</button>
+                <button class="filter-chip" data-filter="tools">أدوات</button>
+                <button class="filter-chip" data-filter="hair">العناية بالشعر</button>
+                <button class="filter-chip" data-filter="beard">العناية باللحية</button>
+            </div>
+            
+            <div class="stores-grid" id="storesGrid">
+                <!-- سيتم ملؤها ديناميكياً عبر card-store.js -->
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+            
+            <div class="empty-state hidden" id="storesEmptyState">
+                <i class="fas fa-box-open"></i>
+                <h3>لا توجد منتجات متاحة حالياً</h3>
+                <p>يرجى التحقق لاحقاً أو تغيير الفلتر</p>
+            </div>
+        </div>
+    </section>
 
-<!-- استدعاء الملفات -->
-<script type="module" src="./js/index.js"></script>
+    <!-- ============================================
+         قسم الخدمات المنزلية (Concierge)
+         ============================================ -->
+    <section class="concierge-section">
+        <div class="concierge-pattern"></div>
+        <div class="container">
+            <div class="section-header light">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">
+                        <i class="fas fa-home"></i>
+                        خدمات الصالونات المنزلية الفاخرة
+                    </h2>
+                    <span class="concierge-badge">VIP</span>
+                </div>
+                <p class="section-subtitle">نصلك أينما كنت بأرقى الخدمات</p>
+                <a href="home/home-services.html" class="view-all-link light">
+                    تصفح كافة الخدمات
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <div class="concierge-grid" id="conciergeGrid">
+                <!-- سيتم ملؤها ديناميكياً عبر card-Concierge.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         قسم الدعوة للتسجيل (CTA Section)
+         ============================================ -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <div class="cta-content">
+                    <h2>انضم إلى آلاف المحترفين</h2>
+                    <p>سواء كنت صاحب صالون، متجر، أو زبون، BarberFlow Pro هو مكانك</p>
+                    <div class="cta-buttons">
+                        <a href="register/register.html?role=salon" class="cta-btn gold">
+                            <i class="fas fa-cut"></i>
+                            سجل كصالون
+                        </a>
+                        <a href="register/register.html?role=store" class="cta-btn outline">
+                            <i class="fas fa-store"></i>
+                            سجل كمتجر
+                        </a>
+                        <a href="register/register.html?role=customer" class="cta-btn outline">
+                            <i class="fas fa-user"></i>
+                            سجل كزبون
+                        </a>
+                    </div>
+                </div>
+                <div class="cta-decoration">
+                    <i class="fas fa-crown"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         الفوتر (Footer)
+         ============================================ -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col brand-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-cut"></i>
+                        <span>BarberFlow <strong>Pro</strong></span>
+                    </div>
+                    <p class="footer-desc">
+                        المنصة المغربية الأولى التي تجمع بين حجز الصالونات وشراء منتجات العناية في مكان واحد.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="home/explore-salon.html">الصالونات</a></li>
+                        <li><a href="home/explore-store.html">المتجر</a></li>
+                        <li><a href="home/home-services.html">الخدمات المنزلية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>الدعم</h4>
+                    <ul class="footer-links">
+                        <li><a href="support/about.html">من نحن</a></li>
+                        <li><a href="support/contact.html">اتصل بنا</a></li>
+                        <li><a href="support/survey.html">استطلاع الرأي</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>تواصل معنا</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> contact@barberflow.ma</li>
+                        <li><i class="fas fa-phone"></i> +212 5XX-XXXXXX</li>
+                        <li><i class="fas fa-map-marker-alt"></i> المغرب</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 BarberFlow Pro. جميع الحقوق محفوظة.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">سياسة الخصوصية</a>
+                    <a href="#">شروط الاستخدام</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         السكربتات (بالترتيب الصحيح)
+         ============================================ -->
+    <!-- Firebase -->
+    <script type="module" src="core/firebase-init.js"></script>
+    
+    <!-- الإشعارات -->
+    <script type="module" src="auth/js/notifications.js"></script>
+    
+    <!-- الـ Router -->
+    <script type="module" src="auth/js/router.js"></script>
+    
+    <!-- مكونات البطاقات -->
+    <script type="module" src="home/components/js/card-salon.js"></script>
+    <script type="module" src="home/components/js/card-store.js"></script>
+    <script type="module" src="home/components/js/card-offer.js"></script>
+    <script type="module" src="home/components/js/card-Concierge.js"></script>
+    
+    <!-- Navbar -->
+    <script type="module" src="shared/js/global-navbar.js"></script>
+    
+    <!-- المنطق الرئيسي للصفحة -->
+    <script type="module" src="home/js/index.js"></script>
 </body>
 </html>
 

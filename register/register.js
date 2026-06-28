@@ -1,32 +1,28 @@
-import { auth, db } from "../../core/firebase-init.js";
-import { 
-    RecaptchaVerifier, signInWithPhoneNumber, GoogleAuthProvider, 
-    signInWithPopup, createUserWithEmailAndPassword 
+import { auth, db } from "../core/firebase-init.js";
+import {
+    RecaptchaVerifier, signInWithPhoneNumber, GoogleAuthProvider,
+    signInWithPopup, createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { showNotification } from "../../auth/js/notifications.js";
+import { showNotification } from "../auth/js/notifications.js";
 
 let confirmationResult;
 let timerInterval;
-let selectedRole = null; 
-
+let selectedRole = null;
 const googleProvider = new GoogleAuthProvider();
 
 const registerStep = document.getElementById('registerStep');
 const verifyStep = document.getElementById('verifyStep');
-
 const unifiedRegisterForm = document.getElementById('unifiedRegisterForm');
 const submitBtn = document.getElementById('mainSubmitBtn');
 const confirmOtpBtn = document.getElementById('confirmOtpBtn');
 const googleBtn = document.getElementById('googleBtn');
 const resendCodeBtn = document.getElementById('resendCodeBtn');
 const backHomeBtn = document.getElementById('backHomeBtn');
-
 const passwordGroup = document.getElementById('passwordGroup');
 const regIdentifierInput = document.getElementById('regIdentifier');
 const regPasswordInput = document.getElementById('regPassword');
 
-// تعديل المفتاح هنا من 'vendor' إلى 'store' لتوحيد منطق المنصة
 const roleLocalization = {
     'customer': {
         title: "حساب زبون جديد | BarberFlow Pro",
@@ -107,7 +103,7 @@ function startTimer() {
     resendCodeBtn.style.display = 'none';
     document.getElementById('timerContainer').style.display = 'block';
     document.getElementById('timer').textContent = timeLeft;
-
+    
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
         timeLeft--;
@@ -126,14 +122,14 @@ function setupRegistrationUI(role) {
         window.location.replace("login.html");
         return;
     }
-
+    
     document.title = config.title;
     document.getElementById('registerHeading').textContent = config.heading;
     document.getElementById('registerSubheading').textContent = config.subheading;
     document.getElementById('labelName').textContent = config.labelName;
     document.getElementById('regName').placeholder = config.placeholderName;
     document.getElementById('submitBtnText').textContent = config.btnText;
-    
+
     registerStep.classList.remove('hidden-step');
     registerStep.classList.add('show-step-animation');
 
@@ -156,14 +152,14 @@ regIdentifierInput.addEventListener('input', () => {
         passwordGroup.classList.add('hidden-step');
         passwordGroup.classList.remove('show-step-animation');
         regPasswordInput.required = false;
-        regPasswordInput.value = ''; 
+        regPasswordInput.value = '';
     }
 });
 
 unifiedRegisterForm.onsubmit = async (e) => {
     e.preventDefault();
     if (!selectedRole) return window.location.replace("login.html");
-
+    
     const name = document.getElementById('regName').value.trim();
     const identifier = regIdentifierInput.value.trim();
 
@@ -231,7 +227,7 @@ unifiedRegisterForm.onsubmit = async (e) => {
 confirmOtpBtn.onclick = async () => {
     const code = document.getElementById('otpCode').value.trim();
     if (code.length !== 6) return showNotification("يرجى كتابة الرمز المكون من 6 أرقام بالكامل", "error");
-
+    
     confirmOtpBtn.disabled = true;
     confirmOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تأكيد الحساب الحصري...';
 
@@ -261,7 +257,7 @@ resendCodeBtn.onclick = async () => {
     const config = roleLocalization[selectedRole];
     const rawData = localStorage.getItem(config.storageKey);
     if (!rawData) return showNotification("لم نتمكن من استعادة البيانات لإعادة إرسال الرمز", "error");
-
+    
     const tempData = JSON.parse(rawData);
     resendCodeBtn.disabled = true;
 
@@ -280,7 +276,6 @@ resendCodeBtn.onclick = async () => {
 document.getElementById('backToRegisterBtn').onclick = () => {
     verifyStep.classList.add('hidden-step');
     verifyStep.classList.remove('show-step-animation');
-    
     registerStep.classList.remove('hidden-step');
     registerStep.classList.add('show-step-animation');
     clearInterval(timerInterval);
@@ -290,6 +285,7 @@ document.getElementById('backToRegisterBtn').onclick = () => {
 
 googleBtn.onclick = async () => {
     if (!selectedRole) return window.location.replace("login.html");
+    
     try {
         const result = await signInWithPopup(auth, googleProvider);
         const taken = await isIdentifierTaken(result.user.email);
@@ -321,9 +317,9 @@ if (backHomeBtn) {
 
 window.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const roleParam = urlParams.get('role'); 
+    const roleParam = urlParams.get('role');
     const statusParam = urlParams.get('status');
-
+    
     if (statusParam === 'pending') {
         for (const [role, config] of Object.entries(roleLocalization)) {
             if (localStorage.getItem(config.storageKey)) {
@@ -347,3 +343,4 @@ window.addEventListener('DOMContentLoaded', () => {
         window.location.replace("login.html");
     }
 });
+

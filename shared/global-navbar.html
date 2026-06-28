@@ -1,45 +1,168 @@
-<nav class="navbar">
-    <div class="nav-right">
-        <button onclick="history.back()" class="nav-btn"><i class="fas fa-arrow-right"></i></button>
-    </div>
-
-    <div class="logo">
-        <a href="/index.html" class="logo-link">
-            <i class="fas fa-scissors"></i>
-            <span>BarberFlow-Pro</span>
+<nav class="navbar-content">
+    <!-- الشعار -->
+    <a href="/index.html" class="navbar-brand">
+        <i class="fas fa-cut"></i>
+        <span>BarberFlow <strong>Pro</strong></span>
+    </a>
+    
+    <!-- روابط التنقل (تظهر في الشاشات الكبيرة) -->
+    <ul class="navbar-links">
+        <li><a href="index.html" class="nav-link active" data-page="home">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a></li>
+        <li><a href="home/explore-salon.html" class="nav-link" data-page="salons">
+            <i class="fas fa-cut"></i>
+            <span>الصالونات</span>
+        </a></li>
+        <li><a href="home/explore-store.html" class="nav-link" data-page="store">
+            <i class="fas fa-shopping-bag"></i>
+            <span>المتجر</span>
+        </a></li>
+        <li><a href="home/home-services.html" class="nav-link" data-page="services">
+            <i class="fas fa-home"></i>
+            <span>الخدمات المنزلية</span>
+        </a></li>
+        <li><a href="support/about.html" class="nav-link" data-page="about">
+            <i class="fas fa-info-circle"></i>
+            <span>من نحن</span>
+        </a></li>
+        <li><a href="support/contact.html" class="nav-link" data-page="contact">
+            <i class="fas fa-envelope"></i>
+            <span>اتصل بنا</span>
+        </a></li>
+    </ul>
+    
+    <!-- أزرار الإجراءات -->
+    <div class="navbar-actions">
+        <!-- زر تبديل الثيم -->
+        <button class="action-btn theme-toggle" id="themeToggleBtn" aria-label="تبديل الثيم" title="تغيير مظهر الموقع">
+            <i class="fas fa-moon"></i>
+        </button>
+        
+        <!-- زر الإعدادات -->
+        <button class="action-btn settings-btn" id="settingsBtn" aria-label="الإعدادات" title="الإعدادات العامة">
+            <i class="fas fa-cog"></i>
+        </button>
+        
+        <!-- زر السلة -->
+        <a href="market/cart.html" class="action-btn cart-btn" aria-label="سلة التسوق">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge" id="cartBadge">0</span>
         </a>
+        
+        <!-- زر المستخدم -->
+        <a href="register/login.html" class="action-btn user-btn" id="userBtn" aria-label="حسابي">
+            <i class="fas fa-user"></i>
+        </a>
+        
+        <!-- زر القائمة (للموبايل) -->
+        <button class="action-btn menu-btn" id="navMenuBtn" aria-label="القائمة">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
-
-    <div class="nav-left">
-        <button id="navMenuBtn" class="nav-btn"><i class="fas fa-bars"></i></button>
+    
+    <!-- القائمة الجانبية (Drawer) -->
+    <div class="side-drawer" id="sideDrawer">
+        <div class="drawer-header">
+            <div class="drawer-brand">
+                <i class="fas fa-cut"></i>
+                <span>BarberFlow <strong>Pro</strong></span>
+            </div>
+            <button class="close-btn" id="closeMenuBtn" aria-label="إغلاق">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- معلومات المستخدم (تظهر عند تسجيل الدخول) -->
+        <div class="drawer-user-info" id="drawerUserInfo" style="display: none;">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="user-details">
+                <h4 id="drawerUserName">مرحباً بك</h4>
+                <span class="user-role" id="drawerUserRole">زبون</span>
+            </div>
+        </div>
+        
+        <div class="drawer-content">
+            <div class="drawer-section">
+                <h5 class="drawer-section-title">التنقل الرئيسي</h5>
+                <ul class="drawer-links">
+                    <li><a href="index.html" class="drawer-link active">
+                        <i class="fas fa-home"></i>
+                        <span>الرئيسية</span>
+                    </a></li>
+                    <li><a href="home/explore-salon.html" class="drawer-link">
+                        <i class="fas fa-cut"></i>
+                        <span>الصالونات</span>
+                    </a></li>
+                    <li><a href="home/explore-store.html" class="drawer-link">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>المتجر</span>
+                    </a></li>
+                    <li><a href="home/home-services.html" class="drawer-link">
+                        <i class="fas fa-home"></i>
+                        <span>الخدمات المنزلية</span>
+                    </a></li>
+                </ul>
+            </div>
+            
+            <div class="drawer-section">
+                <h5 class="drawer-section-title">الدعم والمعلومات</h5>
+                <ul class="drawer-links">
+                    <li><a href="support/about.html" class="drawer-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>من نحن</span>
+                    </a></li>
+                    <li><a href="support/contact.html" class="drawer-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>اتصل بنا</span>
+                    </a></li>
+                    <li><a href="support/survey.html" class="drawer-link">
+                        <i class="fas fa-poll"></i>
+                        <span>استطلاع الرأي</span>
+                    </a></li>
+                </ul>
+            </div>
+            
+            <div class="drawer-section">
+                <h5 class="drawer-section-title">الحساب</h5>
+                <ul class="drawer-links">
+                    <li><a href="profiles/profile-customer.html" class="drawer-link" id="drawerProfileLink">
+                        <i class="fas fa-user"></i>
+                        <span>ملفي الشخصي</span>
+                    </a></li>
+                    <li><a href="dashboard/appointment.html" class="drawer-link" id="drawerDashboardLink" style="display: none;">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>لوحة التحكم</span>
+                    </a></li>
+                    <li><a href="dashboard/settings-salon.html" class="drawer-link" id="drawerSettingsLink" style="display: none;">
+                        <i class="fas fa-cog"></i>
+                        <span>إعدادات الحساب</span>
+                    </a></li>
+                    <li><a href="register/login.html" class="drawer-link" id="drawerLoginLink">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>تسجيل الدخول</span>
+                    </a></li>
+                    <li><a href="#" class="drawer-link" id="drawerLogoutLink" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>تسجيل الخروج</span>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- زر تبديل الثيم في القائمة الجانبية -->
+        <div class="drawer-footer">
+            <button class="theme-toggle-btn" id="drawerThemeToggle">
+                <i class="fas fa-moon"></i>
+                <span id="drawerThemeText">الوضع الداكن</span>
+            </button>
+        </div>
     </div>
+    
+    <!-- Overlay للقائمة الجانبية -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
 </nav>
 
-<div id="premiumDropdownMenu" class="premium-dropdown">
-    <div class="dropdown-header">
-        <button id="closeMenuBtn"><i class="fas fa-times"></i></button>
-    </div>
-    
-    <div class="menu-content">
-        <div id="dynamic-auth-buttons"></div> <hr>
-        <button onclick="location.href='../support/survey.html'" class="dropdown-item-btn"><i class="fas fa-chart-bar"></i> استطلاع الرأي</button>
-        <button onclick="location.href='../support/about.html'" class="dropdown-item-btn"><i class="fas fa-info-circle"></i> عن المنصة</button>
-        <button onclick="location.href='../support/contact.html'" class="dropdown-item-btn"><i class="fas fa-headset"></i> الدعم الفني</button>
-    </div>
-</div>
-
-<style>
-    /* التنسيق يعتمد على متغيرات global.css */
-    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: var(--bg-secondary); border-bottom: 1px solid var(--brand-accent); height: 70px; position: fixed; top: 0; width: 100%; z-index: 1000; color: var(--brand-primary); }
-    .nav-btn { background: none; border: none; color: var(--brand-primary); font-size: 1.5rem; cursor: pointer; }
-    .logo-link { text-decoration: none; color: var(--brand-primary); display: flex; align-items: center; gap: 8px; font-weight: bold; }
-    
-    .premium-dropdown { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: var(--bg-secondary); transition: 0.4s; z-index: 9999; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.2); }
-    .show-premium-dropdown { left: 0; }
-.dropdown-header { display: flex !important; justify-content: flex-start !important;direction: ltr !important; important }
-#closeMenuBtn { font-size: 1.2rem !important; cursor: pointer;color: var(--brand-accent) !important;
- }
-
-    .dropdown-item-btn { width: 100%; padding: 12px; margin-top: 10px; background: none; border: 1px solid var(--brand-accent); color: var(--brand-primary); cursor: pointer; text-align: right; }
-    .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9998; }
-</style>

@@ -1,62 +1,53 @@
-:root {
-    --gold-solid: #D4AF37;
-    --gold-light: #F4E5C3;
-    --dark-bg: #1a1a1a;
-    --card-bg: #2a2a2a;
-    --text-primary: #fff;
-    --text-secondary: #ccc;
-    --success: #4CAF50;
-    --danger: #f44336;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Tajawal', sans-serif;
-    background: var(--dark-bg);
-    color: var(--text-primary);
-    padding-bottom: 80px;
-}
+/* ==========================================================================
+   صفحة تفاصيل الصالون - details.css
+   ========================================================================== */
 
 /* Header */
 .details-header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(26, 26, 26, 0.95);
+    background: rgba(18, 18, 18, 0.95);
     backdrop-filter: blur(10px);
     padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 1px solid var(--border-gold);
+}
+
+[data-theme="light"] .details-header {
+    background: rgba(255, 255, 255, 0.95);
 }
 
 .back-btn, .fav-btn {
-    background: var(--card-bg);
+    background: var(--bg-tertiary);
     border: none;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     font-size: 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.back-btn:hover, .fav-btn:hover {
+    background: var(--bg-accent);
+    transform: scale(1.05);
 }
 
 .header-title {
     font-size: 1.1rem;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
+    font-weight: 600;
 }
 
 .active-heart {
-    color: #ff4757 !important;
+    color: var(--brand-danger) !important;
 }
 
 /* Hero Section */
@@ -69,12 +60,12 @@ body {
 .hero-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, var(--card-bg), var(--dark-bg));
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-primary));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 4rem;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
 }
 
 .hero-image {
@@ -103,18 +94,18 @@ body {
 }
 
 .status-tag.is-open {
-    background: var(--success);
+    background: var(--brand-success);
     color: white;
 }
 
 .status-tag.is-closed {
-    background: var(--danger);
+    background: var(--brand-danger);
     color: white;
 }
 
 .verified-badge {
-    background: var(--gold-solid);
-    color: var(--dark-bg);
+    background: var(--brand-accent);
+    color: #1a1a1a;
 }
 
 .hero-info-overlay {
@@ -141,7 +132,7 @@ body {
 
 .category-tag {
     background: rgba(212, 175, 55, 0.2);
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -162,7 +153,7 @@ body {
 }
 
 .stat-item i {
-    color: var(--gold-solid);
+    color: var(--brand-accent);
 }
 
 /* Quick Actions */
@@ -171,9 +162,10 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     padding: 15px;
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     margin: 15px;
     border-radius: 15px;
+    border: 1px solid var(--border-color);
 }
 
 .action-btn {
@@ -182,22 +174,23 @@ body {
     align-items: center;
     gap: 5px;
     padding: 12px;
-    background: var(--dark-bg);
+    background: var(--bg-tertiary);
     border-radius: 10px;
     text-decoration: none;
     color: var(--text-primary);
     border: none;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all var(--transition-fast);
 }
 
 .action-btn:hover {
     background: rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
 }
 
 .action-btn i {
     font-size: 1.3rem;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
 }
 
 .action-btn span {
@@ -215,26 +208,26 @@ body {
     gap: 15px;
     padding: 15px;
     margin: 0 15px 15px;
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     border-radius: 15px;
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    border: 1px solid var(--border-gold);
 }
 
 .owner-avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: var(--gold-solid);
+    background: var(--brand-accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--dark-bg);
+    color: #1a1a1a;
     font-size: 1.5rem;
 }
 
 .owner-info h4 {
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     margin-bottom: 3px;
 }
 
@@ -242,6 +235,7 @@ body {
     font-size: 1rem;
     color: var(--text-primary);
     margin-bottom: 2px;
+    font-weight: 600;
 }
 
 .owner-info small {
@@ -257,11 +251,12 @@ body {
 
 .section-title {
     font-size: 1.1rem;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 8px;
+    font-weight: 700;
 }
 
 .about-text {
@@ -272,9 +267,10 @@ body {
 
 /* Working Hours */
 .working-hours-card {
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     border-radius: 12px;
     padding: 15px;
+    border: 1px solid var(--border-color);
 }
 
 .hours-row {
@@ -286,11 +282,11 @@ body {
 }
 
 .hours-row:not(:last-child) {
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .hours-row i {
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     width: 20px;
 }
 
@@ -306,8 +302,9 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     border-radius: 10px;
+    border: 1px solid var(--border-color);
 }
 
 .service-name {
@@ -315,14 +312,15 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
+    color: var(--text-primary);
 }
 
 .service-name i {
-    color: var(--gold-solid);
+    color: var(--brand-accent);
 }
 
 .service-price {
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     font-weight: 600;
 }
 
@@ -344,7 +342,7 @@ body {
 }
 
 .gallery-slider::-webkit-scrollbar-thumb {
-    background: var(--gold-solid);
+    background: var(--brand-accent);
     border-radius: 3px;
 }
 
@@ -359,22 +357,23 @@ body {
 .gallery-placeholder {
     width: 100%;
     padding: 40px;
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     border-radius: 10px;
     text-align: center;
     color: var(--text-secondary);
+    border: 1px solid var(--border-color);
 }
 
 .gallery-placeholder i {
     font-size: 3rem;
     margin-bottom: 10px;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
 }
 
 .scroll-hint {
     text-align: center;
     font-size: 0.75rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     margin-top: 8px;
 }
 
@@ -392,11 +391,12 @@ body {
     border-radius: 10px;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: all 0.3s;
+    transition: all var(--transition-fast);
 }
 
 .cert-img:hover {
-    border-color: var(--gold-solid);
+    border-color: var(--brand-accent);
+    transform: scale(1.02);
 }
 
 /* Reviews */
@@ -408,9 +408,10 @@ body {
 }
 
 .review-card {
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     padding: 15px;
     border-radius: 12px;
+    border: 1px solid var(--border-color);
 }
 
 .review-header {
@@ -424,16 +425,18 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--gold-solid);
+    background: var(--brand-accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--dark-bg);
+    color: #1a1a1a;
+    font-weight: 700;
 }
 
 .review-info strong {
     display: block;
     margin-bottom: 3px;
+    color: var(--text-primary);
 }
 
 .review-text {
@@ -445,16 +448,21 @@ body {
 .add-review-btn {
     width: 100%;
     padding: 12px;
-    background: var(--card-bg);
-    border: 2px dashed var(--gold-solid);
+    background: var(--bg-secondary);
+    border: 2px dashed var(--brand-accent);
     border-radius: 10px;
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     font-size: 0.9rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    transition: all var(--transition-fast);
+}
+
+.add-review-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
 }
 
 /* Floating Booking Button */
@@ -463,8 +471,8 @@ body {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--gold-solid);
-    color: var(--dark-bg);
+    background: var(--brand-accent);
+    color: #1a1a1a;
     border: none;
     padding: 15px 40px;
     border-radius: 50px;
@@ -476,6 +484,12 @@ body {
     box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
     cursor: pointer;
     z-index: 99;
+    transition: all var(--transition-fast);
+}
+
+.floating-booking-btn:hover {
+    transform: translateX(-50%) translateY(-3px);
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
 }
 
 /* Modal */
@@ -493,16 +507,21 @@ body {
     padding: 20px;
 }
 
+.modal-overlay.active {
+    display: flex;
+}
+
 .modal-content {
-    background: var(--card-bg);
+    background: var(--bg-secondary);
     border-radius: 15px;
     padding: 25px;
     width: 100%;
     max-width: 400px;
+    border: 1px solid var(--border-gold);
 }
 
 .modal-content h3 {
-    color: var(--gold-solid);
+    color: var(--brand-accent);
     margin-bottom: 20px;
     text-align: center;
 }
@@ -510,13 +529,18 @@ body {
 .modal-content textarea {
     width: 100%;
     padding: 12px;
-    background: var(--dark-bg);
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-gold);
     border-radius: 10px;
     color: var(--text-primary);
     font-family: inherit;
     resize: vertical;
     margin-bottom: 15px;
+    outline: none;
+}
+
+.modal-content textarea:focus {
+    border-color: var(--brand-accent);
 }
 
 .modal-actions {
@@ -531,31 +555,36 @@ body {
     border-radius: 10px;
     font-size: 0.95rem;
     cursor: pointer;
+    transition: all var(--transition-fast);
 }
 
 .btn-cancel {
-    background: var(--dark-bg);
+    background: var(--bg-tertiary);
     color: var(--text-secondary);
+}
+
+.btn-cancel:hover {
+    background: var(--bg-accent);
 }
 
 .btn-submit {
-    background: var(--gold-solid);
-    color: var(--dark-bg);
+    background: var(--brand-accent);
+    color: #1a1a1a;
     font-weight: 600;
 }
 
-/* Empty State */
-.empty-state {
-    text-align: center;
-    color: var(--text-secondary);
-    padding: 20px;
-    font-size: 0.9rem;
+.btn-submit:hover {
+    background: var(--brand-accent-light);
 }
 
 /* Responsive */
 @media (max-width: 480px) {
     .quick-actions {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .certificates-container {
+        grid-template-columns: 1fr;
     }
 }
 

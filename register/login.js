@@ -1,26 +1,24 @@
-import { auth, db } from "../../core/firebase-init.js";
-import { 
-    signInWithEmailAndPassword,    
-    sendPasswordResetEmail, 
-    GoogleAuthProvider, 
+import { auth, db } from "../core/firebase-init.js";
+import {
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    GoogleAuthProvider,
     signInWithPopup,
     RecaptchaVerifier,
     signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { showNotification, showOtpModal } from "../../auth/js/notifications.js";
+import { showNotification, showOtpModal } from "../auth/js/notifications.js";
 
 const loginForm = document.getElementById('loginForm');
 const googleBtn = document.getElementById('googleBtn');
 const submitBtn = document.getElementById('mainSubmitBtn');
 const forgotModal = document.getElementById('forgotModal');
 const backToHomeBtn = document.getElementById('backToHomeBtn');
-
 const passwordGroup = document.getElementById('passwordGroup');
 const loginEmailInput = document.getElementById('loginEmail');
 const loginPasswordInput = document.getElementById('loginPassword');
 
-// دالة معالجة وتنسيق رقم الهاتف المغربي وتحويله إلى الصيغة الدولية المعتمدة (+212)
 function formatMoroccanPhoneNumber(phone) {
     let cleaned = phone.replace(/\s+/g, '');
     if (cleaned.startsWith('06') || cleaned.startsWith('07')) {
@@ -29,7 +27,6 @@ function formatMoroccanPhoneNumber(phone) {
     return cleaned;
 }
 
-// دالة فحص وجود الحساب في قاعدة بيانات Firestore لمنع الاختراقات العشوائية واستدعاء الخاطئ للـ OTP
 async function checkUserAccountExists(identifier) {
     try {
         const usersRef = collection(db, "users");
@@ -50,7 +47,6 @@ loginForm.onsubmit = async (e) => {
     e.preventDefault();
     const identifier = loginEmailInput.value.trim();
 
-    // فحص الخطوة الحالية: إذا كانت الحقول غير مخفية، إذن المستخدم يقوم بإدخال كلمة المرور للبريد
     if (!passwordGroup.classList.contains('hidden-step')) {
         const password = loginPasswordInput.value;
         if (!password) {
@@ -72,7 +68,6 @@ loginForm.onsubmit = async (e) => {
         return;
     }
 
-    // --- الخطوة الأولى: التحقق الأولي الآمن من نوع وهوية المدخل ---
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق من الحساب...';
 
@@ -86,7 +81,6 @@ loginForm.onsubmit = async (e) => {
             return;
         }
 
-        // إظهار حقل كلمة المرور بشكل متوافق وسلس باستخدام فئة الحركة المعتمدة لديك
         loginEmailInput.disabled = true;
         passwordGroup.classList.remove('hidden-step');
         passwordGroup.classList.add('show-step-animation');
@@ -147,8 +141,6 @@ async function routeUserByRole(uid) {
     const userDoc = await getDoc(doc(db, "users", uid));
     if (userDoc.exists()) {
         const role = userDoc.data().role;
-        
-        // تم استبدال رتبة vendor بـ store لتوجيه ملفات البروفايل بشكل متوافق
         const routes = {
             'salon': "../profiles/profile-salon.html",
             'customer': "../profiles/profile-customer.html",
@@ -161,7 +153,6 @@ async function routeUserByRole(uid) {
     }
 }
 
-// التحكم بنافذة استعادة كلمة المرور المحدثة والمنظفة بالكامل
 document.getElementById('forgotPassBtn').onclick = () => {
     forgotModal.classList.remove('hidden-step');
     forgotModal.classList.add('show-step-animation');
@@ -174,17 +165,19 @@ const hideModal = () => {
 
 document.getElementById('closeModal').onclick = hideModal;
 
+document.getElementById('cancelResetBtn').onclick = hideModal;
+
 document.getElementById('sendResetBtn').onclick = async () => {
     const identifier = document.getElementById('resetIdentifier').value.trim();
     if (!identifier) return showNotification("يرجى إدخال البريد الإلكتروني الخاص بك", "error");
-
+    
     try {
         if (identifier.includes('@')) {
             await sendPasswordResetEmail(auth, identifier);
             showNotification("تم إرسال رابط التعيين الفوري لبريدك الإلكتروني", "success");
             hideModal();
         } else {
-            showNotification("الحسابات المرتبطة بأرقام الهواتف تعتمد على الـ OTP فقط ولا تمتلك كلمات مرور تقليدية", "warning");
+            showNotification("الحسابات المرتبطة بأرقام الهواتف تعتمد على الـ OTP فقط", "warning");
         }
     } catch (error) {
         showNotification("لم نتمكن من العثور على الحساب أو معالجة الطلب", "error");
@@ -196,7 +189,7 @@ if (googleBtn) {
         e.stopPropagation();
         googleBtn.disabled = true;
         googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الاتصال...';
-
+        
         try {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
@@ -217,11 +210,10 @@ if (googleBtn) {
     };
 }
 
-// دالة مخصصة لِحقن الحسابات الجديدة القادمة من Google مع تعديل الـ data-role إلى store
 const showRegisterOptionsModalForGoogle = (firebaseUser) => {
     const oldOverlay = document.getElementById('registerOptionsModalOverlay');
     if (oldOverlay) oldOverlay.remove();
-
+    
     const modalOverlay = document.createElement('div');
     modalOverlay.id = 'registerOptionsModalOverlay';
     modalOverlay.className = 'modal-overlay show-step-animation';
@@ -285,11 +277,10 @@ const showRegisterOptionsModalForGoogle = (firebaseUser) => {
     });
 };
 
-// توليد النافذة المنبثقة العادية للتسجيل التقليدي بـ data-role="store"
 const showRegisterOptionsModal = () => {
     const oldOverlay = document.getElementById('registerOptionsModalOverlay');
     if (oldOverlay) oldOverlay.remove();
-
+    
     const modalOverlay = document.createElement('div');
     modalOverlay.id = 'registerOptionsModalOverlay';
     modalOverlay.className = 'modal-overlay show-step-animation';
@@ -304,7 +295,7 @@ const showRegisterOptionsModal = () => {
         <div class="suggestion-grid">
             <button type="button" class="suggest-link select-role-action-btn" data-role="customer">
                 <i class="fas fa-user"></i>
-                <span>حساب  عميل</span>
+                <span>حساب عميل</span>
             </button>
             <button type="button" class="suggest-link select-role-action-btn" data-role="salon">
                 <i class="fas fa-scissors"></i>
@@ -350,3 +341,4 @@ if (backToHomeBtn) {
         window.location.href = '../index.html';
     };
 }
+

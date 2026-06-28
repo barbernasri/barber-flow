@@ -1,110 +1,123 @@
 /**
- * الملف الرئيسي للصفحة الرئيسية
- * يستدعي الوحدات المنفصلة لجلب وعرض كل نوع من المحتوى
+ * BarberFlow Pro - المنطق الرئيسي للصفحة الرئيسية
  * المسار: home/js/index.js
  */
-import { renderOfferCards } from './components/card-offer.js';
-import { renderStoreCards } from './components/card-stor.js';
-import { renderConciergeCards } from './components/card-Concierge.js';
+
 import { db } from "../../core/firebase-init.js";
-import { collection, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { createSalonCard } from "./card.js";
+import { 
+    collection, 
+    getDocs, 
+    query, 
+    where, 
+    limit,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { createSalonCard } from "../components/js/card-salon.js";
+import { createStoreCard } from "../components/js/card-store.js";
+import { createOfferCard } from "../components/js/card-offer.js";
+import { createConciergeCard } from "../components/js/card-Concierge.js";
+import { showNotification } from "../../auth/js/notifications.js";
 
-console.log('[Index] 🏠 جاري تحميل الصفحة الرئيسية...');
+// ============================================
+// المتغيرات العامة
+// ============================================
+let allSalons = [];
+let allStores = [];
+let currentSalonFilter = 'all';
+let currentStoreFilter = 'all';
 
-// ============================
-// 1. تحميل العروض
-// ============================
-async function loadOffers() {
-    const container = document.getElementById('offersContainer');
-    if (!container) return;
-    
-    try {
-        console.log('[Index] 📦 جاري جلب العروض...');
-        const html = await renderOfferCards();
-        container.innerHTML = html;
-        console.log('[Index] ✅ تم تحميل العروض');
-    } catch (error) {
-        console.error('[Index] ❌ خطأ في تحميل العروض:', error);
-        container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">تعذر تحميل العروض حالياً</p>';
+// ============================================
+// بيانات العروض الثابتة (يمكن نقلها لـ Firestore لاحقاً)
+// ============================================
+const OFFERS_DATA = [
+    {
+        id: 1,
+        discount: "خصم 20%",
+        title: "أول حجز لك معنا",
+        description: "احجز موعدك الأول في أي صالون VIP واحصل على خصم فوري ومباشر.",
+        ctaText: "احجز الآن",
+        ctaLink: "home/explore-salon.html",
+        icon: "fa-cut"
+    },
+    {
+        id: 2,
+        discount: "شحن مجاني",
+        title: "باقة العناية المتكاملة",
+        description: "اطلب منتجات بقيمة 300 درهم أو أكثر واحصل على توصيل مجاني.",
+        ctaText: "تصفح المتجر",
+        ctaLink: "home/explore-store.html",
+        icon: "fa-truck"
+    },
+    {
+        id: 3,
+        discount: "خصم 35%",
+        title: "باقة العروس",
+        description: "خصومات حصرية تصل إلى 35% على خدمات تصفيف الشعر والمكياج المتكامل.",
+        ctaText: "اكتشفي العروض",
+        ctaLink: "home/explore-salon.html?type=women",
+        icon: "fa-gem"
+    },
+    {
+        id: 4,
+        discount: "هدية مجانية",
+        title: "كوبون متجدد",
+        description: "احصل على مستحضر مجاني للعناية بالبشرة عند حجز خدمات تزيد عن 200 درهم.",
+        ctaText: "استخدم الكوبون",
+        ctaLink: "home/explore-store.html?cat=cosmetics",
+        icon: "fa-gift"
     }
-}
+];
 
-// ============================
-// 2. تحميل الصالونات المميزة
-// ============================
-async function loadFeaturedSalons() {
-    const container = document.getElementById('featuredSalonsContainer');
-    if (!container) return;
-    
-    try {
-        console.log('[Index] 📦 جاري جلب الصالونات المميزة...');
-        const q = query(collection(db, 'salons'), limit(4));
-        const snapshot = await getDocs(q);
-        
-        container.innerHTML = '';
-        
-        if (snapshot.empty) {
-            container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">لا توجد صالونات مسجلة بعد</p>';
-            return;
-        }
-        
-        for (const docSnap of snapshot.docs) {
-            const salon = docSnap.data();
-            const card = await createSalonCard(salon, docSnap.id);
-            if (card) container.appendChild(card);
-        }
-        
-        console.log('[Index] ✅ تم تحميل الصالونات');
-    } catch (error) {
-        console.error('[Index] ❌ خطأ في تحميل الصالونات:', error);
-        container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">تعذر تحميل الصالونات</p>';
+// ============================================
+// بيانات الخدمات المنزلية
+// ============================================
+const CONCIERGE_DATA = [
+    {
+        id: 1,
+        icon: "fa-spa",
+        title: "خدمة تصفيف ومكياج للمناسبات",
+        description: "نصلك أينما كنتِ بالمنزل أو الفندق بأرقى خدمات التجميل.",
+        ctaText: "طلب الخدمة المنزلية",
+        ctaLink: "home/home-services.html?id=1"
+    },
+    {
+        id: 2,
+        icon: "fa-male",
+        title: "جلسات مساج وعناية متكاملة للرجال",
+        description: "معدات واحترافية متكاملة في بيتك لتجربة استرخاء فاخرة.",
+        ctaText: "طلب الخدمة المنزلية",
+        ctaLink: "home/home-services.html?id=2"
+    },
+    {
+        id: 3,
+        icon: "fa-child",
+        title: "حلاقة أطفال مريحة في المنزل",
+        description: "نوفر تجربة حلاقة آمنة وممتعة لأطفالك في بيئة مألوفة.",
+        ctaText: "طلب الخدمة المنزلية",
+        ctaLink: "home/home-services.html?id=3"
     }
-}
+];
 
-// ============================
-// 3. تحميل المنتجات المميزة
-// ============================
-async function loadFeaturedProducts() {
-    const container = document.getElementById('featuredProductsContainer');
-    if (!container) return;
+// ============================================
+// تهيئة الصفحة عند تحميل DOM
+// ============================================
+document.addEventListener('DOMContentLoaded', async () => {
+    initializeHeaderScroll();
+    initializeSearch();
+    initializeFilters();
     
-    try {
-        console.log('[Index] 📦 جاري جلب المنتجات...');
-        const html = await renderStoreCards();
-        container.innerHTML = html;
-        console.log('[Index] ✅ تم تحميل المنتجات');
-    } catch (error) {
-        console.error('[Index] ❌ خطأ في تحميل المنتجات:', error);
-        container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">تعذر تحميل المنتجات</p>';
-    }
-}
-
-// ============================
-// 4. تحميل الخدمات المنزلية
-// ============================
-async function loadConciergeServices() {
-    const container = document.getElementById('conciergeContainer');
-    if (!container) return;
-    
-    try {
-        console.log('[Index] 📦 جاري جلب الخدمات المنزلية...');
-        const html = await renderConciergeCards();
-        container.innerHTML = html;
-        console.log('[Index] ✅ تم تحميل الخدمات المنزلية');
-    } catch (error) {
-        console.error('[Index] ❌ خطأ في تحميل الخدمات:', error);
-        container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">تعذر تحميل الخدمات</p>';
-    }
-}
-
-// ============================
-// التشغيل عند جاهزية الصفحة
-// ============================
-document.addEventListener('DOMContentLoaded', () => {
-    loadOffers();
-    loadFeaturedSalons();
-    loadFeaturedProducts();
-    loadConciergeServices();
+    // تحميل البيانات بالتوازي
+    await Promise.all([
+        loadSalons(),
+        loadStores(),
+        renderOffers(),
+        renderConciergeServices(),
+        loadStatistics()
+    ]);
 });
 
+// ============================================
+// تأثير التمرير على الهيدر
+// ============================================
+function initializeHeaderScroll() {
+    const header = document.getElementById('

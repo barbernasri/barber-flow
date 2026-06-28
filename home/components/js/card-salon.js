@@ -5,61 +5,78 @@
 import { db } from "../../../core/firebase-init.js";
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-let cachedTemplate = null;
+// ✅ Template HTML مدمج مباشرة (لا حاجة لملف منفصل)
+const SALON_CARD_TEMPLATE = `
+<div class="salon-card">
+    <div class="card-image-container">
+        <div class="salon-img-placeholder">
+            <i class="fas fa-store"></i>
+        </div>
+        <img class="salon-img" alt="صورة الصالون" style="display:none;" />
+        <button class="heart-btn" aria-label="إضافة للمفضلة">
+            <i class="heart-icon far fa-heart"></i>
+        </button>
+        <span class="status-badge open">مفتوح الآن</span>
+    </div>
+    <div class="card-content">
+        <h3 class="salon-name">اسم الصالون</h3>
+        <div class="card-info">
+            <div class="info-item">
+                <i class="fas fa-star"></i>
+                <span class="rating-value">5.0</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="location-val">الموقع</span>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="price-info">
+                <span class="label">يبدأ من</span>
+                <span class="amount">0 DH</span>
+            </div>
+            <a class="view-details-btn" href="#">التفاصيل</a>
+        </div>
+    </div>
+</div>
+`;
 
-async function getTemplate() {
-    if (cachedTemplate) return cachedTemplate;
-    try {
-        const response = await fetch('/home/components/card-salon.html');
-        if (!response.ok) throw new Error("Template file not found");
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const docParsed = parser.parseFromString(htmlText, 'text/html');
-        cachedTemplate = docParsed.querySelector('.salon-card');
-        return cachedTemplate;
-    } catch (error) {
-        console.error("Technical Error: Failed to fetch component template:", error);
-        return null;
-    }
-}
-
+/**
+إنشاء بطاقة صالون
+@param {Object} salon - بيانات الصالون
+@param {string} id - معرف الصالون
+@returns {HTMLElement|null}
+*/
 export async function createSalonCard(salon, id) {
-    console.log('[Card] إنشاء بطاقة للصالون:', {
-        id: id || '⚠️ UNDEFINED',
-        salonName: salon?.salonName
-    });
-
     const salonId = id || salon?.id;
+    
     if (!salonId) {
         console.error('[Card] ❌ المعرف (id) غير مُعرّف!');
         return null;
     }
 
-    const template = await getTemplate();
-    if (!template) return null;
-
-    const card = template.cloneNode(true);
+    // إنشاء العنصر من الـ template
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(SALON_CARD_TEMPLATE, 'text/html');
+    const card = doc.querySelector('.salon-card');
 
     try {
-        // ✅ صورة الغلاف - مع أيقونة بديلة
+        // صورة الغلاف - مع أيقونة بديلة
         const img = card.querySelector('.salon-img');
         const placeholder = card.querySelector('.salon-img-placeholder');
         
         if (img && placeholder) {
             if (salon.coverImage) {
-                // إذا كانت هناك صورة، اعرضها وأخفِ الأيقونة
                 img.src = salon.coverImage;
                 img.style.display = 'block';
                 placeholder.style.display = 'none';
                 
                 img.onerror = () => {
-                    // إذا فشل تحميل الصورة، اعرض الأيقونة
                     img.style.display = 'none';
                     placeholder.style.display = 'flex';
                     img.onerror = null;
                 };
             } else {
-                // لا توجد صورة، اعرض الأيقونة
                 img.style.display = 'none';
                 placeholder.style.display = 'flex';
             }
@@ -102,7 +119,7 @@ export async function createSalonCard(salon, id) {
             statusBadge.className = `status-badge ${isOpen ? 'open' : 'closed'}`;
         }
 
-        // ✅ زر الإعجاب
+        // زر الإعجاب
         const heartBtn = card.querySelector('.heart-btn');
         const heartIcon = heartBtn?.querySelector('.heart-icon');
         let isLiked = Boolean(salon.isLiked);
@@ -134,13 +151,11 @@ export async function createSalonCard(salon, id) {
             };
         }
 
-        // ✅ زر عرض التفاصيل - رابط مباشر مع ID
+        // زر عرض التفاصيل - رابط مباشر مع مسار نسبي
         const viewDetailsBtn = card.querySelector('.view-details-btn');
         if (viewDetailsBtn) {
-            // تعيين الرابط مباشرة في HTML (بدون JavaScript!)
             viewDetailsBtn.href = `details-salon.html?id=${salonId}`;
             
-            // منع انتشار الحدث للبطاقة بأكملها
             viewDetailsBtn.onclick = (e) => {
                 e.stopPropagation();
             };
@@ -153,6 +168,9 @@ export async function createSalonCard(salon, id) {
     }
 }
 
+/**
+التحقق من حالة الصالون (مفتوح/مغلق)
+*/
 function isSalonOpen(hours) {
     if (!hours?.open || !hours?.close) return true;
     const now = new Date();
