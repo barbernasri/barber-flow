@@ -3,90 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات الصالون | BarberFlow-Pro</title>
+    <meta name="description" content="إعداد بيانات الصالون">
+    <title>بيانات الصالون | BarberFlow Pro</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
     <link rel="stylesheet" href="css/add-style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="logo-icon"><i class="fas fa-id-card"></i></div>
-            <h1 class="title">المعلومات الأساسية</h1>
-            <p class="subtitle">أدخل تفاصيل صالونك لتفعيل نظام الحجوزات</p>
-        </header>
-
-        <form id="addSalonForm">
-            <div class="section-card">
-                <div class="input-group">
-                    <label>اسم الصالون</label>
-                    <input type="text" id="salonName" placeholder="مثلاً: صالون الأناقة" required>
-                </div>
-                <div class="input-group">
-                    <label>المدينة / الحي</label>
-                    <input type="text" id="salonLocation" placeholder="طنجة، كازاباراتا" required>
-                </div>
-                <div class="input-group">
-                    <label>رقم الهاتف</label>
-                    <input type="tel" id="salonPhone" placeholder="06..." required>
-                </div>
-                <div class="input-group">
-                    <label>نوع الصالون</label>
-                    <select id="salonType" required>
-                        <option value="" disabled selected>اختر نوع الصالون...</option>
-                        <option value="رجالي">صالون رجالي (حلاقة وعناية)</option>
-                        <option value="نسائي">صالون نسائي (مركز تجميل)</option>
-                        <option value="يونيسكس">صالون مشترك (يونيسكس)</option>
-                        <option value="متنقل">صالون متنقل (خدمات منزلية وفندقية)</option>
-                        <option value="سبا">مركز سبا واسترخاء (Spa & Wellness)</option>
-                        <option value="أطفال">صالون حلاقة للأطفال</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-concierge-bell"></i> الخدمات والأسعار (خدمة واحدة على الأقل)</label>
-                <div id="servicesList">
-                    <div class="input-group dynamic-item" style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; margin-bottom: 10px;">
-                        <input type="text" class="service-name" placeholder="اسم الخدمة (مثال: حلاقة شعر)" required>
-                        <input type="number" class="service-price" placeholder="السعر (DH)" required>
-                        <span style="width: 40px;"></span>
-                    </div>
-                </div>
-                <button type="button" id="addServiceBtn" class="add-btn">
-                    <i class="fas fa-plus"></i> إضافة خدمة أخرى
-                </button>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-calendar-check"></i> طريقة تأكيد الحجوزات</label>
-                <select id="bookingType" required>
-                    <option value="تلقائي">تأكيد فوري وتلقائي (قوة السرعة)</option>
-                    <option value="يدوي">موافقة يدوية من طرفي (تحكم كامل)</option>
-                </select>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-clock"></i> أيام وأوقات العمل</label>
-                <div class="days-grid" id="daysSelector"></div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                    <div class="input-group">
-                        <label>من</label>
-                        <input type="time" id="openTime" value="09:00" required>
-                    </div>
-                    <div class="input-group">
-                        <label>إلى</label>
-                        <input type="time" id="closeTime" value="21:00" required>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" id="submitBtn" class="submit-btn">حفظ ومتابعة الإعداد</button>
-            <a href="#" id="cancelLink" class="cancel-link">إلغاء وحذف الحساب</a>
-        </form>
-    </div>
+    <!-- حاوية الإشعارات -->
     <div id="notification-container"></div>
 
+    <div class="onboarding-page">
+        <div class="onboarding-container">
+            <!-- الهيدر -->
+            <div class="page-header">
+                <button type="button" class="back-btn" id="backBtn">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h1>المعلومات الأساسية</h1>
+                <div class="step-indicator">
+                    <span class="step active">1</span>
+                    <span class="step">2</span>
+                </div>
+            </div>
+
+            <p class="page-subtitle">أدخل تفاصيل صالونك لتفعيل نظام الحجوزات</p>
+
+            <!-- نموذج الصالون -->
+            <form id="addSalonForm">
+                <!-- المعلومات الأساسية -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        المعلومات الأساسية
+                    </h2>
+
+                    <div class="input-group">
+                        <label for="salonName">اسم الصالون</label>
+                        <input 
+                            type="text" 
+                            id="salonName" 
+                            placeholder="مثال: صالون الأناقة العصري"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="salonLocation">المدينة / الحي</label>
+                        <input 
+                            type="text" 
+                            id="salonLocation" 
+                            placeholder="مثال: الدار البيضاء، المعاريف"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="salonPhone">رقم الهاتف</label>
+                        <input 
+                            type="tel" 
+                            id="salonPhone" 
+                            placeholder="06XXXXXXXX"
+                            pattern="[0-9]{10}"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="salonType">نوع الصالون</label>
+                        <select id="salonType" required>
+                            <option value="">اختر نوع الصالون...</option>
+                            <option value="men">صالون رجالي (حلاقة وعناية)</option>
+                            <option value="women">صالون نسائي (مركز تجميل)</option>
+                            <option value="mixed">صالون مشترك (يونيسكس)</option>
+                            <option value="mobile">صالون متنقل (خدمات منزلية وفندقية)</option>
+                            <option value="spa">مركز سبا واسترخاء (Spa & Wellness)</option>
+                            <option value="kids">صالون حلاقة للأطفال</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- الخدمات والأسعار -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-cut"></i>
+                        الخدمات والأسعار
+                    </h2>
+                    <p class="section-desc">أضف خدمة واحدة على الأقل</p>
+
+                    <div id="servicesList"></div>
+
+                    <button type="button" class="add-btn" id="addServiceBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>إضافة خدمة أخرى</span>
+                    </button>
+                </div>
+
+                <!-- طريقة تأكيد الحجوزات -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-check"></i>
+                        طريقة تأكيد الحجوزات
+                    </h2>
+
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="bookingType" value="instant" checked>
+                            <span class="radio-label">
+                                <i class="fas fa-bolt"></i>
+                                تأكيد فوري وتلقائي (قوة السرعة)
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="bookingType" value="manual">
+                            <span class="radio-label">
+                                <i class="fas fa-hand-pointer"></i>
+                                موافقة يدوية من طرفي (تحكم كامل)
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- أيام وأوقات العمل -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-clock"></i>
+                        أيام وأوقات العمل
+                    </h2>
+
+                    <div class="days-selector" id="daysSelector"></div>
+
+                    <div class="time-group">
+                        <div class="input-group">
+                            <label for="openTime">من</label>
+                            <input type="time" id="openTime" value="09:00" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="closeTime">إلى</label>
+                            <input type="time" id="closeTime" value="21:00" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span>حفظ ومتابعة الإعداد</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+
+                    <button type="button" class="cancel-btn" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        <span>إلغاء وحذف الحساب</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- السكربتات -->
     <script type="module" src="js/add-salon.js"></script>
 </body>
 </html>
+

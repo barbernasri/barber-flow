@@ -3,77 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تسجيل الدخول إلى BarberFlow Pro">
     <title>تسجيل الدخول | BarberFlow Pro</title>
+    
+    <!--تغيير الثيم دون استدعاء الشريط -->
+<script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+</script>
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
     <link rel="stylesheet" href="register.css">
 </head>
 <body>
     <!-- حاوية الإشعارات -->
     <div id="notification-container"></div>
 
-    <div class="auth-container">
-        <h2>مرحباً بعودتك</h2>
-        <p class="step-desc">سجل دخولك لإدارة حسابك في BarberFlow Pro</p>
-
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="loginEmail">البريد الإلكتروني أو رقم الهاتف</label>
-                <input type="text" id="loginEmail" placeholder="example@email.com أو 06XXXXXXXX" required>
+    <div class="auth-page">
+        <div class="auth-container">
+            <!-- الهيدر -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-cut"></i>
+                    <span>BarberFlow <strong>Pro</strong></span>
+                </div>
+                <h2>مرحباً بعودتك</h2>
+                <p>سجل دخولك لإدارة حسابك في BarberFlow Pro</p>
             </div>
 
-            <div class="input-group hidden-step" id="passwordGroup">
-                <label for="loginPassword">كلمة المرور</label>
-                <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور">
-                <a href="#" id="forgotPassBtn" style="display: block; margin-top: 8px; font-size: 0.85rem; color: var(--primary-gold); text-decoration: none;">نسيت كلمة المرور؟</a>
+            <!-- نموذج تسجيل الدخول -->
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="loginEmail">البريد الإلكتروني أو رقم الهاتف</label>
+                    <input 
+                        type="text" 
+                        id="loginEmail" 
+                        placeholder="example@email.com أو 06XXXXXXXX"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="input-group hidden-step" id="passwordGroup">
+                    <label for="loginPassword">كلمة المرور</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        placeholder="أدخل كلمة المرور"
+                        autocomplete="current-password"
+                    >
+                    <a href="#" id="forgotPassBtn" class="forgot-link">
+                        نسيت كلمة المرور؟
+                    </a>
+                </div>
+
+                <!-- Recaptcha -->
+                <div id="recaptcha-container"></div>
+
+                <button type="submit" class="auth-btn" id="mainSubmitBtn">
+                    <span>متابعة</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>أو الدخول السريع</span>
             </div>
 
-            <div id="recaptcha-container"></div>
-
-            <button type="submit" class="auth-btn" id="mainSubmitBtn">
-                <span>متابعة</span>
-                <i class="fas fa-arrow-left"></i>
+            <button type="button" class="google-btn" id="googleBtn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                <span>Google</span>
             </button>
-        </form>
 
-        <div class="divider">
-            <span>أو الدخول السريع</span>
-        </div>
+            <div class="auth-footer">
+                <p>ليس لديك حساب معنا؟ <a href="register.html" id="showRegisterOptions">إنشاء حساب جديد</a></p>
+            </div>
 
-        <button type="button" class="google-btn" id="googleBtn">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-            <span>Google</span>
-        </button>
-
-        <div class="auth-footer">
-            <p>ليس لديك حساب معنا؟ <a href="register.html" id="showRegisterOptions">إنشاء حساب جديد</a></p>
-        </div>
-
-        <div class="back-home-container">
-            <button type="button" class="outline-btn" id="backToHomeBtn">
-                <i class="fas fa-home"></i>
-                <span>العودة للرئيسية</span>
-            </button>
+            <div class="back-home-container">
+                <button type="button" class="outline-btn" id="backToHomeBtn">
+                    <i class="fas fa-home"></i>
+                    <span>العودة للرئيسية</span>
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- نافذة استعادة كلمة المرور -->
     <div id="forgotModal" class="modal-overlay hidden-step">
-        <div class="auth-container" style="max-width: 400px; position: relative;">
-            <button type="button" id="closeModal" class="back-link-btn" style="position: absolute; top: 15px; left: 15px; width: auto; margin: 0;">&times;</button>
+        <div class="modal-content">
             <h2>استعادة الحساب</h2>
             <p class="step-desc">أدخل بريدك الإلكتروني لإرسال رابط التعيين</p>
             
             <div class="input-group">
-                <input type="email" id="resetIdentifier" placeholder="example@email.com">
+                <input 
+                    type="email" 
+                    id="resetIdentifier" 
+                    placeholder="example@email.com"
+                >
             </div>
 
             <button type="button" class="auth-btn" id="sendResetBtn">
                 <span>إرسال رابط التعيين</span>
             </button>
 
-            <button type="button" class="back-link-btn" id="cancelResetBtn">إلغاء والعودة</button>
+            <button type="button" class="back-link-btn" id="closeModal">
+                إلغاء والعودة
+            </button>
         </div>
     </div>
 
+    <!-- السكربتات -->
     <script type="module" src="login.js"></script>
 </body>
 </html>

@@ -3,77 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعداد الهوية | BarberFlow-Pro</title>
-    <link rel="stylesheet" href="css/setup-style.css">
-    <link rel="stylesheet" href="../auth/css/notifications.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body style="visibility: visible !important; pointer-events: auto !important; overflow-x: hidden;">
+    <meta name="description" content="إعداد الهوية البصرية للصالون">
+    <title>إعداد الهوية | BarberFlow Pro</title>
     
-    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 100000; pointer-events: none;"></div>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
+    <link rel="stylesheet" href="css/add-style.css">
+</head>
+<body>
+    <!-- حاوية الإشعارات -->
+    <div id="notification-container"></div>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="title">الخطوة الأخيرة 🪄</h1>
-            <p class="subtitle">دعنا نجعل صالونك يبدو احترافياً أمام الزبائن</p>
-        </header>
+    <div class="onboarding-page">
+        <div class="onboarding-container">
+            <!-- الهيدر -->
+            <div class="page-header">
+                <div class="step-indicator">
+                    <span class="step">1</span>
+                    <span class="step active">2</span>
+                </div>
+                <h1>الخطوة الأخيرة 🪄</h1>
+                <div style="width: 40px;"></div>
+            </div>
 
-        <form id="setupSalonForm" autocomplete="off">
-            
-            <label class="section-label">صورة الواجهة الرئيسية</label>
-            <div class="section-card">
-                <div class="cover-uploader" id="coverUploader" style="position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 180px; border: 2px dashed #444; border-radius: 12px; overflow: hidden;">
-                    <div id="placeholderIcon" class="placeholder-icon">
-                        <i class="fas fa-camera-retro"></i>
+            <p class="page-subtitle">دعنا نجعل صالونك يبدو احترافياً أمام الزبائن</p>
+
+            <!-- نموذج الإعداد -->
+            <form id="setupSalonForm">
+                <!-- صورة الواجهة -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-image"></i>
+                        صورة الواجهة الرئيسية
+                    </h2>
+                    
+                    <div class="cover-uploader" id="coverUploader">
+                        <img id="salonImg" style="display: none;" alt="صورة الصالون">
+                        <i class="fas fa-camera placeholder-icon" id="placeholderIcon"></i>
+                        <span class="uploader-label" id="coverUploaderLabel">اضغط لاختيار صورة مميزة للواجهة</span>
+                        <button type="button" class="delete-cover-btn" id="deleteCoverBtn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
                     </div>
-                    <img id="salonImg" src="" alt="preview" style="display: none; width:100%; height:100%; object-fit:cover;">
-                    <span class="inner-label" id="coverUploaderLabel">اضغط لاختيار صورة مميزة للواجهة</span>
-                    <button type="button" id="deleteCoverBtn" class="delete-img" style="position: absolute; top: 10px; left: 10px; background: red; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 100;">
-                        <i class="fas fa-times"></i>
+                </div>
+
+                <!-- نبذة عن الصالون -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        نبذة عن الصالون
+                    </h2>
+                    
+                    <div class="input-group">
+                        <label for="salonDescription">وصف مختصر</label>
+                        <textarea 
+                            id="salonDescription" 
+                            rows="4" 
+                            placeholder="اكتب نبذة مختصرة عن صالونك وخدماتك المميزة..."
+                            style="width: 100%; padding: 14px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-family: 'Cairo', sans-serif; font-size: 0.95rem; resize: vertical;"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- معرض الصور -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-images"></i>
+                        معرض الصور لصالونك
+                    </h2>
+                    
+                    <div class="photos-grid" id="galleryPreviewsContainer">
+                        <div class="add-photo-btn" id="addGalleryPhotoBtn">
+                            <i class="fas fa-plus-circle"></i>
+                            <span style="font-size: 0.8rem;">أضف صورة</span>
+                        </div>
+                    </div>
+                    <input type="file" id="galleryFileInput" accept="image/*" multiple style="display: none;">
+                </div>
+
+                <!-- الشهادات -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-certificate"></i>
+                        الدبلومات والشهادات المهنية
+                    </h2>
+                    
+                    <div class="input-group">
+                        <label for="certificateText">عنوان الشهادة (اختياري)</label>
+                        <input 
+                            type="text" 
+                            id="certificateText" 
+                            placeholder="مثال: شهادة حلاقة احترافية من أكاديمية XYZ"
+                        >
+                    </div>
+                    
+                    <div class="photos-grid" id="certPreviewsContainer">
+                        <div class="add-photo-btn" id="addCertPhotoBtn">
+                            <i class="fas fa-plus-circle"></i>
+                            <span style="font-size: 0.8rem;">أضف وثيقة</span>
+                        </div>
+                    </div>
+                    <input type="file" id="certFileInput" accept="image/*" multiple style="display: none;">
+                </div>
+
+                <!-- أزرار التحكم -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span>حفظ وإنشاء الملف الشخصي</span>
+                        <i class="fas fa-check"></i>
+                    </button>
+
+                    <button type="button" class="cancel-btn" id="skipBtn">
+                        <i class="fas fa-forward"></i>
+                        <span>تخطي هذه الخطوة مؤقتاً</span>
                     </button>
                 </div>
-                <input type="file" id="fileInput" accept="image/*" style="display: none !important;">
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-pen-nib"></i> عن الصالون</label>
-                <textarea id="salonDescription" rows="3" placeholder="تحدث عن خبرتك، أنواع الحلاقة، أو الأجواء داخل الصالون..."></textarea>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-th"></i> معرض الصور لصالونك</label>
-                <div class="gallery-grid" id="workPhotosGrid">
-                    <div class="add-photo-btn" id="addGalleryPhotoBtn" style="cursor: pointer;">
-                        <i class="fas fa-plus" style="font-size:1.5rem; color:var(--gold-primary);"></i>
-                    </div>
-                    <div id="galleryPreviewsContainer" style="display: contents;"></div>
-                </div>
-                <input type="file" id="galleryFileInput" accept="image/*" multiple hidden>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-award"></i> الدبلومات والشهادات المهنية</label>
-                <input type="text" id="certificateText" placeholder="مثال: شهادة الحلاقة العصرية والتجميل 2024">
-                
-                <div style="margin-top: 15px;">
-                    <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 8px;">إرفاق صور الشهادات الموثقة:</label>
-                    <div class="gallery-grid" id="certPhotosGrid">
-                        <div class="add-photo-btn" id="addCertPhotoBtn" style="cursor: pointer;">
-                            <i class="fas fa-camera" style="font-size:1.5rem; color:#888;"></i>
-                        </div>
-                        <div id="certPreviewsContainer" style="display: contents;"></div>
-                    </div>
-                    <input type="file" id="certFileInput" accept="image/*" multiple hidden>
-                </div>
-            </div>
-
-            <div style="margin-top: 30px;">
-                <button type="submit" id="submitBtn" class="primary-btn">حفظ وإنشاء الملف الشخصي</button>
-                <button type="button" id="skipBtn" class="outline-btn">تخطي هذه الخطوة مؤقتاً</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
+    <!-- السكربتات -->
     <script type="module" src="js/setup-salon.js"></script>
 </body>
 </html>
+

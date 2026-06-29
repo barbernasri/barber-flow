@@ -3,52 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="إكمال ملف الزبون الشخصي">
     <title>إكمال ملفي الشخصي | BarberFlow Pro</title>
-    <link rel="stylesheet" href="../../auth/css/notifications.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
     <link rel="stylesheet" href="css/add-style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
- <!--   <script type="module" src="../auth/js/router.js"></script>-->
-
 </head>
 <body>
+    <!-- حاوية الإشعارات -->
+    <div id="notification-container"></div>
+
     <div class="container">
-        <header class="header">
-            <div class="logo-icon">
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <h2>لنكمل ملفك الشخصي 👤</h2>
-            <p style="color: var(--text-muted); margin-top: 8px;">هذه التفاصيل تساعدنا في تقديم أفضل العروض المناسبة لك.</p>
-        </header>
+        <!-- الهيدر -->
+        <div class="header">
+            <i class="fas fa-user logo-icon"></i>
+            <h1 class="title">لنكمل ملفك الشخصي 👤</h1>
+            <p class="subtitle">هذه التفاصيل تساعدنا في تقديم أفضل العروض المناسبة لك</p>
+        </div>
 
-        <form id="customerSetupForm" class="section-card">
-            <span class="section-label">المعلومات الأساسية</span>
+        <!-- نموذج الزبون -->
+        <form id="customerSetupForm">
+            <!-- المعلومات الأساسية -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    المعلومات الأساسية
+                </h2>
 
-            <div class="photo-upload-section" style="text-align: center; margin-bottom: 25px;">
-                <div class="image-preview" id="photoPreview" style="width: 110px; height: 110px; border-radius: 50%; background: #0f0f0f; border: 1px dashed var(--gold-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; cursor: pointer; color: var(--text-muted); font-size: 2rem;">
-                    <i class="fas fa-user-plus"></i>
+                <div class="input-group">
+                    <label for="userPhotoInput">الصورة الشخصية</label>
+                    <div class="photo-uploader" id="photoUploader">
+                        <div id="photoPreview">
+                            <i class="fas fa-user-circle placeholder-icon"></i>
+                            <span class="uploader-label">اضغط لاختيار صورة شخصية</span>
+                        </div>
+                        <input type="file" id="userPhotoInput" accept="image/*" style="display: none;">
+                    </div>
                 </div>
-                <input type="file" id="userPhotoInput" hidden accept="image/*">
-                <button type="button" class="add-btn" style="max-width: 200px; margin: 0 auto; display: block;" onclick="document.getElementById('userPhotoInput').click()">إضافة صورة شخصية</button>
+
+                <div class="input-group">
+                    <label for="birthDate">تاريخ الميلاد (اختياري)</label>
+                    <input 
+                        type="date" 
+                        id="birthDate"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="userAddress">العنوان</label>
+                    <input 
+                        type="text" 
+                        id="userAddress" 
+                        placeholder="مثال: الدار البيضاء، حي المعاريف"
+                        required
+                    >
+                </div>
             </div>
 
-            <div class="input-group">
-                <label for="birthDate">تاريخ الميلاد (اختياري)</label>
-                <input type="date" id="birthDate">
-            </div>
+            <!-- أزرار التحكم -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span>حفظ والبدء في الاستكشاف</span>
+                <i class="fas fa-arrow-left"></i>
+            </button>
 
-            <div class="input-group">
-                <label for="userAddress">العنوان</label>
-                <input type="text" id="userAddress" placeholder="أدخل مدينتك أو عنوانك الحالي" required>
-            </div>
-
-            <button type="submit" class="submit-btn" style="margin-top: 15px;">حفظ والبدء في الاستكشاف</button>
-            
-            <a href="setup-customer.html" class="cancel-link" id="skipSetupBtn">تخطي هذه الخطوة والبدء لاحقاً</a>
+            <a href="setup-customer.html" class="cancel-link">
+                <i class="fas fa-forward"></i>
+                تخطي هذه الخطوة والبدء لاحقاً
+            </a>
         </form>
     </div>
 
-    <div id="notification-container"></div>
-
+    <!-- السكربتات -->
     <script type="module" src="js/add-customer.js"></script>
 </body>
 </html>
+

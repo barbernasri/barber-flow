@@ -1,247 +1,340 @@
-import { db, auth } from "../../core/firebase-init.js";
+/**
+ * BarberFlow Pro - صفحة إعداد الهوية البصرية للصالون
+ * المسار: onboarding/setup-salon.js
+ * ملاحظة: تم إصلاح الأخطاء الإملائية
+ */
+
+import { db, auth } from "../core/firebase-init.js";
 import { doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { processImage, removeImageFromGallery } from "../../auth/js/images-utils.js"; 
-import { showNotification } from "../../auth/js/notifications.js";
+import { processImage, removeImageFromGallery } from "../auth/js/images-utils.js";
+import { showNotification } from "../auth/js/notifications.js";
 
-const setupForm = document.getElementById('setupStoreForm');
+// ==========================================
+// 1. المتغيرات ومصفوفات البيانات
+// ==========================================
+let selectedCoverBase64 = null;
+let galleryImages = [];
+let certificateImages = [];
+let currentUid = null;
+let isUploadingImages = false;
+
+// ==========================================
+// 2. جلب عناصر واجهة المستخدم
+// ==========================================
+const setupForm = document.getElementById('setupSalonForm');
 const coverUploader = document.getElementById('coverUploader');
 const fileInput = document.getElementById('fileInput');
-const storeImg = document.getElementById('storeImg');
+const salonImg = document.getElementById('salonImg');
 const placeholderIcon = document.getElementById('placeholderIcon');
 const coverUploaderLabel = document.getElementById('coverUploaderLabel');
 const deleteCoverBtn = document.getElementById('deleteCoverBtn');
 const skipBtn = document.getElementById('skipBtn');
+const mainSubmitBtn = document.getElementById('submitBtn');
+const galleryPreviewsContainer = document.getElementById('galleryPreviewsContainer');
+const addGalleryPhotoBtn = document.getElementById('addGalleryPhotoBtn');
+const galleryFileInput = document.getElementById('galleryFileInput');
+const certPreviewsContainer = document.getElementById('certPreviewsContainer');
+const addCertPhotoBtn = document.getElementById('addCertPhotoBtn');
+const certFileInput = document.getElementById('certFileInput');
 
-const storePhotosGrid = document.getElementById('storePhotosGrid');
-const galleryInput = document.getElementById('galleryInput');
-const certPhotosGrid = document.getElementById('certPhotosGrid');
-const certFileInput = document.getElementById('certInput');
+// تصفير مدخلات الملفات
+if (fileInput) fileInput.value = "";
+if (galleryFileInput) galleryFileInput.value = "";
+if (certFileInput) certFileInput.value = "";
 
-let selectedCoverBase64 = null;
-let storePhotos = []; 
-let storeCertificates = [];
-let currentUid = null;
+// ==========================================
+// 3. دالة التحكم في حالات الأزرار
+// ==========================================
+function toggleActionButtonsState(disabled, text = "") {
+    isUploadingImages = disabled;
+    if (mainSubmitBtn) {
+        mainSubmitBtn.disabled = disabled;
+        if (disabled) {
+            if (!mainSubmitBtn.dataset.originalText) {
+                mainSubmitBtn.dataset.originalText = mainSubmitBtn.innerHTML;
+            }
+            mainSubmitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${text}`;
+        } else {
+            mainSubmitBtn.innerHTML = mainSubmitBtn.dataset.originalText || 'حفظ وإنشاء الملف الشخصي';
+        }
+    }
+    if (skipBtn) skipBtn.disabled = disabled;
+}
 
-// تأمين وحماية متكاملة لجلسة المتجر لمنع انهيار أو ضياع مصفوفات صور المنتجات المرفوعة
+// ==========================================
+// 4. دالة بناء كروت المعاينة
+// ==========================================
+function renderPreviewsOnly(array, container, isGalleryType) {
+    if (!container) return;
+    container.innerHTML = "";
+    array.forEach(imgData => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        
+        item.innerHTML = `
+            <img src="${imgData.base64}">
+            <button type="button" class="delete-btn"><i class="fas fa-times"></i></button>
+        `;
+
+        item.querySelector('.delete-btn').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            removeImageFromGallery(
+                imgData.id, 
+                array, 
+                container, 
+                (updatedArray) => {
+                    if (isGalleryType) {
+                        galleryImages = updatedArray;
+                    } else {
+                        certificateImages = updatedArray;
+                    }
+                },
+                (updatedArray) => {
+                    renderPreviewsOnly(updatedArray, container, isGalleryType);
+                }
+            );
+        };
+        container.appendChild(item);
+    });
+}
+
+// ==========================================
+// 5. ربط أحداث عناصر الواجهة
+// ==========================================
+// رفع صورة الغلاف
+if (coverUploader && fileInput) {
+    coverUploader.onclick = (e) => {
+        if (e.target.closest('#deleteCoverBtn')) return;
+        fileInput.click();
+    };
+    
+    fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showNotification("يرجى اختيار ملف صورة صحيح (PNG أو JPG)", "error");
+            fileInput.value = "";
+            return;
+        }
+
+        toggleActionButtonsState(true, "جاري معالجة صورة الواجهة...");
+        try {
+            selectedCoverBase64 = await processImage(file, 1000, 0.75);
+            
+            if (salonImg) {
+                salonImg.src = selectedCoverBase64;
+                salonImg.style.display = 'block';
+            }
+            if (placeholderIcon) placeholderIcon.style.display = 'none';
+            if (coverUploaderLabel) coverUploaderLabel.style.display = 'none';
+            if (deleteCoverBtn) deleteCoverBtn.style.display = 'flex';
+            
+            showNotification("تم تحديث صورة واجهة الصالون بنجاح 📸", "success");
+        } catch (err) {
+            console.error("Cover photo processing failed:", err);
+            showNotification("لم نتمكن من معالجة الصورة، يرجى تجربة صورة أخرى", "error");
+        } finally {
+            toggleActionButtonsState(false);
+        }
+    };
+}
+
+// إزالة صورة الغلاف
+if (deleteCoverBtn) {
+    deleteCoverBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        selectedCoverBase64 = null;
+        if (salonImg) {
+            salonImg.src = "";
+            salonImg.style.display = 'none';
+        }
+        if (placeholderIcon) placeholderIcon.style.display = 'block';
+        if (coverUploaderLabel) coverUploaderLabel.style.display = 'block';
+        deleteCoverBtn.style.display = 'none';
+        if (fileInput) fileInput.value = "";
+        showNotification("تم إزالة صورة الواجهة بنجاح", "success");
+    };
+}
+
+// رفع صور المعرض
+if (addGalleryPhotoBtn && galleryFileInput) {
+    addGalleryPhotoBtn.onclick = (e) => {
+        e.preventDefault();
+        galleryFileInput.click();
+    };
+    
+    galleryFileInput.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        if ((galleryImages.length + files.length) > 6) {
+            showNotification("يمكنك رفع 6 صور كحد أقصى لمعرض أعمال الصالون", "error");
+            galleryFileInput.value = "";
+            return;
+        }
+
+        toggleActionButtonsState(true, "جاري معالجة صور المعرض...");
+        try {
+            for (const file of files) {
+                if (!file.type.startsWith('image/')) continue;
+                const base64 = await processImage(file, 800, 0.7);
+                const imageId = 'gallery_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                galleryImages.push({ id: imageId, base64: base64 });
+            }
+            showNotification("تم إضافة صور معرض الأعمال بنجاح ✨", "success");
+        } catch (err) {
+            console.error("Error processing gallery image:", err);
+            showNotification("حدثت مشكلة أثناء معالجة الصور، يرجى إعادة المحاولة", "error");
+        } finally {
+            renderPreviewsOnly(galleryImages, galleryPreviewsContainer, true);
+            toggleActionButtonsState(false);
+            galleryFileInput.value = ""; 
+        }
+    };
+}
+
+// رفع صور الشهادات
+if (addCertPhotoBtn && certFileInput) {
+    addCertPhotoBtn.onclick = (e) => {
+        e.preventDefault();
+        certFileInput.click();
+    };
+    
+    certFileInput.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        if ((certificateImages.length + files.length) > 3) {
+            showNotification("يمكنك إرفاق 3 شهادات كحد أقصى لتوثيق الحساب", "error");
+            certFileInput.value = "";
+            return;
+        }
+
+        toggleActionButtonsState(true, "جاري معالجة وثائق الشهادات...");
+        try {
+            for (const file of files) {
+                if (!file.type.startsWith('image/')) continue;
+                const base64 = await processImage(file, 800, 0.7);
+                const imageId = 'cert_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                certificateImages.push({ id: imageId, base64: base64 });
+            }
+            showNotification("تم إرفاق مستندات الشهادات بنجاح 🎓", "success");
+        } catch (err) {
+            console.error("Error processing certification image:", err);
+            showNotification("لم نتمكن من قراءة ملفات الشهادات، يرجى المحاولة مجدداً", "error");
+        } finally {
+            renderPreviewsOnly(certificateImages, certPreviewsContainer, false);
+            toggleActionButtonsState(false);
+            certFileInput.value = ""; 
+        }
+    };
+}
+
+// إرسال النموذج
+if (setupForm) {
+    setupForm.onsubmit = async (e) => {
+        e.preventDefault();
+        if (!currentUid || isUploadingImages) return;
+        
+        const descElement = document.getElementById('salonDescription');
+        const certTitleElement = document.getElementById('certificateText');
+
+        const descriptionValue = descElement ? descElement.value.trim() : "";
+        const certificateTitleValue = certTitleElement ? certTitleElement.value.trim() : "";
+
+        if (!selectedCoverBase64) {
+            showNotification("يرجى اختيار صورة الواجهة الرئيسية أولاً لإظهار صالونك بشكل مميز للزبائن", "error");
+            return;
+        }
+
+        if (descriptionValue.length < 10) {
+            showNotification("يرجى كتابة نبذة عن الصالون لا تقل عن 10 أحرف لتعريف زبائنك بخدماتك المتاحة", "error");
+            if (descElement) descElement.focus();
+            return;
+        }
+
+        toggleActionButtonsState(true, "جاري إعداد ملف صالونك الاحترافي...");
+
+        try {
+            await setDoc(doc(db, "salons", currentUid), {
+                coverImage: selectedCoverBase64,
+                description: descriptionValue,
+                portfolio: galleryImages.map(img => img.base64),
+                certificate: {
+                    title: certificateTitleValue,
+                    photos: certificateImages.map(img => img.base64)
+                },
+                onboardingStatus: "completed",
+                updatedAt: new Date()
+            }, { merge: true });
+
+            await updateDoc(doc(db, "users", currentUid), { 
+                status: "active",
+                onboardingStatus: "completed"
+            });
+
+            showNotification("تهانينا! تم إنشاء ملف صالونك بنجاح وجاري توجيهك لصفحتك الموثقة 🪄", "success");
+            
+            setTimeout(() => {
+                window.location.replace("../profiles/profile-salon.html");
+            }, 1500);
+        } catch (err) {
+            console.error("Error during handling final salon registration process:", err);
+            showNotification("تأخر الاتصال بالخوادم، يرجى التحقق من الشبكة وإعادة المحاولة", "error");
+            toggleActionButtonsState(false);
+        }
+    };
+}
+
+// التخطي
+if (skipBtn) {
+    skipBtn.onclick = async (e) => {
+        e.preventDefault();
+        if (!currentUid || isUploadingImages) return;
+        
+        toggleActionButtonsState(true, "جاري تأجيل خطوة الهوية البصرية...");
+
+        try {
+            await setDoc(doc(db, "salons", currentUid), {
+                onboardingStatus: "completed",
+                updatedAt: new Date()
+            }, { merge: true });
+
+            await updateDoc(doc(db, "users", currentUid), { 
+                status: "active",
+                onboardingStatus: "completed"
+            });
+
+            showNotification("تم تأجيل إعداد ملف المظهر، يمكنك استكماله لاحقاً من لوحة تحكم الإعدادات", "success");
+
+            setTimeout(() => {
+                window.location.replace("../profiles/profile-salon.html");
+            }, 1200);
+        } catch (err) {
+            console.error("Error during salon onboarding skipping process:", err);
+            showNotification("لم نتمكن من معالجة طلب التخطي حالياً، يرجى المحاولة لاحقاً", "error");
+            toggleActionButtonsState(false);
+        }
+    };
+}
+
+// ==========================================
+// 6. مستمع الجلسة الأمنية
+// ==========================================
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.replace("../../register/login.html");
+        setTimeout(() => {
+            if (!auth.currentUser) {
+                window.location.replace("../../register/login.html");
+            }
+        }, 500);
         return;
     }
-    
     currentUid = user.uid;
-
-    // معالجة غلاف واجهة المتجر الأساسية بالتوافق مع الصالون
-    if (coverUploader && fileInput) {
-        coverUploader.onclick = (e) => {
-            if (e.target.closest('#deleteCoverBtn')) return;
-            fileInput.click();
-        };
-
-        fileInput.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                try {
-                    selectedCoverBase64 = await processImage(file, 1000, 0.7);
-                    if (storeImg) {
-                        storeImg.src = selectedCoverBase64;
-                        storeImg.style.display = 'block';
-                    }
-                    if (placeholderIcon) placeholderIcon.style.display = 'none';
-                    if (coverUploaderLabel) coverUploaderLabel.style.display = 'none';
-                    if (deleteCoverBtn) deleteCoverBtn.style.display = 'flex';
-                } catch (err) {
-                    showNotification("فشل تعديل ومعاينة صورة غلاف المتجر الحالية", "error");
-                }
-            }
-        };
-    }
-
-    if (deleteCoverBtn) {
-        deleteCoverBtn.onclick = (e) => {
-            e.stopPropagation();
-            selectedCoverBase64 = null;
-            if (storeImg) {
-                storeImg.src = "";
-                storeImg.style.display = 'none';
-            }
-            if (placeholderIcon) placeholderIcon.style.display = 'block';
-            if (coverUploaderLabel) coverUploaderLabel.style.display = 'block';
-            deleteCoverBtn.style.display = 'none';
-            if (fileInput) fileInput.value = "";
-        };
-    }
-
-    // إدارة معرض المنتجات الحصري للتاجر (إضافة، معاينة، وحذف ديناميكي موحد)
-    if (storePhotosGrid) {
-        const addPhotoBtn = storePhotosGrid.querySelector('.add-photo-btn') || document.createElement('div');
-        if (!storePhotosGrid.querySelector('.add-photo-btn')) {
-            addPhotoBtn.className = 'add-photo-btn';
-            addPhotoBtn.innerHTML = '<i class="fas fa-plus-circle"></i>';
-            storePhotosGrid.appendChild(addPhotoBtn);
-        }
-
-        addPhotoBtn.onclick = () => galleryInput && galleryInput.click();
-
-        if (galleryInput) {
-            galleryInput.onchange = async (e) => {
-                const files = Array.from(e.target.files);
-                for (const file of files) {
-                    try {
-                        const base64 = await processImage(file, 800, 0.6);
-                        const imgId = 'prod_' + Date.now() + Math.random().toString(36).substr(2, 5);
-                        storePhotos.push({ id: imgId, base64: base64 });
-                    } catch (err) {
-                        showNotification("فشل رفع صورة من باقة المنتجات المحددة", "error");
-                    }
-                }
-                renderStoreGallery();
-                galleryInput.value = "";
-            };
-        }
-    }
-
-    function renderStoreGallery() {
-        const items = storePhotosGrid.querySelectorAll('.img-item');
-        items.forEach(i => i.remove());
-        
-        storePhotos.forEach(img => {
-            const div = document.createElement('div');
-            div.className = 'img-item';
-            div.innerHTML = `
-                <img src="${img.base64}">
-                <span class="delete-img">&times;</span>
-            `;
-            div.querySelector('.delete-img').onclick = () => {
-                removeImageFromGallery(img.id, storePhotos, storePhotosGrid, (updatedArr) => {
-                    storePhotos = updatedArr;
-                    renderStoreGallery();
-                });
-            };
-            storePhotosGrid.insertBefore(div, storePhotosGrid.querySelector('.add-photo-btn'));
-        });
-    }
-
-    // إدارة مستندات السجل التجاري والشهادات للتاجر بطريقة مطابقة ومحسنة
-    if (certPhotosGrid) {
-        const addCertCard = document.createElement('div');
-        addCertCard.className = 'add-photo-btn';
-        addCertCard.innerHTML = '<i class="fas fa-plus-circle"></i><span style="font-size:0.7rem; display:block;">أضف وثيقة</span>';
-        
-        if (certPhotosGrid.children.length === 0) {
-            certPhotosGrid.appendChild(addCertCard);
-        }
-
-        addCertCard.onclick = () => certFileInput && certFileInput.click();
-
-        if (certFileInput) {
-            certFileInput.onchange = async (e) => {
-                const files = Array.from(e.target.files);
-                for (const file of files) {
-                    try {
-                        const base64 = await processImage(file, 800, 0.7);
-                        const imgId = 'store_cert_' + Date.now() + Math.random().toString(36).substr(2, 5);
-                        storeCertificates.push({ id: imgId, base64: base64 });
-                    } catch (err) {
-                        showNotification("فشل معالجة وثيقة السجل التجاري الحالية", "error");
-                    }
-                }
-                renderStoreCertificates();
-                certFileInput.value = "";
-            };
-        }
-    }
-
-    function renderStoreCertificates() {
-        const items = certPhotosGrid.querySelectorAll('.img-item');
-        items.forEach(i => i.remove());
-
-        storeCertificates.forEach(img => {
-            const div = document.createElement('div');
-            div.className = 'img-item';
-            div.innerHTML = `
-                <img src="${img.base64}">
-                <span class="delete-img">&times;</span>
-            `;
-            div.querySelector('.delete-img').onclick = () => {
-                removeImageFromGallery(img.id, storeCertificates, certPhotosGrid, (updatedArr) => {
-                    storeCertificates = updatedArr;
-                    renderStoreCertificates();
-                });
-            };
-            certPhotosGrid.insertBefore(div, certPhotosGrid.querySelector('.add-photo-btn'));
-        });
-    }
-
-    // معالجة وحفظ النموذج النهائي للمتجر
-    if (setupForm) {
-        setupForm.onsubmit = async (e) => {
-            e.preventDefault();
-            if (!currentUid) return;
-
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تهيئة الحساب التجاري...';
-
-            try {
-                const finalData = {
-                    about: document.getElementById('storeAbout').value.trim() || "",
-                    licenseNumber: document.getElementById('licenseText').value.trim() || "",
-                    onboardingStatus: "completed",
-                    updatedAt: new Date()
-                };
-
-                if (selectedCoverBase64) finalData.coverImage = selectedCoverBase64;
-                if (storePhotos.length > 0) finalData.gallery = storePhotos.map(p => p.base64);
-                if (storeCertificates.length > 0) finalData.certificates = storeCertificates.map(c => c.base64);
-
-                await setDoc(doc(db, "stores", currentUid), finalData, { merge: true });
-                await updateDoc(doc(db, "users", currentUid), { 
-                    status: "active", 
-                    onboardingStatus: "completed" 
-                });
-
-                showNotification("تم تنشيط ملف المتجر التجاري بالكامل", "success");
-                setTimeout(() => {
-                    window.location.replace("../profiles/profile-store.html");
-                }, 1500);
-            } catch (error) {
-                console.error("خطأ أثناء تهيئة المتجر التجاري التابع للتاجر:", error);
-                showNotification("حدث خطأ أثناء حفظ الملف الفني، يرجى مراجعة البيانات", "error");
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'حفظ وإنشاء الملف الشخصي';
-            }
-        };
-    }
-
-    // تشغيل زر التخطي الاختياري لحساب المتجر
-    if (skipBtn) {
-        skipBtn.onclick = async (e) => {
-            e.preventDefault();
-            if (!currentUid) return;
-
-            skipBtn.disabled = true;
-            skipBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التخطي...';
-
-            try {
-                await setDoc(doc(db, "stores", currentUid), {
-                    onboardingStatus: "completed",
-                    updatedAt: new Date()
-                }, { merge: true });
-
-                await updateDoc(doc(db, "users", currentUid), { 
-                    status: "active",
-                    onboardingStatus: "completed"
-                });
-
-                window.location.replace("../profiles/profile-store.html");
-            } catch (err) {
-                console.error("خطأ أثناء عملية تخطي المتجر المؤقتة:", err);
-                showNotification("حدث خطأ ما، يرجى المحاولة لاحقاً", "error");
-                skipBtn.disabled = false;
-                skipBtn.innerHTML = 'تخطي هذه الخطوة مؤقتاً';
-            }
-        };
-    }
 });
+

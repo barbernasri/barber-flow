@@ -1,18 +1,19 @@
-:root {
-    --gold-primary: #d4af37;
-    --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f2d06b 100%);
-    --bg-dark: #0a0a0a;
-    --card-bg: #161616;
-    --border-color: #2a2a2a;
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-}
+/* ==========================================================================
+BarberFlow Pro - Setup Pages (Salon & Store)
+المسار: onboarding/css/setup-style.css
+========================================================================== */
 
-/* التمرير الحر عند تمدد المحتوى الشاشات المتنقلة */
+/* استيراد التنسيقات العامة */
+@import url("../../shared/css/global.css");
+@import url("../../auth/css/notifications.css");
+
+/* ============================================
+الصفحة العامة
+============================================ */
 body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Cairo', sans-serif;
     direction: rtl;
     margin: 0;
     padding: 30px 15px;
@@ -30,6 +31,9 @@ body {
     padding-bottom: 40px;
 }
 
+/* ============================================
+الهيدر والعناوين
+============================================ */
 .header {
     text-align: center;
     margin-bottom: 30px;
@@ -38,73 +42,74 @@ body {
 .title {
     font-size: 1.6rem;
     font-weight: bold;
-    color: #fff;
+    color: var(--text-primary);
     margin: 0 0 8px 0;
 }
 
 .subtitle {
     font-size: 0.9rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin: 0;
 }
 
-/* بطاقات الكروت الحاضنة للبيانات */
+/* ============================================
+بطاقات الأقسام
+============================================ */
 .section-card {
-    background-color: var(--card-bg);
+    background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 20px;
     margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
 }
 
 .section-label {
     display: block;
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--gold-primary);
+    color: var(--brand-accent);
     margin-bottom: 12px;
     margin-top: 10px;
 }
 
-/* كارت حوايا صورة الواجهة الرئيسية الكبيرة */
+/* ============================================
+رفع صورة الغلاف
+============================================ */
 .cover-uploader {
     width: 100%;
     height: 180px;
-    background: #0f0f0f;
-    border: 2px dashed #333;
-    border-radius: 15px;
+    background: var(--bg-tertiary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     overflow: hidden;
-    transition: 0.3s;
+    transition: var(--transition-normal);
 }
 
 .cover-uploader:hover {
-    border-color: var(--gold-primary);
+    border-color: var(--brand-accent);
+    background: rgba(212, 175, 55, 0.05);
 }
 
 .placeholder-icon {
     font-size: 2.5rem;
-    color: #333;
+    color: var(--text-muted);
     margin-bottom: 10px;
 }
 
 .inner-label {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
-.delete-img {
-    transition: transform 0.2s;
-}
-.delete-img:hover {
-    transform: scale(1.1);
-}
-
-/* هندسة الشبكة التكرارية لصفوف معارض الصور */
+/* ============================================
+معرض الصور
+============================================ */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -112,49 +117,49 @@ body {
     margin-top: 10px;
 }
 
-/* زر إلحاق ورفع مادة بصرية إضافية بالتناسب الهندسي المربع */
 .add-photo-btn {
     aspect-ratio: 1 / 1;
-    background: #0f0f0f;
-    border: 2px dashed #333;
-    border-radius: 12px;
+    background: var(--bg-tertiary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.3s;
+    transition: var(--transition-normal);
     width: 100%;
     box-sizing: border-box;
+    color: var(--text-muted);
 }
 
 .add-photo-btn:hover {
-    border-color: var(--gold-primary);
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+    background: rgba(212, 175, 55, 0.05);
 }
 
-/* الكادر المربع النقي 1:1 المحقون بداخله مخرجات الصور */
 .gallery-item {
     position: relative;
     aspect-ratio: 1 / 1;
     width: 100%;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
-    background: #0f0f0f;
+    background: var(--bg-tertiary);
     box-sizing: border-box;
 }
 
 .gallery-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* يثبت محاذاة الصور دون تشويه أو تمدد */
+    object-fit: cover;
     display: block;
 }
 
-/* زر إزالة وحذف عنصر من مصفوفة المعرض الحالية */
 .gallery-item .delete-btn {
     position: absolute;
     top: 5px;
     right: 5px;
-    background: rgba(255, 77, 77, 0.9);
+    background: var(--brand-danger);
     border: none;
     border-radius: 50%;
     width: 24px;
@@ -165,8 +170,8 @@ body {
     justify-content: center;
     cursor: pointer;
     font-size: 11px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    transition: 0.2s;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-fast);
     z-index: 5;
 }
 
@@ -175,55 +180,103 @@ body {
     transform: scale(1.1);
 }
 
-/* المدخلات والنصوص */
-textarea, select, input[type="text"] {
+/* ============================================
+حقول الإدخال
+============================================ */
+textarea, select, input[type="text"], input[type="number"], input[type="tel"] {
     width: 100%;
-    background: #0f0f0f;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 12px 15px;
-    color: white;
-    font-family: inherit;
+    color: var(--text-primary);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
     margin-top: 8px;
     box-sizing: border-box;
-    transition: 0.3s;
+    transition: var(--transition-fast);
 }
 
-textarea:focus, input[type="text"]:focus, select:focus {
-    border-color: var(--gold-primary);
+textarea:focus, select:focus, input:focus {
+    border-color: var(--brand-accent);
     outline: none;
+    background: var(--bg-secondary);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
 textarea {
-    resize: none;
+    resize: vertical;
+    min-height: 100px;
 }
 
-/* الأزرار وأنظمة الألوان الفاخرة المعتمدة */
+/* ============================================
+الأيام (Day Chips)
+============================================ */
+.days-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.day-chip {
+    padding: 8px 16px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    color: var(--text-secondary);
+}
+
+.day-chip:hover {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+.day-chip.selected {
+    background: var(--brand-accent);
+    color: #000;
+    border-color: var(--brand-accent);
+    font-weight: 600;
+    transform: scale(1.05);
+}
+
+/* ============================================
+الأزرار
+============================================ */
 .primary-btn {
     width: 100%;
     padding: 16px;
-    background: var(--gold-gradient);
+    background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-dark));
     border: none;
-    border-radius: 15px;
+    border-radius: var(--radius-md);
     color: #000;
     font-weight: bold;
     font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    transition: 0.3s;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-fast);
     margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-.primary-btn:hover {
-    opacity: 0.9;
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+.primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 .primary-btn:disabled {
-    background: #444;
-    color: #888;
+    background: var(--bg-accent);
+    color: var(--text-muted);
     cursor: not-allowed;
     box-shadow: none;
+    transform: none;
 }
 
 .outline-btn {
@@ -231,22 +284,111 @@ textarea {
     padding: 16px;
     background: transparent;
     border: 1px solid var(--border-color);
-    border-radius: 15px;
-    color: var(--text-muted);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
     font-weight: bold;
     font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
     cursor: pointer;
-    transition: 0.3s;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-.outline-btn:hover {
-    background: #111;
-    color: #fff;
-    border-color: #555;
+.outline-btn:hover:not(:disabled) {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--brand-accent);
 }
 
 .outline-btn:disabled {
-    color: #444;
-    border-color: #222;
+    color: var(--text-muted);
+    border-color: var(--border-color);
     cursor: not-allowed;
 }
+
+/* ============================================
+العناصر الديناميكية (الخدمات، الأقسام...)
+============================================ */
+.dynamic-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.delete-btn {
+    background: rgba(201, 42, 42, 0.1);
+    border: 1px solid var(--brand-danger);
+    color: var(--brand-danger);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.delete-btn:hover {
+    background: var(--brand-danger);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.add-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px dashed var(--brand-accent);
+    color: var(--brand-accent);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.add-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-style: solid;
+}
+
+/* ============================================
+Responsive
+============================================ */
+@media (max-width: 480px) {
+    .dynamic-item {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    body {
+        padding: 20px 10px;
+    }
+}
+

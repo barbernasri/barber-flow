@@ -3,69 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات المتجر | BarberFlow-Pro</title>
-    <link rel="stylesheet" href="css/add-style.css"> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<!--    <script type="module" src="../auth/js/router.js"></script>-->
+    <meta name="description" content="إعداد بيانات المتجر">
+    <title>بيانات المتجر | BarberFlow Pro</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
+    <link rel="stylesheet" href="css/add-style.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="logo-icon"><i class="fas fa-store-alt"></i></div>
-            <h1 class="title">إعداد المتجر</h1>
-            <p class="subtitle">أدخل تفاصيل متجرك لتبدأ في عرض وبيع منتجاتك</p>
-        </header>
-
-        <form id="addStoreForm">
-            <div class="section-card">
-                <div class="input-group">
-                    <label>اسم المتجر</label>
-                    <input type="text" id="storeName" placeholder="مثلاً: متجر الحلاقة المحترف" required>
-                </div>
-                <div class="input-group">
-                    <label>الموقع (المدينة/الحي)</label>
-                    <input type="text" id="storeLocation" placeholder="الدار البيضاء، المعاريف" required>
-                </div>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-tags"></i> الأقسام التجارية لمنتجاتك</label>
-                <div id="categoriesContainer"></div>
-                <button type="button" id="addCategoryBtn" class="add-btn" style="margin-top:10px; background: none; border: 1px dashed var(--gold-primary, #d4af37); color: var(--gold-primary, #d4af37); padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
-                    <i class="fas fa-plus"></i> إضافة قسم جديد
-                </button>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-truck"></i> خيارات الطلب والتوصيل</label>
-                <select id="deliveryType" required>
-                    <option value="استلام">الاستلام من المتجر فقط</option>
-                    <option value="توصيل">خدمة التوصيل متوفرة</option>
-                    <option value="الكل">الاستلام والتوصيل معاً</option>
-                </select>
-            </div>
-
-            <div class="section-card">
-                <label class="section-label"><i class="fas fa-clock"></i> أوقات وأيام العمل</label>
-                <div class="days-grid" id="daysSelector"></div>
-                
-                <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;\">
-                    <div class="input-group">
-                        <label>من</label>
-                        <input type="time" id="openTime" value="10:00" required>
-                    </div>
-                    <div class="input-group">
-                        <label>إلى</label>
-                        <input type="time" id="closeTime" value="22:00" required>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" id="submitBtn" class="submit-btn">حفظ ومتابعة إعداد المنتجات</button>
-        </form>
-    </div>
+    <!-- حاوية الإشعارات -->
     <div id="notification-container"></div>
 
+    <div class="container">
+        <!-- الهيدر -->
+        <div class="header">
+            <i class="fas fa-store logo-icon"></i>
+            <h1 class="title">إعداد المتجر</h1>
+            <p class="subtitle">أدخل تفاصيل متجرك لتبدأ في عرض وبيع منتجاتك</p>
+        </div>
+
+        <!-- نموذج المتجر -->
+        <form id="addStoreForm">
+            <!-- المعلومات الأساسية -->
+            <div class="section-card">
+                <div class="input-group">
+                    <label for="storeName">اسم المتجر</label>
+                    <input 
+                        type="text" 
+                        id="storeName" 
+                        placeholder="مثال: متجر الأدوات الاحترافية"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="storeLocation">الموقع (المدينة/الحي)</label>
+                    <input 
+                        type="text" 
+                        id="storeLocation" 
+                        placeholder="مثال: الدار البيضاء، المعاريف"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label>الأقسام التجارية لمنتجاتك</label>
+                    <div id="categoriesContainer"></div>
+                    <button type="button" class="add-btn" id="addCategoryBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>إضافة قسم جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- خيارات الطلب والتوصيل -->
+            <div class="section-card">
+                <div class="input-group">
+                    <label for="deliveryType">خيارات الطلب والتوصيل</label>
+                    <select id="deliveryType" required>
+                        <option value="pickup">الاستلام من المتجر فقط</option>
+                        <option value="delivery">خدمة التوصيل متوفرة</option>
+                        <option value="both">الاستلام والتوصيل معاً</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- أوقات وأيام العمل -->
+            <div class="section-card">
+                <div class="input-group">
+                    <label>أيام العمل</label>
+                    <div class="days-selector" id="daysSelector"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div class="input-group">
+                        <label for="openTime">من</label>
+                        <input type="time" id="openTime" value="09:00" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="closeTime">إلى</label>
+                        <input type="time" id="closeTime" value="21:00" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار التحكم -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span>حفظ ومتابعة إعداد المنتجات</span>
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- السكربتات -->
     <script type="module" src="js/add-store.js"></script>
 </body>
 </html>
+

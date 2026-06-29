@@ -1,28 +1,81 @@
 /**
- * شريط التنقل العام - محدّث
- * المسار: shared/js/global-navbar.js
- */
-
+شريط التنقل العام - محدّث
+المسار: shared/js/global-navbar.js
+*/
 import { auth, db } from "../../core/firebase-init.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+// ============================================
+// دوال مساعدة للمسارات الديناميكية
+// ============================================
+
+/**
+ * حساب بادئة المسار النسبي من الصفحة الحالية إلى جذر المشروع
+ */
+function getRelativePrefix() {
+    const path = window.location.pathname;
+    const parts = path.split('/').filter(p => p);
+    const depth = parts.length - 1;
+    return '../'.repeat(depth);
+}
+
+/**
+ * إصلاح مسار رابط ليكون صحيحاً نسبياً من الصفحة الحالية
+ */
+function fixPath(href) {
+    if (!href || href.startsWith('#') || href.startsWith('http') || 
+        href.startsWith('mailto:') || href.startsWith('javascript:')) {
+        return href;
+    }
+    const cleanHref = href.replace(/^\.\.\//g, '').replace(/^\.\//g, '').replace(/^\//g, '');
+    return getRelativePrefix() + cleanHref;
+}
+
+/**
+ * تحديث جميع المسارات في الشريط بعد تحميله
+ */
+function updateAllPaths() {
+    const container = document.getElementById('global-navbar-container');
+    if (!container) return;
+    
+    // تحديث جميع الروابط التي تحتوي على data-path
+    const links = container.querySelectorAll('[data-path]');
+    links.forEach(link => {
+        const basePath = link.getAttribute('data-path');
+        const fixedPath = fixPath(basePath);
+        link.setAttribute('href', fixedPath);
+    });
+    
+    // تحديث الروابط الأخرى التي ليس لها data-path
+    const otherLinks = container.querySelectorAll('a[href]:not([data-path])');
+    otherLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('#')) {
+            const fixedHref = fixPath(href);
+            link.setAttribute('href', fixedHref);
+        }
+    });
+}
+
+// ============================================
+// التحميل الأولي
+// ============================================
 document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("global-navbar-container");
     if (!container) return;
     
     try {
-
-
-const response = await fetch(window.location.pathname.endsWith("index.html") || window.location.pathname === "/" || !window.location.pathname.includes("/home/") ? "./shared/global-navbar.html" : "../shared/global-navbar.html");
-
-
+        const currentScriptUrl = new URL(import.meta.url);
+        const navbarPath = new URL('../global-navbar.html', currentScriptUrl).href;
+        
+        const response = await fetch(navbarPath);
         if (!response.ok) throw new Error("Navbar file not found");
         
         container.innerHTML = await response.text();
         
-        // لا نضيف padding لأن الـ Navbar أصبح جزءاً من الصفحة
-        // document.body.style.paddingTop = "70px"; // تم حذفه
+        // ✅ تحديث جميع المسارات
+        updateAllPaths();
         
         // تشغيل المنطق
         setupNavigationLogic();
@@ -47,28 +100,28 @@ function setupNavigationLogic() {
     const overlay = document.getElementById("drawerOverlay");
     
     if (!menuBtn || !drawer || !overlay) return;
-    
+
     const openDrawer = () => {
         drawer.classList.add("open");
         overlay.classList.add("active");
         document.body.style.overflow = 'hidden';
     };
-    
+
     const closeDrawer = () => {
         drawer.classList.remove("open");
         overlay.classList.remove("active");
         document.body.style.overflow = '';
     };
-    
+
     menuBtn.onclick = openDrawer;
     closeBtn.onclick = closeDrawer;
     overlay.onclick = closeDrawer;
-    
+
     // إغلاق عند النقر على رابط
     drawer.querySelectorAll('.drawer-link').forEach(link => {
         link.onclick = closeDrawer;
     });
-    
+
     // إغلاق بزر Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && drawer.classList.contains('open')) {
@@ -78,27 +131,21 @@ function setupNavigationLogic() {
 }
 
 // ============================================
-// تبديل الثيم (أبيض/أسود)
+// تبديل الثيم (أبيض/أسود) - من القائمة الجانبية فقط
 // ============================================
 function setupThemeToggle() {
-    const themeBtn = document.getElementById('themeToggleBtn');
     const drawerThemeBtn = document.getElementById('drawerThemeToggle');
     const drawerThemeText = document.getElementById('drawerThemeText');
     
     // تحميل الثيم المحفوظ
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
-    
-    // زر الثيم في الهيدر
-    if (themeBtn) {
-        themeBtn.onclick = () => toggleTheme();
-    }
-    
-    // زر الثيم في القائمة الجانبية
+
+    // زر الثيم في القائمة الجانبية فقط
     if (drawerThemeBtn) {
         drawerThemeBtn.onclick = () => toggleTheme();
     }
-    
+
     function toggleTheme() {
         const currentTheme = document.body.getAttribute('data-theme') || 'dark';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -106,12 +153,11 @@ function setupThemeToggle() {
         applyTheme(newTheme);
         localStorage.setItem('theme', newTheme);
         
-        // تحديث نص الزر في القائمة الجانبية
         if (drawerThemeText) {
             drawerThemeText.textContent = newTheme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
         }
     }
-    
+
     function applyTheme(theme) {
         document.body.setAttribute('data-theme', theme);
         updateThemeIcons(theme);
@@ -120,14 +166,11 @@ function setupThemeToggle() {
             drawerThemeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
         }
     }
-    
+
     function updateThemeIcons(theme) {
-        const headerIcon = themeBtn?.querySelector('i');
         const drawerIcon = drawerThemeBtn?.querySelector('i');
-        
         const iconClass = theme === 'dark' ? 'fa-moon' : 'fa-sun';
         
-        if (headerIcon) headerIcon.className = `fas ${iconClass}`;
         if (drawerIcon) drawerIcon.className = `fas ${iconClass}`;
     }
 }
@@ -147,14 +190,12 @@ function setupUserState() {
     const drawerLogoutLink = document.getElementById('drawerLogoutLink');
     
     if (!userBtn) return;
-    
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // المستخدم مسجل الدخول
-            userBtn.href = 'profiles/profile-customer.html';
+            userBtn.href = fixPath('profiles/profile-customer.html');
             userBtn.setAttribute('aria-label', 'ملفي الشخصي');
             
-            // جلب بيانات المستخدم من Firestore
             try {
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
@@ -162,7 +203,6 @@ function setupUserState() {
                     const userName = userData.fullName || 'مستخدم';
                     const userRole = userData.role || 'customer';
                     
-                    // تحديث معلومات المستخدم في القائمة الجانبية
                     if (drawerUserInfo) drawerUserInfo.style.display = 'flex';
                     if (drawerUserName) drawerUserName.textContent = `مرحباً، ${userName}`;
                     
@@ -173,51 +213,41 @@ function setupUserState() {
                     };
                     if (drawerUserRole) drawerUserRole.textContent = roleText[userRole] || 'زبون';
                     
-                    // إظهار/إخفاء الروابط حسب الدور
                     if (userRole === 'salon' || userRole === 'store') {
                         if (drawerDashboardLink) drawerDashboardLink.style.display = 'flex';
                         if (drawerSettingsLink) drawerSettingsLink.style.display = 'flex';
                         
-                        // تحديث رابط لوحة التحكم حسب الدور
                         if (drawerDashboardLink) {
-                            drawerDashboardLink.href = userRole === 'salon' 
-                                ? 'dashboard/appointment.html' 
-                                : 'dashboard/appointment.html';
+                            drawerDashboardLink.href = fixPath('dashboard/appointment.html');
                         }
                         
-                        // تحديث رابط الإعدادات حسب الدور
                         if (drawerSettingsLink) {
-                            drawerSettingsLink.href = userRole === 'salon' 
-                                ? 'dashboard/settings-salon.html' 
-                                : 'dashboard/settings-salon.html';
+                            drawerSettingsLink.href = fixPath('dashboard/settings-salon.html');
                         }
                     }
                     
-                    // تحديث رابط الملف الشخصي حسب الدور
                     if (drawerProfileLink) {
                         const profileLinks = {
                             'customer': 'profiles/profile-customer.html',
                             'salon': 'profiles/profile-salon.html',
                             'store': 'profiles/profile-store.html'
                         };
-                        drawerProfileLink.href = profileLinks[userRole] || 'profiles/profile-customer.html';
+                        drawerProfileLink.href = fixPath(profileLinks[userRole] || 'profiles/profile-customer.html');
                     }
                 }
             } catch (error) {
                 console.error('خطأ في جلب بيانات المستخدم:', error);
             }
             
-            // إظهار زر تسجيل الخروج
             if (drawerLoginLink) drawerLoginLink.style.display = 'none';
             if (drawerLogoutLink) drawerLogoutLink.style.display = 'flex';
             
-            // حدث تسجيل الخروج
             if (drawerLogoutLink) {
                 drawerLogoutLink.onclick = async (e) => {
                     e.preventDefault();
                     try {
                         await signOut(auth);
-                        window.location.href = 'index.html';
+                        window.location.href = fixPath('index.html');
                     } catch (error) {
                         console.error('خطأ في تسجيل الخروج:', error);
                     }
@@ -225,11 +255,9 @@ function setupUserState() {
             }
             
         } else {
-            // المستخدم غير مسجل
-            userBtn.href = 'register/login.html';
+            userBtn.href = fixPath('register/login.html');
             userBtn.setAttribute('aria-label', 'تسجيل الدخول');
             
-            // إخفاء معلومات المستخدم
             if (drawerUserInfo) drawerUserInfo.style.display = 'none';
             if (drawerDashboardLink) drawerDashboardLink.style.display = 'none';
             if (drawerSettingsLink) drawerSettingsLink.style.display = 'none';
@@ -246,11 +274,9 @@ function setupCartBadge() {
     const badge = document.getElementById('cartBadge');
     if (!badge) return;
     
-    // جلب عدد عناصر السلة من localStorage
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     badge.textContent = cart.length;
-    
-    // تحديث عند تغيير السلة
+
     window.addEventListener('cartUpdated', () => {
         const updatedCart = JSON.parse(localStorage.getItem('cart') || '[]');
         badge.textContent = updatedCart.length;
@@ -265,13 +291,11 @@ function setupSettingsButton() {
     if (!settingsBtn) return;
     
     settingsBtn.onclick = () => {
-        // يمكن فتح نافذة إعدادات منبثقة أو التوجيه لصفحة الإعدادات
-        // حالياً سنوجه لصفحة الإعدادات إذا كان المستخدم مسجل دخول
         const user = auth.currentUser;
         if (user) {
-            window.location.href = 'dashboard/settings-salon.html';
+            window.location.href = fixPath('dashboard/settings-salon.html');
         } else {
-            window.location.href = 'register/login.html';
+            window.location.href = fixPath('register/login.html');
         }
     };
 }
@@ -284,16 +308,14 @@ function highlightActivePage() {
     const navLinks = document.querySelectorAll('.nav-link');
     const drawerLinks = document.querySelectorAll('.drawer-link');
     
-    // تحديد الصفحة النشطة بناءً على المسار
     let activePage = 'home';
-    
+
     if (currentPath.includes('explore-salon')) activePage = 'salons';
     else if (currentPath.includes('explore-store')) activePage = 'store';
     else if (currentPath.includes('home-services')) activePage = 'services';
     else if (currentPath.includes('about')) activePage = 'about';
     else if (currentPath.includes('contact')) activePage = 'contact';
-    
-    // تمييز الرابط النشط
+
     navLinks.forEach(link => {
         if (link.dataset.page === activePage) {
             link.classList.add('active');
@@ -301,7 +323,7 @@ function highlightActivePage() {
             link.classList.remove('active');
         }
     });
-    
+
     drawerLinks.forEach(link => {
         const href = link.getAttribute('href');
         if (href && currentPath.includes(href.split('/').pop())) {

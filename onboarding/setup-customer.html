@@ -3,101 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جاري التجهيز... | BarberFlow-Pro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   <!-- <script type="module" src="../auth/js/router.js"></script>-->
-
- <style>
-     :root {
-            --gold-primary: #d4af37;
-            --bg-dark: #0a0a0a;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-dark);
+    <meta name="description" content="جاري تجهيز حسابك">
+    <title>جاري التجهيز... | BarberFlow Pro</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
+    <style>
+        body {
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: var(--bg-primary);
         }
-
-        .welcome-container {
+        
+        .loading-container {
             text-align: center;
-            animation: fadeIn 1.2s ease-out;
+            padding: 40px;
         }
-
-        .logo-wrapper {
-            position: relative;
-            margin-bottom: 25px;
-        }
-
-        .logo-icon {
+        
+        .loading-icon {
             font-size: 4rem;
-            color: var(--gold-primary);
-            animation: pulse 2s infinite ease-in-out;
+            color: var(--brand-accent);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
         }
-
-        .loader-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            border: 2px solid transparent;
-            border-top-color: var(--gold-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .text-content h1 {
-            color: white;
-            font-size: 1.5rem;
-            margin: 10px 0;
-            letter-spacing: 1px;
-        }
-
-        .text-content p {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        
         @keyframes pulse {
             0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.8; }
         }
-
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
+        
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
         }
- </style>
-  
+        
+        .loading-subtext {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
 </head>
 <body>
-
-    <div class="welcome-container">
-        <div class="logo-wrapper">
-            <div class="loader-ring"></div>
-            <i class="fas fa-cut logo-icon"></i>
-        </div>
-        <div class="text-content">
-            <h1>مرحباً بك في BarberFlow</h1>
-            <p>جاري تجهيز عالم الأناقة الخاص بك...</p>
-        </div>
-    </div>
-
+    <!-- حاوية الإشعارات -->
     <div id="notification-container"></div>
 
-    <script type="module" src="js/setup-customer.js"></script>
+    <div class="loading-container">
+        <i class="fas fa-cut loading-icon"></i>
+        <h1 class="loading-text">مرحباً بك في BarberFlow Pro</h1>
+        <p class="loading-subtext">جاري تجهيز عالم الأناقة الخاص بك...</p>
+    </div>
+
+    <!-- السكربتات -->
+    <script type="module" src="setup-customer.js"></script>
 </body>
 </html>
+

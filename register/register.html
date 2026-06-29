@@ -3,95 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="إنشاء حساب جديد في BarberFlow Pro">
     <title>إنشاء حساب جديد | BarberFlow Pro</title>
-    <link rel="stylesheet" href="./register.css">
+    
+        <!--تغيير الثيم دون استدعاء الشريط -->
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
+    <link rel="stylesheet" href="register.css">
 </head>
 <body>
+    <!-- حاوية الإشعارات -->
     <div id="notification-container"></div>
 
-    <div class="auth-container">
-        <!-- الخطوة 1: نموذج التسجيل -->
-        <div id="registerStep">
-            <h2 id="registerHeading">إنشاء حساب جديد</h2>
-            <p id="registerSubheading" class="step-desc">قم بملء البيانات التالية للمتابعة</p>
+    <div class="auth-page">
+        <div class="auth-container">
+            <!-- الخطوة 1: نموذج التسجيل -->
+            <div id="registerStep">
+                <h2 id="registerHeading">إنشاء حساب جديد</h2>
+                <p id="registerSubheading" class="step-desc">قم بملء البيانات التالية للمتابعة</p>
 
-            <form id="unifiedRegisterForm">
-                <div class="input-group">
-                    <label id="labelName" for="regName">الاسم الكامل</label>
-                    <input type="text" id="regName" placeholder="أدخل اسمك الكامل" required>
+                <form id="unifiedRegisterForm">
+                    <div class="input-group">
+                        <label id="labelName" for="regName">الاسم الكامل</label>
+                        <input 
+                            type="text" 
+                            id="regName" 
+                            placeholder="أدخل اسمك الكامل"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regIdentifier">البريد الإلكتروني أو رقم الهاتف</label>
+                        <input 
+                            type="text" 
+                            id="regIdentifier" 
+                            placeholder="example@email.com أو 06XXXXXXXX"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group hidden-step" id="passwordGroup">
+                        <label for="regPassword">كلمة المرور</label>
+                        <input 
+                            type="password" 
+                            id="regPassword" 
+                            placeholder="6 أحرف على الأقل"
+                            autocomplete="new-password"
+                            minlength="6"
+                        >
+                    </div>
+
+                    <!-- Recaptcha -->
+                    <div id="recaptcha-container"></div>
+
+                    <button type="submit" class="auth-btn" id="mainSubmitBtn">
+                        <span id="submitBtnText">متابعة التسجيل</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>أو التسجيل السريع</span>
                 </div>
 
-                <div class="input-group">
-                    <label for="regIdentifier">البريد الإلكتروني أو رقم الهاتف</label>
-                    <input type="text" id="regIdentifier" placeholder="example@email.com أو 06XXXXXXXX" required>
-                </div>
-
-                <div class="input-group hidden-step" id="passwordGroup">
-                    <label for="regPassword">كلمة المرور</label>
-                    <input type="password" id="regPassword" placeholder="6 أحرف على الأقل" minlength="6">
-                </div>
-
-                <div id="recaptcha-container"></div>
-
-                <button type="submit" class="auth-btn" id="mainSubmitBtn">
-                    <span id="submitBtnText">متابعة التسجيل</span>
-                    <i class="fas fa-arrow-left"></i>
+                <button type="button" class="google-btn" id="googleBtn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    <span>سجل باستخدام Google</span>
                 </button>
-            </form>
 
-            <div class="divider">
-                <span>أو التسجيل السريع</span>
+                <div class="auth-footer">
+                    <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+                </div>
+
+                <div class="back-home-container">
+                    <button type="button" class="outline-btn" id="backHomeBtn">
+                        <i class="fas fa-home"></i>
+                        <span>العودة للرئيسية</span>
+                    </button>
+                </div>
             </div>
 
-            <button type="button" class="google-btn" id="googleBtn">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                <span>سجل باستخدام Google</span>
-            </button>
+            <!-- الخطوة 2: التحقق OTP -->
+            <div id="verifyStep" class="hidden-step">
+                <div class="verify-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                
+                <h2>تأكيد الحساب</h2>
+                <p class="step-desc">أدخل كود التحقق المكون من 6 أرقام المرسل إليك</p>
 
-            <div class="auth-footer">
-                <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
-            </div>
+                <div class="input-group">
+                    <label for="otpCode">كود التحقق</label>
+                    <input 
+                        type="text" 
+                        id="otpCode" 
+                        placeholder="123456"
+                        maxlength="6"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        autocomplete="one-time-code"
+                    >
+                </div>
 
-            <div class="back-home-container">
-                <button type="button" class="outline-btn" id="backHomeBtn">
-                    <i class="fas fa-home"></i>
-                    <span>العودة للرئيسية</span>
+                <button type="button" class="auth-btn" id="confirmOtpBtn">
+                    <span>تأكيد وفتح الحساب</span>
+                </button>
+
+                <div id="timerContainer" style="display: none;">
+                    <p>إعادة الإرسال خلال: <span id="timer">60</span> ثانية</p>
+                </div>
+
+                <button type="button" class="back-link-btn" id="resendCodeBtn" style="display: none;">
+                    <i class="fas fa-redo"></i> إعادة إرسال الكود
+                </button>
+
+                <button type="button" class="back-link-btn" id="backToRegisterBtn">
+                    <i class="fas fa-arrow-right"></i> تعديل المعلومات
                 </button>
             </div>
-        </div>
-
-        <!-- الخطوة 2: التحقق OTP -->
-        <div id="verifyStep" class="hidden-step">
-            <div class="verify-icon">
-                <i class="fas fa-shield-alt"></i>
-            </div>
-            
-            <h2>تأكيد الحساب</h2>
-            <p class="step-desc">أدخل كود التحقق المكون من 6 أرقام المرسل إليك</p>
-
-            <div class="input-group">
-                <label for="otpCode">كود التحقق</label>
-                <input type="text" id="otpCode" placeholder="123456" maxlength="6" inputmode="numeric">
-            </div>
-
-            <button type="button" class="auth-btn" id="confirmOtpBtn">
-                <span>تأكيد وفتح الحساب</span>
-            </button>
-
-            <div id="timerContainer" style="display: none;">
-                <p>إعادة الإرسال خلال: <span id="timer">60</span> ثانية</p>
-            </div>
-
-            <button type="button" class="back-link-btn" id="resendCodeBtn" style="display: none;">
-                <i class="fas fa-redo"></i> إعادة إرسال الكود
-            </button>
-
-            <button type="button" class="back-link-btn" id="backToRegisterBtn">
-                <i class="fas fa-arrow-right"></i> تعديل المعلومات
-            </button>
         </div>
     </div>
 
+    <!-- السكربتات -->
     <script type="module" src="register.js"></script>
 </body>
 </html>

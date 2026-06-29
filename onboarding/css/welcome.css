@@ -1,66 +1,220 @@
-:root {
-    --gold: #d4af37;
-    --dark: #000000;
+/* ==========================================================================
+BarberFlow Pro - Welcome Page
+المسار: onboarding/welcome.css
+========================================================================== */
+
+.welcome-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
 }
 
-body {
-    background-color: var(--dark);
-    color: white;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+.welcome-page::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+    animation: rotate 30s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .welcome-container {
     text-align: center;
     padding: 30px;
-    max-width: 450px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
     animation: fadeIn 1s ease-in;
 }
 
-.welcome-icon {
-    font-size: 4rem;
-    color: var(--gold);
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-#welcomeTitle { font-size: 1.8rem; margin-bottom: 10px; }
-#welcomeDesc { color: #888; line-height: 1.6; }
+.welcome-icon {
+    font-size: 5rem;
+    color: var(--brand-accent);
+    margin-bottom: 25px;
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+    animation: pulse 2s infinite;
+}
 
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.welcome-container h1 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.welcome-desc {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1.05rem;
+    margin-bottom: 40px;
+}
+
+/* بطاقة الإعداد */
 .setup-card {
-    background: #111;
-    border: 1px solid #222;
-    padding: 25px;
-    border-radius: 20px;
-    margin-top: 40px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-gold);
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-xl);
+    transition: all var(--transition-normal);
+}
+
+.setup-card:hover {
+    border-color: var(--brand-accent);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
 }
 
 .card-content {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
     text-align: right;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
+.card-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #000;
+    flex-shrink: 0;
+}
+
+.card-text h3 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.card-text p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* الزر الرئيسي */
 .main-btn {
     width: 100%;
-    padding: 15px;
-    background: var(--gold);
+    padding: 16px;
+    background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-dark));
+    color: #000;
     border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1.05rem;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    transition: all var(--transition-fast);
+    font-family: 'Cairo', sans-serif;
 }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.main-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+}
+
+.main-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.main-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* زر تسجيل الخروج */
+.logout-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+    font-family: 'Cairo', sans-serif;
+}
+
+.logout-btn:hover {
+    border-color: var(--brand-danger);
+    color: var(--brand-danger);
+    background: rgba(201, 42, 42, 0.1);
+}
+
+/* الفوتر */
+.welcome-footer {
+    margin-top: 40px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .welcome-container {
+        padding: 20px;
+    }
+    
+    .welcome-icon {
+        font-size: 4rem;
+    }
+    
+    .welcome-container h1 {
+        font-size: 1.6rem;
+    }
+    
+    .card-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .setup-card {
+        padding: 25px;
+    }
+}
+

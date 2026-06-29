@@ -1,27 +1,31 @@
-import { auth, db } from "../../core/firebase-init.js";
+/**
+ * BarberFlow Pro - صفحة إضافة المتجر
+ * المسار: onboarding/add-store.js
+ * ملاحظة: تم الحفاظ على نفس المنطق وطريقة التخزين
+ */
+
+import { auth, db } from "../core/firebase-init.js";
 import { doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { showNotification } from "../../auth/js/notifications.js";
+import { showNotification } from "../auth/js/notifications.js";
 
 const categoriesContainer = document.getElementById('categoriesContainer');
 const addCategoryBtn = document.getElementById('addCategoryBtn');
 const daysContainer = document.getElementById('daysSelector');
 const storeForm = document.getElementById('addStoreForm');
-
 const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
 let selectedDays = [];
 let currentUser = null;
 
-// حماية متكاملة للجلسة لمنع ضياع حالة التاجر أثناء تعبئة بيانات المحل
+// حماية متكاملة للجلسة
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.replace("../../register/login.html");
+        window.location.replace("../register/login.html");
         return;
     }
-    
     currentUser = user;
 
-    // بناء واجهة شيبس الأيام تفاعلياً داخل النطاق الآمن
+    // بناء واجهة شيبس الأيام
     if (daysContainer && daysContainer.children.length === 0) {
         days.forEach(day => {
             const chip = document.createElement('div');
@@ -40,7 +44,7 @@ onAuthStateChanged(auth, (user) => {
         });
     }
 
-    // إضافة الأقسام التجارية ديناميكياً بشكل متوافق تماماً مع الصالون
+    // إضافة الأقسام التجارية ديناميكياً
     if (addCategoryBtn && categoriesContainer) {
         addCategoryBtn.onclick = (e) => {
             e.preventDefault();
@@ -50,7 +54,9 @@ onAuthStateChanged(auth, (user) => {
             
             div.innerHTML = `
                 <input type="text" class="category-name" placeholder="مثال: أدوات كهربائية، كريمات..." style="flex:1;" required>
-                <button type="button" class="delete-btn" style="background:#ff4d4d; color:white; border:none; border-radius:6px; padding:10px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                <button type="button" class="delete-btn" style="background:#ff4d4d; color:white; border:none; border-radius:6px; padding:10px; cursor:pointer;">
+                    <i class="fas fa-trash"></i>
+                </button>
             `;
             
             div.querySelector('.delete-btn').addEventListener('click', () => div.remove());
@@ -58,7 +64,7 @@ onAuthStateChanged(auth, (user) => {
         };
     }
 
-    // إرسال وحفظ نموذج المتجر التجاري بشكل نظيف
+    // إرسال وحفظ نموذج المتجر
     if (storeForm) {
         storeForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -90,7 +96,6 @@ onAuthStateChanged(auth, (user) => {
 
                 await updateDoc(doc(db, "users", currentUser.uid), { onboardingStatus: "basic_done" });
                 
-                // تمرير مباشر لصفحة الإعداد الفني للمظهر التابعة للتاجر
                 window.location.href = "setup-store.html";
             } catch (error) {
                 console.error("Store profile configuration failure:", error);
@@ -101,3 +106,4 @@ onAuthStateChanged(auth, (user) => {
         };
     }
 });
+

@@ -1,20 +1,28 @@
-import { db, auth } from "../../core/firebase-init.js";
+/**
+ * BarberFlow Pro - صفحة إعداد الهوية البصرية للصالون
+ * المسار: onboarding/setup-salon.js
+ * 
+ * ملاحظة: تم الحفاظ على نفس المنطق وطريقة التخزين
+ * تم إصلاح الأخطاء الإملائية فقط
+ */
+
+import { db, auth } from "../core/firebase-init.js";
 import { doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { processImage, removeImageFromGallery } from "../../auth/js/images-utils.js"; 
-import { showNotification } from "../../auth/js/notifications.js";
+import { processImage, removeImageFromGallery } from "../auth/js/images-utils.js";
+import { showNotification } from "../auth/js/notifications.js";
 
 // ==========================================
-// 1. المتغيرات ومصفوفات البيانات في النطاق العالمي للملف
+// 1. المتغيرات ومصفوفات البيانات
 // ==========================================
 let selectedCoverBase64 = null;
-let galleryImages = []; 
-let certificateImages = []; 
+let galleryImages = [];
+let certificateImages = [];
 let currentUid = null;
 let isUploadingImages = false;
 
 // ==========================================
-// 2. جلب عناصر واجهة المستخدم في النطاق العالمي لحل مشكلة الكاش تماماً
+// 2. جلب عناصر واجهة المستخدم
 // ==========================================
 const setupForm = document.getElementById('setupSalonForm');
 const coverUploader = document.getElementById('coverUploader');
@@ -25,22 +33,20 @@ const coverUploaderLabel = document.getElementById('coverUploaderLabel');
 const deleteCoverBtn = document.getElementById('deleteCoverBtn');
 const skipBtn = document.getElementById('skipBtn');
 const mainSubmitBtn = document.getElementById('submitBtn');
-
 const galleryPreviewsContainer = document.getElementById('galleryPreviewsContainer');
 const addGalleryPhotoBtn = document.getElementById('addGalleryPhotoBtn');
 const galleryFileInput = document.getElementById('galleryFileInput');
-
 const certPreviewsContainer = document.getElementById('certPreviewsContainer');
 const addCertPhotoBtn = document.getElementById('addCertPhotoBtn');
 const certFileInput = document.getElementById('certFileInput');
 
-// تصفير مدخلات الملفات فوراً لكسر كاش المتصفح العشوائي (Cache Breaker)
+// تصفير مدخلات الملفات
 if (fileInput) fileInput.value = "";
 if (galleryFileInput) galleryFileInput.value = "";
 if (certFileInput) certFileInput.value = "";
 
 // ==========================================
-// 3. دالة التحكم في حالات الأزرار أثناء الرفع المعقد
+// 3. دالة التحكم في حالات الأزرار
 // ==========================================
 function toggleActionButtonsState(disabled, text = "") {
     isUploadingImages = disabled;
@@ -59,12 +65,11 @@ function toggleActionButtonsState(disabled, text = "") {
 }
 
 // ==========================================
-// 4. دالة بناء كروت المعاينة للصور (Previews)
+// 4. دالة بناء كروت المعاينة
 // ==========================================
 function renderPreviewsOnly(array, container, isGalleryType) {
     if (!container) return;
     container.innerHTML = "";
-    
     array.forEach(imgData => {
         const item = document.createElement('div');
         item.className = 'gallery-item';
@@ -99,16 +104,16 @@ function renderPreviewsOnly(array, container, isGalleryType) {
 }
 
 // ==========================================
-// 5. ربط أحداث عناصر الواجهة بشكل عالمي مباشر (تجنب الحجز داخل الدالات المخفية)
+// 5. ربط أحداث عناصر الواجهة
 // ==========================================
 
-// إعداد قنوات النقر لرفع صورة الغلاف
+// رفع صورة الغلاف
 if (coverUploader && fileInput) {
     coverUploader.onclick = (e) => {
-        if (e.target.closest('#deleteCoverBtn')) return; 
+        if (e.target.closest('#deleteCoverBtn')) return;
         fileInput.click();
     };
-
+    
     fileInput.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -141,11 +146,11 @@ if (coverUploader && fileInput) {
     };
 }
 
-// حدث إزالة صورة الواجهة الأساسية
+// إزالة صورة الغلاف
 if (deleteCoverBtn) {
     deleteCoverBtn.onclick = (e) => {
         e.preventDefault();
-        e.stopPropagation(); 
+        e.stopPropagation();
         selectedCoverBase64 = null;
         if (salonImg) {
             salonImg.src = "";
@@ -159,13 +164,13 @@ if (deleteCoverBtn) {
     };
 }
 
-// إعداد قنوات النقر لرفع وتخزين صور معرض الأعمال
+// رفع صور المعرض
 if (addGalleryPhotoBtn && galleryFileInput) {
     addGalleryPhotoBtn.onclick = (e) => {
         e.preventDefault();
         galleryFileInput.click();
     };
-
+    
     galleryFileInput.onchange = async (e) => {
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
@@ -196,13 +201,13 @@ if (addGalleryPhotoBtn && galleryFileInput) {
     };
 }
 
-// إعداد قنوات النقر لرفع صور الشهادات الموثقة
+// رفع صور الشهادات
 if (addCertPhotoBtn && certFileInput) {
     addCertPhotoBtn.onclick = (e) => {
         e.preventDefault();
         certFileInput.click();
     };
-
+    
     certFileInput.onchange = async (e) => {
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
@@ -233,12 +238,12 @@ if (addCertPhotoBtn && certFileInput) {
     };
 }
 
-// حدث إرسال النموذج وحفظ البيانات في قاعدة البيانات لـ Firestore
+// إرسال النموذج
 if (setupForm) {
     setupForm.onsubmit = async (e) => {
         e.preventDefault();
         if (!currentUid || isUploadingImages) return;
-
+        
         const descElement = document.getElementById('salonDescription');
         const certTitleElement = document.getElementById('certificateText');
 
@@ -289,12 +294,12 @@ if (setupForm) {
     };
 }
 
-// حدث التخطي الفوري والمؤقت للمسار الحالي
+// التخطي
 if (skipBtn) {
     skipBtn.onclick = async (e) => {
         e.preventDefault();
         if (!currentUid || isUploadingImages) return;
-
+        
         toggleActionButtonsState(true, "جاري تأجيل خطوة الهوية البصرية...");
 
         try {
@@ -322,17 +327,17 @@ if (skipBtn) {
 }
 
 // ==========================================
-// 6. مستمع الجلسة الأمنية (وظيفة التحقق والتوثيق فقط)
+// 6. مستمع الجلسة الأمنية
 // ==========================================
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         setTimeout(() => {
             if (!auth.currentUser) {
-                window.location.replace("../../register/login.html");
+                window.location.replace("../register/login.html");
             }
         }, 500);
         return;
     }
-    // إسناد المعرف الحقيقي الآمن للمستخدم فقط
     currentUid = user.uid;
 });
+

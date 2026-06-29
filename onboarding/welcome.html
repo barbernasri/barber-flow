@@ -3,40 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مرحباً بك في BarberFlow Pro</title>
+    <meta name="description" content="مرحباً بك في BarberFlow Pro">
+    <title>مرحباً بك | BarberFlow Pro</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- التنسيقات العامة -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- تنسيقات التنبيهات -->
+    <link rel="stylesheet" href="../auth/css/notifications.css">
+    
+    <!-- تنسيقات الصفحة -->
     <link rel="stylesheet" href="css/welcome.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="welcome-container">
-        <div class="logo-section">
-            <i class="fas fa-magic welcome-icon"></i>
-        </div>
+    <!-- حاوية الإشعارات -->
+    <div id="notification-container"></div>
 
-        <div class="text-section">
-            <h1 id="welcomeTitle">مرحباً بك في مجتمعنا</h1>
-            <p id="welcomeDesc">نحن سعداء جداً بانضمامك إلينا. لنبدأ بتخصيص تجربتك في BarberFlow-Pro.</p>
-        </div>
-
-        <div class="setup-card" id="setupCard">
-            <div class="card-content">
-                <i class="fas fa-tasks-alt"></i>
-                <div>
-                    <h4>إعداد ملفك الشخصي</h4>
-                    <p>تبقى خطوة واحدة فقط لتبدأ رحلتك معنا.</p>
-                </div>
+    <div class="welcome-page">
+        <div class="welcome-container">
+            <!-- الأيقونة -->
+            <div class="welcome-icon">
+                <i class="fas fa-cut"></i>
             </div>
-            <button id="startSetupBtn" class="main-btn">
-                <span>ابدأ الإعداد الآن</span>
-                <i class="fas fa-arrow-left"></i>
+            
+            <!-- العنوان -->
+            <h1 id="welcomeTitle">مرحباً بك في مجتمعنا</h1>
+            <p class="welcome-desc">
+                نحن سعداء جداً بانضمامك إلينا. لنبدأ بتخصيص تجربتك في BarberFlow Pro.
+            </p>
+
+            <!-- بطاقة الإعداد -->
+            <div class="setup-card">
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <div class="card-text">
+                        <h3>إعداد ملفك الشخصي</h3>
+                        <p>تبقى خطوة واحدة فقط لتبدأ رحلتك معنا.</p>
+                    </div>
+                </div>
+
+                <button type="button" class="main-btn" id="startSetupBtn">
+                    <span>ابدأ الإعداد الآن</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <!-- زر تسجيل الخروج (اختياري) -->
+            <button type="button" class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
             </button>
         </div>
 
+        <!-- الفوتر -->
         <footer class="welcome-footer">
-            <p>BarberFlow-Pro &copy; 2026 - تجربة حلاقة عصرية</p>
+            <p>BarberFlow Pro © 2026 - تجربة حلاقة عصرية</p>
         </footer>
     </div>
 
+    <!-- السكربتات -->
     <script type="module" src="js/welcome.js"></script>
 </body>
 </html>
+
