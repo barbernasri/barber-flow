@@ -12,7 +12,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!container) return;
     
     try {
-        const response = await fetch("../shared/global-navbar.html");
+
+
+const response = await fetch(window.location.pathname.endsWith("index.html") || window.location.pathname === "/" || !window.location.pathname.includes("/home/") ? "./shared/global-navbar.html" : "../shared/global-navbar.html");
+
+
         if (!response.ok) throw new Error("Navbar file not found");
         
         container.innerHTML = await response.text();
