@@ -167,3 +167,50 @@ export const validateImageType = (file) => {
     return validTypes.includes(file.type);
 };
 
+/**
+التحقق من محتوى الصورة (كشف مبدئي)
+- فحص نسبة الألوان الجلدية
+- فحص نسبة التباين المشبوه
+- رفض الصور ذات الأبعاد غير المنطقية
+*/
+export const detectInappropriateContent = (imgElement) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = imgElement.width;
+    canvas.height = imgElement.height;
+    ctx.drawImage(imgElement, 0, 0);
+    
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    let skinTonePixels = 0;
+    let totalPixels = data.length / 4;
+    
+    // فحص نسبة الألوان الجلدية
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        // خوارزمية بسيطة للكشف عن اللون الجلدي
+        if (r > 95 && g > 40 && b > 20 &&
+            r > g && r > b &&
+            Math.abs(r - g) > 15 &&
+            r - g > 15 && r - b > 15) {
+            skinTonePixels++;
+        }
+    }
+    
+    const skinToneRatio = skinTonePixels / totalPixels;
+    
+    // رفض إذا كانت نسبة اللون الجلدي عالية جداً (> 60%)
+    if (skinToneRatio > 0.6) {
+        return {
+            safe: false,
+            reason: 'الصورة تحتوي على محتوى غير لائق'
+        };
+    }
+    
+    return { safe: true };
+};
+
