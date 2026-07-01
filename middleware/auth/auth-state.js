@@ -1,6 +1,7 @@
 /**
- * middleware/core/auth-state.js
+ * middleware/auth/auth-state.js
  * إدارة حالة المستخدم الحالية
+ * الدور: جلب بيانات المستخدم من Firebase Auth + Firestore
  */
 import { auth, db } from "../../core/firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -25,7 +26,7 @@ export const getCurrentUser = () => {
                 // جلب بيانات المستخدم من Firestore
                 const userDocRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userDocRef);
-                
+
                 if (userDoc.exists()) {
                     // دمج بيانات Firebase مع Firestore
                     resolve({
@@ -44,7 +45,7 @@ export const getCurrentUser = () => {
                         phoneNumber: user.phoneNumber,
                         displayName: user.displayName,
                         photoURL: user.photoURL,
-                        role: 'customer', // دور افتراضي
+                        role: 'customer',
                         status: 'new'
                     });
                 }
@@ -54,13 +55,13 @@ export const getCurrentUser = () => {
             }
         });
 
-        // مهلة زمنية في حالة عدم وجود مستخدم
+        // مهلة زمنية في حالة عدم وجود مستخدم (5 ثوانٍ)
         setTimeout(() => {
             if (!auth.currentUser) {
                 unsubscribe();
                 resolve(null);
             }
-        }, 3000);
+        }, 5000);
     });
 };
 

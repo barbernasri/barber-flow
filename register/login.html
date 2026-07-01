@@ -3,38 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="تسجيل الدخول إلى BarberFlow Pro">
     <title>تسجيل الدخول | BarberFlow Pro</title>
     
-    <!--تغيير الثيم دون استدعاء الشريط -->
-<script>
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
-</script>
-
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- التنسيقات العامة -->
+    <!-- CSS المركزي -->
     <link rel="stylesheet" href="../shared/css/global.css">
     
-    <!-- تنسيقات التنبيهات -->
-    <link rel="stylesheet" href="../auth/css/notifications.css">
-    
-    <!-- تنسيقات الصفحة -->
+    <!-- CSS الخاص بالصفحة -->
     <link rel="stylesheet" href="register.css">
+    
+    <!-- CSS التنبيهات -->
+    <link rel="stylesheet" href="../shared/css/notifications.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- حاوية الإشعارات -->
-    <div id="notification-container"></div>
-
     <div class="auth-page">
         <div class="auth-container">
-            <!-- الهيدر -->
+            <!-- الرأس -->
             <div class="auth-header">
                 <div class="auth-logo">
                     <i class="fas fa-cut"></i>
-                    <span>BarberFlow <strong>Pro</strong></span>
+                    <span>BarberFlow Pro</span>
                 </div>
                 <h2>مرحباً بعودتك</h2>
                 <p>سجل دخولك لإدارة حسابك في BarberFlow Pro</p>
@@ -47,8 +37,7 @@
                     <input 
                         type="text" 
                         id="loginEmail" 
-                        placeholder="example@email.com أو 06XXXXXXXX"
-                        autocomplete="username"
+                        placeholder="example@email.com أو 0612345678"
                         required
                     >
                 </div>
@@ -59,15 +48,9 @@
                         type="password" 
                         id="loginPassword" 
                         placeholder="أدخل كلمة المرور"
-                        autocomplete="current-password"
                     >
-                    <a href="#" id="forgotPassBtn" class="forgot-link">
-                        نسيت كلمة المرور؟
-                    </a>
+                    <a href="#" class="forgot-link" id="forgotPassBtn">نسيت كلمة المرور؟</a>
                 </div>
-
-                <!-- Recaptcha -->
-                <div id="recaptcha-container"></div>
 
                 <button type="submit" class="auth-btn" id="mainSubmitBtn">
                     <span>متابعة</span>
@@ -75,29 +58,38 @@
                 </button>
             </form>
 
+            <!-- الفاصل -->
             <div class="divider">
                 <span>أو الدخول السريع</span>
             </div>
 
-            <button type="button" class="google-btn" id="googleBtn">
+            <!-- زر Google -->
+            <button class="google-btn" id="googleBtn">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
                 <span>Google</span>
             </button>
 
+            <!-- التذييل -->
             <div class="auth-footer">
-                <p>ليس لديك حساب معنا؟ <a href="register.html" id="showRegisterOptions">إنشاء حساب جديد</a></p>
+                <p>ليس لديك حساب معنا؟ 
+                    <a href="#" id="showRegisterOptions">إنشاء حساب جديد</a>
+                </p>
             </div>
 
+            <!-- زر العودة -->
             <div class="back-home-container">
-                <button type="button" class="outline-btn" id="backToHomeBtn">
+                <button class="outline-btn" id="backToHomeBtn">
                     <i class="fas fa-home"></i>
                     <span>العودة للرئيسية</span>
                 </button>
             </div>
+
+            <!-- حاوية Recaptcha -->
+            <div id="recaptcha-container"></div>
         </div>
     </div>
 
-    <!-- نافذة استعادة كلمة المرور -->
+    <!-- نافذة نسيت كلمة المرور -->
     <div id="forgotModal" class="modal-overlay hidden-step">
         <div class="modal-content">
             <h2>استعادة الحساب</h2>
@@ -111,18 +103,20 @@
                 >
             </div>
 
-            <button type="button" class="auth-btn" id="sendResetBtn">
+            <button class="auth-btn" id="sendResetBtn">
                 <span>إرسال رابط التعيين</span>
             </button>
 
-            <button type="button" class="back-link-btn" id="closeModal">
+            <button class="back-link-btn" id="closeModal">
                 إلغاء والعودة
             </button>
         </div>
     </div>
 
-    <!-- السكربتات -->
+    <!-- حاوية التنبيهات -->
+    <div id="notification-container"></div>
+
+    <!-- السكريبت الرئيسي -->
     <script type="module" src="login.js"></script>
 </body>
 </html>
-

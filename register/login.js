@@ -1,8 +1,12 @@
 /**
- * BarberFlow Pro - صفحة تسجيل الدخول
- * المسار: register/login.js
- */
+BarberFlow Pro - صفحة تسجيل الدخول
+المسار: register/login.js
+الدور: إدارة تسجيل الدخول بالبريد/الهاتف/Google
+*/
 
+// ============================================
+// الاستيرادات
+// ============================================
 import { auth, db } from "../core/firebase-init.js";
 import {
     signInWithEmailAndPassword,
@@ -12,16 +16,18 @@ import {
     RecaptchaVerifier,
     signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { 
-    doc, 
-    getDoc, 
-    setDoc, 
-    collection, 
-    query, 
-    where, 
-    getDocs 
+import {
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    query,
+    where,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { showNotification, showOtpModal } from "../auth/js/notifications.js";
+import { showNotification, showOtpModal } from "../shared/js/notifications.js";
+import { PATHS } from "../shared/js/paths.js";
+import { sanitizeEmail, sanitizePhone } from "../middleware/validation/index.js";
 
 // ============================================
 // عناصر DOM
@@ -39,6 +45,11 @@ const loginPasswordInput = document.getElementById('loginPassword');
 // دوال مساعدة
 // ============================================
 
+/**
+تنسيق رقم الهاتف المغربي
+@param {string} phone
+@returns {string}
+*/
 function formatMoroccanPhoneNumber(phone) {
     let cleaned = phone.replace(/\s+/g, '');
     if (cleaned.startsWith('06') || cleaned.startsWith('07')) {
@@ -47,6 +58,11 @@ function formatMoroccanPhoneNumber(phone) {
     return cleaned;
 }
 
+/**
+التحقق من وجود حساب المستخدم
+@param {string} identifier - البريد أو الهاتف
+@returns {Promise<Object>}
+*/
 async function checkUserAccountExists(identifier) {
     try {
         const usersRef = collection(db, "users");
@@ -63,19 +79,27 @@ async function checkUserAccountExists(identifier) {
     }
 }
 
+/**
+توجيه المستخدم حسب دوره
+@param {string} uid
+*/
 async function routeUserByRole(uid) {
-    const userDoc = await getDoc(doc(db, "users", uid));
-    if (userDoc.exists()) {
-        const role = userDoc.data().role;
-        const routes = {
-            'salon': "../profiles/profile-salon.html",
-            'customer': "../profiles/profile-customer.html",
-            'store': "../profiles/profile-store.html"
-        };
-        
-        window.location.replace(routes[role] || "../index.html");
-    } else {
-        showNotification("تم تسجيل الدخول بنجاح، ولكن لم نجد دوراً مسجلاً لحسابك.", "warning");
+    try {
+        const userDoc = await getDoc(doc(db, "users", uid));
+        if (userDoc.exists()) {
+            const role = userDoc.data().role;
+            const routes = {
+                'salon': PATHS.PROFILE_SALON,
+                'customer': PATHS.PROFILE_CUSTOMER,
+                'store': PATHS.PROFILE_STORE
+            };
+            window.location.replace(routes[role] || PATHS.INDEX);
+        } else {
+            showNotification("تم تسجيل الدخول بنجاح، ولكن لم نجد دوراً مسجلاً لحسابك.", "warning");
+        }
+    } catch (error) {
+        console.error("Error routing user:", error);
+        showNotification("حدث خطأ في توجيه الحساب", "error");
     }
 }
 
@@ -116,7 +140,15 @@ if (loginForm) {
 
         if (identifier.includes('@')) {
             // بريد إلكتروني
-            const accountCheck = await checkUserAccountExists(identifier);
+            const sanitizedEmail = sanitizeEmail(identifier);
+            if (!sanitizedEmail) {
+                showNotification("صيغة البريد الإلكتروني غير صحيحة", "error");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>متابعة</span> <i class="fas fa-arrow-left"></i>';
+                return;
+            }
+
+            const accountCheck = await checkUserAccountExists(sanitizedEmail);
             
             if (!accountCheck.exists) {
                 showNotification("هذا البريد الإلكتروني غير مسجل لدينا! قم بإنشاء حساب جديد أولاً.", "error");
@@ -137,15 +169,16 @@ if (loginForm) {
         } else {
             // رقم هاتف
             const formattedPhone = formatMoroccanPhoneNumber(identifier);
+            const sanitizedPhone = sanitizePhone(formattedPhone);
             
-            if (!formattedPhone.startsWith('+212') || formattedPhone.length < 13) {
+            if (!sanitizedPhone || !sanitizedPhone.startsWith('+212') || sanitizedPhone.length < 13) {
                 showNotification("يرجى إدخال بريد إلكتروني صحيح أو رقم هاتف مغربي يبدأ بـ 06 أو 07", "error");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<span>متابعة</span> <i class="fas fa-arrow-left"></i>';
                 return;
             }
 
-            const accountCheck = await checkUserAccountExists(formattedPhone);
+            const accountCheck = await checkUserAccountExists(sanitizedPhone);
             
             if (!accountCheck.exists) {
                 showNotification("رقم الهاتف هذا غير مسجل لدينا! يرجى النقر على إنشاء حساب لتسجيله.", "error");
@@ -163,7 +196,7 @@ if (loginForm) {
                     });
                 }
 
-                const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+                const confirmationResult = await signInWithPhoneNumber(auth, sanitizedPhone, window.recaptchaVerifier);
                 
                 // استخدام showOtpModal من notifications.js
                 const code = await showOtpModal();
@@ -193,7 +226,6 @@ if (loginForm) {
 if (googleBtn) {
     googleBtn.onclick = async (e) => {
         e.stopPropagation();
-        
         googleBtn.disabled = true;
         googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الاتصال...';
 
@@ -232,7 +264,7 @@ if (googleBtn) {
 function showRegisterOptionsModalForGoogle(firebaseUser) {
     const oldOverlay = document.getElementById('registerOptionsModalOverlay');
     if (oldOverlay) oldOverlay.remove();
-
+    
     const modalOverlay = document.createElement('div');
     modalOverlay.id = 'registerOptionsModalOverlay';
     modalOverlay.className = 'modal-overlay show-step-animation';
@@ -297,7 +329,7 @@ function showRegisterOptionsModalForGoogle(firebaseUser) {
                 });
 
                 modalOverlay.remove();
-                window.location.replace(`../onboarding/welcome.html?uid=${firebaseUser.uid}`);
+                window.location.replace(PATHS.WELCOME + `?uid=${firebaseUser.uid}`);
             } catch (error) {
                 console.error("Error saving Google user:", error);
                 showNotification("حدث خطأ أثناء حفظ الصلاحيات، يرجى إعادة المحاولة", "error");
@@ -311,7 +343,7 @@ function showRegisterOptionsModalForGoogle(firebaseUser) {
 }
 
 // ============================================
-// باقي الأزرار والنافذة المنبثقة
+// نافذة نسيت كلمة المرور
 // ============================================
 const forgotPassBtn = document.getElementById('forgotPassBtn');
 if (forgotPassBtn) {
@@ -362,24 +394,26 @@ if (sendResetBtn) {
     };
 }
 
+// ============================================
+// زر العودة للرئيسية
+// ============================================
 if (backToHomeBtn) {
     backToHomeBtn.onclick = () => {
-        window.location.href = '../index.html';
+        window.location.href = PATHS.INDEX;
     };
 }
 
 // ============================================
-// زر "إنشاء حساب جديد" - يفتح Modal الخيارات
+// زر "إنشاء حساب جديد"
 // ============================================
 const showRegisterOptions = document.getElementById('showRegisterOptions');
 if (showRegisterOptions) {
     showRegisterOptions.onclick = (e) => {
         e.preventDefault();
-        
         const oldOverlay = document.getElementById('registerOptionsModalOverlay');
         if (oldOverlay) oldOverlay.remove();
         
-        const modalOverlay = document.createElement('div');
+        const modalOverlay = document.createElement('div'); 
         modalOverlay.id = 'registerOptionsModalOverlay';
         modalOverlay.className = 'modal-overlay show-step-animation';
 
@@ -423,9 +457,8 @@ if (showRegisterOptions) {
             button.onclick = () => {
                 const role = button.getAttribute('data-role');
                 modalOverlay.remove();
-                window.location.href = `register.html?role=${role}`;
+                window.location.href = PATHS.REGISTER + `?role=${role}`;
             };
         });
     };
 }
-

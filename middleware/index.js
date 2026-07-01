@@ -3,32 +3,54 @@
  * نقطة التصدير المركزية لجميع دوال الـ Middleware
  */
 
-// Core Middleware
-export { getCurrentUser, isUserLoggedIn, getCurrentUserId } from './core/auth-state.js';
-export { 
-    checkRole, 
-    checkUserStatus, 
+// Auth Middleware
+export { getCurrentUser, isUserLoggedIn, getCurrentUserId } from './auth/auth-state.js';
+
+// Guards Middleware
+export {
+    checkRole,
+    checkUserStatus,
     handleUnauthorizedAccess,
-    hasCompletedOnboarding 
-} from './core/role-guard.js';
+    hasCompletedOnboarding
+} from './guards/role-guard.js';
+
 export {
     isSlotAvailable,
     validateBookingData,
     isWithinWorkingHours,
     getAvailableSlots
-} from './core/booking-guard.js';
-export {
-    initializePage,
-    initializePublicPage,
-    initializeSalonPage,
-    initializeStorePage,
-    initializeCustomerPage
-} from './core/index.js';
+} from './guards/booking-guard.js';
 
-// Profile Routing
+// Routing Middleware
 export {
     navigateToUserDashboard,
     getProfileRoute,
     verifyProfileAccess
-} from './core/profile-route.js';
+} from './routing/profile-route.js';
+
+export {
+    initPageRouter,
+    triggerRecoveryModal,
+    showPageContent
+} from './routing/page-router.js';
+
+// Validation Middleware
+export {
+    sanitizeText,
+    sanitizeEmail,
+    sanitizePhone,
+    sanitizeURL,
+    validateLength,
+    sanitizeUserData,
+    sanitizeSalonData,
+    sanitizeBookingData
+} from './validation/input-sanitizer.js';
+
+export {
+    validateImageType,
+    validateImageSize,
+    validateImageDimensions,
+    detectInappropriateContent,
+    validateAndProcessImage
+} from './validation/images-sanitizer.js';
 
