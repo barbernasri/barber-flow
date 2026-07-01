@@ -1,7 +1,6 @@
 /**
 BarberFlow Pro - صفحة إنشاء حساب جديد
 المسار: register/register.js
-الدور: إدارة تسجيل الحسابات الجديدة (زبون/صالون/متجر)
 */
 
 // ============================================
@@ -23,6 +22,7 @@ import {
     where,
     getDocs
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// ✅ إصلاح المسار
 import { showNotification } from "../shared/js/notifications.js";
 import { PATHS } from "../shared/js/paths.js";
 import { sanitizeText, sanitizeEmail, sanitizePhone } from "../middleware/validation/index.js";
@@ -87,9 +87,6 @@ const roleLocalization = {
 // دوال مساعدة
 // ============================================
 
-/**
-إعادة تعيين زر الإرسال
-*/
 const resetSubmitButton = () => {
     submitBtn.disabled = false;
     if (selectedRole && roleLocalization[selectedRole]) {
@@ -97,17 +94,11 @@ const resetSubmitButton = () => {
     }
 };
 
-/**
-إعادة تعيين زر OTP
-*/
 const resetOtpButton = () => {
     confirmOtpBtn.disabled = false;
     confirmOtpBtn.innerHTML = 'تأكيد وفتح الحساب';
 };
 
-/**
-تهيئة Recaptcha
-*/
 const initRecaptcha = () => {
     if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
@@ -121,11 +112,6 @@ const initRecaptcha = () => {
     });
 };
 
-/**
-تنسيق رقم الهاتف المغربي
-@param {string} phone
-@returns {string}
-*/
 function formatMoroccanPhoneNumber(phone) {
     let cleaned = phone.replace(/\s+/g, '');
     if (cleaned.startsWith('06') || cleaned.startsWith('07')) {
@@ -134,11 +120,6 @@ function formatMoroccanPhoneNumber(phone) {
     return cleaned;
 }
 
-/**
-التحقق من أن المعرف (بريد/هاتف) غير مستخدم
-@param {string} identifier
-@returns {Promise<boolean>}
-*/
 async function isIdentifierTaken(identifier) {
     try {
         const usersRef = collection(db, "users");
@@ -151,9 +132,6 @@ async function isIdentifierTaken(identifier) {
     }
 }
 
-/**
-بدء العد التنازلي لإعادة إرسال الرمز
-*/
 function startTimer() {
     let timeLeft = 60;
     resendCodeBtn.style.display = 'none';
@@ -172,10 +150,6 @@ function startTimer() {
     }, 1000);
 }
 
-/**
-إعداد واجهة التسجيل حسب الدور
-@param {string} role
-*/
 function setupRegistrationUI(role) {
     const config = roleLocalization[role];
     if (!config) {
@@ -200,14 +174,6 @@ function setupRegistrationUI(role) {
     passwordGroup.classList.remove('show-step-animation');
 }
 
-/**
-حفظ المستخدم في قاعدة البيانات
-@param {string} uid
-@param {string} name
-@param {string} contact
-@param {string} role
-@param {string} type
-*/
 async function saveUserToDB(uid, name, contact, role, type) {
     await setDoc(doc(db, "users", uid), {
         fullName: sanitizeText(name),
@@ -223,9 +189,6 @@ async function saveUserToDB(uid, name, contact, role, type) {
 // Event Listeners
 // ============================================
 
-/**
-إظهار حقل كلمة المرور عند إدخال بريد إلكتروني
-*/
 regIdentifierInput.addEventListener('input', () => {
     const value = regIdentifierInput.value.trim();
     if (value.includes('@')) {
@@ -242,9 +205,6 @@ regIdentifierInput.addEventListener('input', () => {
     }
 });
 
-/**
-معالجة نموذج التسجيل
-*/
 unifiedRegisterForm.onsubmit = async (e) => {
     e.preventDefault();
     if (!selectedRole) return window.location.replace(PATHS.LOGIN);
@@ -261,7 +221,6 @@ unifiedRegisterForm.onsubmit = async (e) => {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق من البيانات...';
 
     if (identifier.includes('@')) {
-        // بريد إلكتروني
         const sanitizedEmail = sanitizeEmail(identifier);
         if (!sanitizedEmail) {
             showNotification("صيغة البريد الإلكتروني غير صحيحة", "error");
@@ -293,7 +252,6 @@ unifiedRegisterForm.onsubmit = async (e) => {
             resetSubmitButton();
         }
     } else {
-        // رقم هاتف
         const formattedPhone = formatMoroccanPhoneNumber(identifier);
         const sanitizedPhone = sanitizePhone(formattedPhone);
         
@@ -335,9 +293,6 @@ unifiedRegisterForm.onsubmit = async (e) => {
     }
 };
 
-/**
-معالجة تأكيد OTP
-*/
 confirmOtpBtn.onclick = async () => {
     const code = document.getElementById('otpCode').value.trim();
     if (code.length !== 6) {
@@ -370,9 +325,6 @@ confirmOtpBtn.onclick = async () => {
     }
 };
 
-/**
-إعادة إرسال الرمز
-*/
 resendCodeBtn.onclick = async () => {
     const config = roleLocalization[selectedRole];
     const rawData = localStorage.getItem(config.storageKey);
@@ -395,9 +347,6 @@ resendCodeBtn.onclick = async () => {
     }
 };
 
-/**
-العودة لخطوة التسجيل
-*/
 document.getElementById('backToRegisterBtn').onclick = () => {
     verifyStep.classList.add('hidden-step');
     verifyStep.classList.remove('show-step-animation');
@@ -408,9 +357,6 @@ document.getElementById('backToRegisterBtn').onclick = () => {
     resetOtpButton();
 };
 
-/**
-تسجيل الدخول عبر Google
-*/
 googleBtn.onclick = async () => {
     if (!selectedRole) return window.location.replace(PATHS.LOGIN);
     
@@ -433,18 +379,12 @@ googleBtn.onclick = async () => {
     }
 };
 
-/**
-العودة للرئيسية
-*/
 if (backHomeBtn) {
     backHomeBtn.onclick = () => {
         window.location.href = PATHS.INDEX;
     };
 }
 
-// ============================================
-// التهيئة عند تحميل الصفحة
-// ============================================
 window.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const roleParam = urlParams.get('role');

@@ -89,6 +89,33 @@
         </div>
     </div>
 
+    <!-- ✅ نافذة اختيار نوع الحساب (مضمنة مباشرة) -->
+    <div id="registerOptionsModal" class="modal-overlay hidden-step">
+        <div class="auth-container modal-content">
+            <h2>إنشاء حساب جديد</h2>
+            <p class="step-desc">اختر نوع الحساب للانتقال إلى استمارة التسجيل</p>
+            
+            <div class="suggestion-grid">
+                <button type="button" class="suggest-link select-role-action-btn" data-role="customer">
+                    <i class="fas fa-user"></i>
+                    <span>حساب عميل</span>
+                </button>
+                <button type="button" class="suggest-link select-role-action-btn" data-role="salon">
+                    <i class="fas fa-scissors"></i>
+                    <span>صالون تجميل</span>
+                </button>
+                <button type="button" class="suggest-link select-role-action-btn" data-role="store">
+                    <i class="fas fa-store"></i>
+                    <span>متجر تجاري</span>
+                </button>
+            </div>
+            
+            <button type="button" id="closeRegisterModal" class="back-link-btn">
+                إلغاء والعودة
+            </button>
+        </div>
+    </div>
+
     <!-- نافذة نسيت كلمة المرور -->
     <div id="forgotModal" class="modal-overlay hidden-step">
         <div class="modal-content">
@@ -120,3 +147,4 @@
     <script type="module" src="login.js"></script>
 </body>
 </html>
+

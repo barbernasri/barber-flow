@@ -1,216 +1,535 @@
-📑 كتيب التعليمات الحاكمة لتحديث وإصلاح الكود | BarberFlow Pro
-⚠️ قاعدة ذهبية عليا وصارمة (Absolute Guardrail):
-يُمنع منعاً باتاً اختصار، تبسيط، أو حذف أي جزء من الأكواد المستقرة القائمة أثناء عمليات الإصلاح أو التحديث. يجب كتابة الكود كاملاً وغير منقوص، مع احترام المنطق البرمجي الحالي ودواله الفرعية وتنسيقاته دون تدميرها الا عند طلب صريح
- الفصل التام بين ملفات html/js/css الا للضرورة القصوى 
-اقتصار كل ملف على دوره ومسؤوليته 
+# 📋 ملخص مشروع BarberFlow-Pro - لبدء محادثة جديدة
 
-1-ملفات المنصة
-• assets/icons/
-• assets/images/
-• assets/sounds/
-• auth/css/notifications.css (لتنسيق تنبيهات الموقع كاملا)
-• auth/js/images-utils.js (لتحويل الصور الى نصوص وتخزينها في قاعدة البيانات او لعكس هذه العملية للموقع ككل)
-• auth/js/notifications.js (خاص بنظام التنبيهات لجميع ملفات الموقع)
-• auth/js/router.js (خاص بمراقبة حالة الحسابات وتنبيه وتوجيه المستخدم الى صفحات اكمال اعدادات وبيانات حسابه)
-• core/config.js (يحتوي على المفاتيح السرية الخاصة بالفيروباز)
-• core/firebase-init.js (خاص بربط الملفات مع المفاتيح لتخزين البيانات واستردادها)
-• dashboard/css/dashboard.css (خاص بتنسيق المظهر العام للوحة التحكم الشاملة)
-• dashboard/css/settings-salon.css (خاص بتنسيق صفحة إعدادات الصالون داخل لوحة التحكم)
-• dashboard/js/appointment.js (المنطق البرمجي لإدارة الحجوزات والمواعيد والتحكم بحالتها)
-• dashboard/js/settings-salon.js (المنطق البرمجي للتحكم بتعديل بيانات الصالون وتحديثها)
-• dashboard/appointment.html (واجهة المستخدم لعرض وإدارة جدول المواعيد والحجوزات)
-• dashboard/settings-salon.html (واجهة المستخدم المخصصة لتعديل وإعداد بيانات الصالون)
-• home/components/card-Concierge.js (مكون برمي بطاقة الكونسيرج التفاعلية وعرض مميزاتها)
-• home/components/card-offer.js (مكون برمي لعرض بطاقات العروض والخصومات المتاحة)
-• home/components/card-salon.js (مكون برمي لعرض بطاقة الصالون ومعلوماته الأساسية للعملاء)
-• home/components/card-stor.js (مكون برمي لعرض بطاقة المتجر والمنتجات التابعة له)
-• home/js/home.js (المنطق البرمجي الرئيسي لإدارة وتوجيه الواجهة الرئيسية للمنصة)
-• home/style-home.css (الملف الخاص بتنسيق المظهر العام والجمالي للصفحة الرئيسية)
-• middleware/ (المجلد الخاص بملفات الفحص والتحقق من الصلاحيات والروابط قبل تحميل الصفحات)
-• onboarding/css/add-style.css (ملف تنسيق واجهات إضافة البيانات الأساسية للمستخدمين والشركاء)
-• onboarding/css/setup-style.css (ملف تنسيق واجهات الإعداد والتهيئة الأولية للحسابات)
-• onboarding/css/welcome.css (ملف تنسيق صفحة الترحيب والانطلاق الأولى بعد التسجيل)
-• onboarding/js/add-customer.js (المنطق البرمجي الخاص بإضافة واستقبال بيانات الزبون الجديد)
-• onboarding/js/add-salon.js (المنطق البرمجي الخاص بإضافة واستقبال بيانات الصالون الجديد)
-• onboarding/js/add-store.js (المنطق البرمجي الخاص بإضافة واستقبال بيانات المتجر الجديد)
-• onboarding/js/setup-customer.js (المنطق البرمجي لتهيئة حساب الزبون وتحديد تفضيلاته)
-• onboarding/js/setup-salon.js (المنطق البرمجي لتهيئة وإعداد حساب الصالون وتحديد أوقات العمل)
-• onboarding/js/setup-store.js (المنطق البرمجي لتهيئة وإعداد متجر المنتجات وإطلاق واجهته)
-• onboarding/js/welcome.js (المنطق البرمجي لإدارة واجهة الترحيب وتوجيه المستخدم لخطوته الأولى)
-• onboarding/add-customer.html (واجهة المستخدم لإدخال بيانات الزبون الأساسية عند التسجيل)
-• onboarding/add-salon.html (واجهة المستخدم لإدخال بيانات الصالون الأساسية عند التسجيل)
-• onboarding/add-store.html (واجهة المستخدم لإدخال بيانات المتجر الأساسية عند التسجيل)
-• onboarding/setup-customer.html (واجهة المستخدم لإعداد حساب الزبون وتكميل ملفه الشخصي)
-• onboarding/setup-salon.html (واجهة المستخدم لإعداد حساب الصالون وتكميل ملفه العملي)
-• onboarding/setup-store.html (واجهة المستخدم لإعداد متجر المنتجات وتكميل ملفه التجاري)
-• onboarding/welcome.html (واجهة الترحيب للمستخدمين الجدد بعد تخطي مراحل التسجيل بنجاح)
-• profiles/css/navbar.css (تنسيق شريط التنقل العلوي الخاص بصفحات الملفات الشخصية)
-• profiles/css/profile-customer.css (تنسيق مظهر صفحة الملف الشخصي الخاص بالزبون)
-• profiles/css/profile-salon.css (تنسيق مظهر صفحة الملف الشخصي والمهني للصالون)
-• profiles/css/profile-store.css (تنسيق مظهر صفحة الملف التجاري الخاص بالمتجر)
-• profiles/js/ (المجلد الخاص بالمنطق البرمجي وملفات التفاعل للملفات الشخصية)
-• profiles/navbar.html (الهيكل البرمجي لشريط التنقل العلوي المشترك بين الملفات الشخصية)
-• profiles/profile-customer.html (واجهة العرض الخاصة بالملف الشخصي للزبون ومتابعة نشاطاته)
-• profiles/profile-salon.html (واجهة العرض الخاصة بملف الصالون لاستعراض خدماته وأعماله)
-• profiles/profile-store.html (واجهة العرض الخاصة بالمتجر لاستعراض المنتجات المتاحة للبيع)
-• register/login.html (واجهة المستخدم الخاصة بصفحة تسجيل الدخول للمنصة)
-• register/login.js (المنطق البرمجي للتحقق من بيانات الدخول وبدء الجلسة عبر الفيروباز)
-• register/register.css (ملف التنسيق الخاص بواجهات تسجيل الحساب الجديد والدخول)
-• register/register.html (واجهة المستخدم الخاصة بإنشاء حساب جديد على المنصة)
-• register/register.js (المنطق البرمجي لإنشاء حساب جديد وتخزين البيانات الأولية للمستخدم)
-• shared/ (المجلد المخصص للمكونات والأكواد المشتركة التي يتم استدعاؤها في عدة أماكن بالمنصة)
-• support/css/support.css (ملف تنسيق صفحات الدعم الفني، التواصل، والتقييم)
-• support/js/about.js (المنطق البرمجي الخاص بصفحة "عن المنصة" واستعراض الرؤية)
-• support/js/contact.js (المنطق البرمجي لإدارة نموذج الاتصال وإرسال رسائل المستخدمين للمركز)
-• support/js/survey.js (المنطق البرمجي الخاص بنظام الاستبيانات والتقييمات وجمع آراء المستخدمين)
-• support/about.html (واجهة المستخدم الخاصة بصفحة تعريف المنصة وقصتها)
-• support/contact.html (واجهة المستخدم الخاصة بصفحة "اتصل بنا" لتواصل العملاء والشركاء)
-• support/survey.html (واجهة المستخدم الخاصة بالاستبيانات وقياس مدى رضا المستخدمين)
-• css/global.css (الملف الأساسي للتنسيقات العامة والقواعد المشتركة للموقع كاملاً)
-• js/main-header.js (المنطق البرمجي الخاص بالرأس الرئيسي للموقع وإدارة القوائم العلوية لجميع الصفحات)
-• index.html (الصفحة الرئيسية العامة للمنصة ونقطة الانطلاق الاستكشافية للمستخدمين)
-• livre.md (ملف التوثيق البرمجي الشامل لدليل المشروع ومذكرات التطوير)
+##  معلومات المشروع الأساسية
 
-2-  محتوى و مكونات و معلومات كل واجهة حالية
-🌟 الواجهة الرئيسية (index.html)
-• ترويسة الموقع والشريط العلوي (<header class="main-header">):
-• هوية المنصة (.brand-info): تعرض شعار المنصة النصي والعبارة الترويجية الثابتة للتوجيه العام.
-• شريط البحث الذكي (.header-search): حقل إدخال مركزي مخصص لالتقاط الكلمات المفتاحية للبحث، وترتبط قيمته بملف الحسابات والتوجيه لتصفية النتائج لاحقاً.
-• أزرار التحكم والإجراءات السريعة (.header-actions): روابط تفاعلية تدير العمليات الأساسية للمنصة وفق المنطق التالي:
-• زر الحجوزات: يوجه المستخدم مباشرة إلى واجهة استكشاف الصالونات (explore-salons.html).
-• زر التسوق: يوجه المستخدم مباشرة إلى واجهة المتجر الإلكتروني (market.html).
-• زر السلة (.cart-btn): يعرض شارة رقمية ديناميكية (.cart-badge) تعكس عدد المشتريات المضافة، ويقود إلى صفحة السلة (market/cart.html).
-• زر حسابي الشخصي (.login-btn): يخضع لمنطق فحص الحالة؛ حيث يقوم بالتحقق من جلسة المستخدم (Session)، فإذا كان مسجلاً يوجهه إلى ملفه الشخصي المناسب لنوعه (profile-customer.html أو profile-salon.html أو profile-store.html)، وفي حالة عدم تسجيل الدخول يتم توجيهه تلقائياً إلى واجهة التحكم والدخول (register/login.html).
-• شريط التبويبات والتصنيفات (<section class="categories-wrapper">):
-• شريط تفاعلي أفقي يدعم التمرير السلس (.scroll-categories)، يعمل على تصفية المحتوى المعروض ديناميكياً بناءً على نوع الصالون المحدد (رجال/نساء) أو تصنيف المتجر (مستحضرات/أدوات).
-• قسم العروض والهدايا الحصرية (<section class="section-wrapper">):
-• الحاوية التفاعلية (.offers-scroll-wrapper): شبكة تنظيمية مرنة تدعم التمرير الأفقي، يتم توليد وبناء بطاقاتها الترويجية وحساب نسب خصوماتها ديناميكياً بالاعتماد الكامل على مكون قاعدة البيانات المخصص في:
-• home/components/card-offer.js
-• قسم أبرز الصالونات المتاحة (<section class="section-wrapper">):
-• حاوية العرض الأفقي (.scroll-container-horizontal): مساحة مخصصة لاستعراض الصالونات الأعلى تقييماً ونشاطاً. يتم سحب بيانات هذه الصالونات (الاسم، الموقع الجغرافي، الرابط الاستدلالي) وتوليد بطاقاتها برمجياً عبر استدعاء مكون التغذية الذكي في:
-• home/components/card-salon.js
-• قسم أبرز المتاجر والمنتجات (<section class="section-wrapper">):
-• حاوية العرض الأفقي للمتجر (.scroll-container-horizontal): واجهة مخصصة لعرض المنتجات ومستحضرات التجميل المتاحة للبيع مع أسعارها المحلية بالدرهم (د.م.) وإمكانية إضافتها للسلة. يتم بناء وتوليد هذه البطاقات بالكامل من خلال المكون البرمجي المسؤول عن إدارة عناصر المتجر في:
-• home/components/card-stor.js
-• قسم خدمات الصالونات المنزلية الفاخرة (<section class="section-wrapper">):
-• حاوية خدمات الكونسيرج المنزلية (.scroll-container-horizontal): مسار مخصص لعرض بطاقات طلب الحلاقة والتجميل الفاخرة في موقع العميل (المنازل أو الفنادق). يتم التحكم في منطق عرض هذه الخدمات الفندقية والمنزلية وتأكيد طلباتها عبر المكون الخاص بـ:
-• home/components/card-Concierge.js
+**اسم المشروع:** BarberFlow-Pro  
+**النوع:** منصة حجز صالونات حلاقة ومتاجر منتجات  
+**التقنيات:** HTML, CSS, JavaScript (ES6 Modules), Firebase (Auth, Firestore, Storage)  
+**اللغة:** العربية (RTL)  
+**الثيم:** داكن/فاتح قابل للتبديل
 
-🔐 واجهة تسجيل الدخول (register/login.html)
-• ترويسة الواجهة وجزء الترحيب (.auth-header):
-• رسائل توجيهية ثابتة تستقبل المستخدم لمباشرة عملية التحقق الرقمي لإدارة حسابه داخل المنصة.
-• حاوية مخصصة لحقن وإظهار التنبيهات الفورية والمراجعات الآمنة للموقع (#notification-container).
-• نموذج التحقق والدخول الثنائي الذكي (#loginForm):
-• حقل المعرف الأولي (#identifierGroup): حقل إدخال مرن وموحد (#loginEmail) يستقبل البريد الإلكتروني أو رقم الهاتف المحلي المغربي.
-• حقل كلمة المرور المشروط (#passwordGroup): حقل حركي مخفي افتراضياً (.hidden-step)، يتم إظهاره عبر الأنيميشن فقط في حال تبين أن المعرف المُدخل هو بريد إلكتروني مسجل مسبقاً، ويحتوي على زر استعادة كلمة المرور (#forgotPassBtn).
-• زر الإجراء والتحكم الرئيسي (#mainSubmitBtn): زر تفاعلي تتغير حالته ونصّه برمجياً تبعاً لخطوة التحقق الحالية ليعكس عمليات مثل: (متابعة، جاري التحقق من الحساب، إرسال الرمز، أو تسجيل الدخول) مع قفل التفاعل أثناء معالجة الطلب لمنع التكرار.
-• مسارات تسجيل الدخول السريع والتسجيل الخارجي:
-• زر الارتباط الآمن مع جوجل (#googleBtn): مسار تحقق خارجي سريع مخصص لفحص جلسة المستخدم مع خوادم Google الفيدرالية.
-• حاوية خيارات إنشاء حساب جديد (.auth-footer): تحتوي على زر الإجراء التفاعلي (#showRegisterOptions) المسؤول عن إطلاق النوافذ المنبثقة لاختيار مسار التسجيل الموحد.
-• حاوية العودة السريعة (.back-home-container): تتيح للمستخدم إلغاء العملية والارتداد الآمن إلى جذر الواجهة الرئيسية للمنصة عبر الزر (#backToHomeBtn).
-• النوافذ المنبثقة والتحكم الديناميكي (عبر ملف register/login.js):
-• منطق فحص المعرفات وتنسيق الأرقام المحلية المغربية: * يمتلك البرمجي آلية مطورة لعزل وفحص المدخلات؛ فإذا كانت نصاً هاتفياً يقوم بتنظيف الفراغات وتحويل البادئات المحلية الثنائية (06/07) إلى الصيغة الدولية المعتمدة للمملكة المغربية (+212).
-• منطق فحص Firestore الآمن لمنع الاختراقات:
-• قبل اتخاذ أي إجراء هاتفى أو تفعيل ميكانيزمات التحقق بالرمز (OTP)، يقود برمجياً عملية استعلام آمنة داخل مجموعة المستندات users في الـ Firestore للتحقق من وجود الحساب الفعلي، حمايةً للخوادم من الاستدعاء العشوائي الخاطئ.
-• منطق التوجيه الذكي للمستخدم حسب رتبته (Role Router):
-• بمجرد إتمام التحقق الآمن بنجاح، يقرأ البرمجي وثيقة المستخدم وجلب صلاحياته المعتمدة (رتبة: customer، salon، أو store)، ليتم توجيهه تلقائياً وبشكل صارم لملفه الشخصي والمهني المطابق لدوره دون ارتداد.
-• نافذة استعادة الحساب المنبثقة (#forgotModal): * واجهة حركية مشروطة تُستخدم لإدخال البريد الإلكتروني وإطلاق روابط التعيين الفورية عبر الـ Firebase Auth، مع قفل الميزة وإظهار تحذير تنبيهي إذا كان الحساب هاتفياً يعتمد كلياً على الـ OTP.
-• نافذة تحديد رتب حسابات جوجل الجديدة الفورية:
-• نافذة حقن برمجية ديناميكية تولد وتظهر تلقائياً في حال تسجيل مستخدم جديد كلياً عبر حساب Google، لتمكينه من اختيار دوره في المنصة (عميل، صالون تجميل، أو متجر تجاري)، ثم حفظ بياناته الأساسية في قاعدة البيانات وتوجيهه مباشرة إلى خطوة الترحيب والانطلاق الأولى (onboarding/welcome.html).
-• نافذة خيارات التسجيل التقليدي المنبثقة:
-• نافذة توليد برمجية تطلق شبكة خيارات تفاعلية معززة بالأيقونات لتحديد طبيعة الاستمارة المطلوبة بناءً على رتبة الحساب المختار وتمرير المعطيات عبر الرابط.
-📝 واجهة تسجيل حساب جديد (register/register.html)
-• ترويسة الواجهة ومستقبل التنبيهات:
-• عنوان الصفحة الديناميكي (#pageTitle): يتغير نصياً في المتصفح تلقائياً ليعكس نوع الحساب المختار (زبون، صالون تجميل، متجر تجاري).
-• حاوية التنبيهات الفورية (#notification-container): مساحة مخصصة لحقن وإظهار الإشعارات والتحذيرات المنبثقة أثناء عمليات الفحص وإدخال المعطيات.
-• الخطوة الأولى: استمارة التسجيل الموحدة (#registerStep):
-• عناوين الواجهة الديناميكية (#registerHeading / #registerSubheading): نصوص ترحيبية وتوجيهية تتبدل برمجياً لتناسب رتبة الحساب المحددة (مثال: "انضم كزبون مميز" أو "سجل صالونك وابدأ استقبال زبنائك").
-• نموذج البيانات الأساسية (#unifiedRegisterForm): استمارة تفاعلية موحدة تلتقط معطيات المستخدم وتخضع للمكونات التالية:
-• حقل الاسم الكامل (#regName): يتغير عنوانه برمجياً (#labelName) ليطلب الاسم الكامل للشخص أو اسم الصالون/المتجر حسب طبيعة رتبة الحساب المفتوح.
-• حقل المعرف الأولي السريع (#regIdentifier): حقل مرن يقبل البريد الإلكتروني أو رقم الهاتف لتعيين وسيلة التحقق الأساسية.
-• حقل كلمة المرور المشروط (#passwordGroup): حقل حركي مخفي افتراضياً (.hidden-step)، يتم إظهاره عبر الأنيميشن فقط إذا كان المعرف المدخل عبارة عن بريد إلكتروني صالِح.
-• زر الإرسال والمتابعة الرئيسي (#mainSubmitBtn): زر تفاعلي يتغير نصه برمجياً تبعاً لنوع المعرف (بريد إلكتروني أو رقم هاتف) ليعكس الإجراء المباشر مثل (إرسال كود التحقق 💬 أو إنشاء الحساب فوراً ✨).
-• مسار الارتباط الخارجي وحاوية التوجيه السريع:
-• زر التسجيل الفوري عبر جوجل (#googleBtn): مسار برمي يتيح ربط الحساب فورياً بخوادم Google وتجاوز حقول الإدخال التقليدية.
-• رابط التبديل العكسي: زر توجيهي يقود المستخدم للعودة إلى واجهة الدخول السابقة (login.html) في حال كان يمتلك حساباً بالفعل.
-• الخطوة الثانية: خطوة تأكيد الحساب الآمنة (#verifyStep):
-• واجهة حركية مشروطة ومخفية افتراضياً (.hidden-step)، يتم تنشيطها بالكامل عبر الأنيميشن عند التسجيل برقم الهاتف لاستقبال رمز التحقق (OTP).
-• حقل رمز التحقق (#otpCode): حقل مخصص يستقبل الأرقام الستة المكونة لكود الأمان مع ميزة الإكمال التلقائي الفوري وعزل المدخلات غير الرقمية.
-• زر التأكيد والفتح الفوري (#confirmOtpBtn): يطلق عملية الفحص النهائي وتوثيق الهاتف بالـ Firebase Auth.
-• عداد الأمان والتحكم بالتوقيت (#timerContainer): عداد تنازلي ديناميكي (60 ثانية) يقفل ميزة إعادة الإرسال لحماية الخادم من الرسائل المتكررة، ويظهر زر إعادة الإرسال تلقائياً (#resendCodeBtn) عند انتهاء الوقت.
-• زر تعديل المعلومات الارتدادي (#backToRegisterBtn): يتيح للمستخدم إلغاء خطوة الـ OTP والعودة الآمنة للخطوة الأولى لتصحيح رقم الهاتف أو المعطيات الخاطئة.
-• حاوية الإلغاء والعودة للجذر السريع (.back-home-container):
-• رابط أمان موحد يتواجد في أسفل الواجهة يتيح للمستخدم إلغاء مسار التسجيل بالكامل والارتداد الفوري إلى جذر الصفحة الرئيسية للمنصة (../index.html) عبر الزر (#backHomeBtn).
-• المنطق الوظيفي وآليات المعالجة (عبر ملف register/register.js):
-• آلية قراءة الـ URL واسترجاع الحالات المعلقة:
-• يمتلك الملف ميزتين لفحص حالة الروابط؛ الأولى قراءة المعامل ?role= لتخصيص محتوى وهيكل الاستمارة فورياً طبقاً لنوع الشريك. والثانية فحص المعامل ?status=pending التي تقوم باسترجاع بيانات التسجيل المحفوظة محلياً في الـ localStorage في حال انقطاع الجلسة أو تحديث الصفحة.
-• منطق تنسيق الأرقام المحلية المغربية والـ ReCAPTCHA:
-• يقوم البرمجي برصد الأرقام وحذف الفراغات وتحويل البادئات المحلية الثنائية (06/07) إلى الصيغة الدولية للمملكة المغربية (+212)، مع بناء كائن الـ RecaptchaVerifier غير المرئي لضمان أمان العمليات قبل إرسال الـ OTP.
-• منطق الحفظ السحابي في الـ Firestore والتوجيه للمرحلة التالية:
-• عند نجاح إنشاء الحساب والتحقق، يقوم البرمجي بإنشاء وثيقة مستخدم جديدة داخل مجموعة الـ users في الـ Firestore وتعيين الحقول الأساسية مثل الرتبة المعتمدة وتحديد الحالة الأولية بـ "new".
-• مباشرة بعد حفظ المعطيات، يتم تحويل المستخدم تلقائياً إلى واجهة الترحيب والتهيئة الأولى للمنصة (onboarding/welcome.html) لبدء إعدادات الملف الشخصي.
-👋 واجهة الترحيب والتوجيه المركزي (onboarding/welcome.html)
-• هوية الواجهة وجزء الاستقبال البصري (.logo-section):
-• تحتوي على مكون رمز تعبيري حركي ومساحة بصرية معززة بالأيقونات لتهيئة المستخدم نفسياً وبدء مرحلة تخصيص الحساب.
-• الكتلة النصية الترحيبية الديناميكية (.text-section):
-• عنوان الترحيب الذكي (#welcomeTitle): نص ترحيبي مركزي يتم التحكم فيه وتحديثه برمجياً ليعكس الاسم الأول للمستخدم بشكل ودي بمجرد التعرف على هويته.
-• الوصف التوجيهي الثابت (#welcomeDesc): رسالة ثابتة تؤكد انضمام المستخدم بنجاح لمجتمع BarberFlow Pro وتحثه على بدء خطوة التهيئة.
-• بطاقة الإعداد والتحكم في المسارات (#setupCard):
-• حاوية تنظيمية تجمع محتوى التوجيه وتتكون من:
-• بيانات الخطوة الأخيرة: أيقونة تفاعلية مع نص توضيحي يذكر المستخدم بوجوب إتمام آخر مرحلة لبناء ملفه الشخصي بنجاح.
-• زر الإجراء الرئيسي والانطلاق (#startSetupBtn): زر تحكم تفاعلي معزز بمؤشر حركة، يخضع لمنطق فحص الصلاحيات البرمجي المشروط، حيث يقوم بقفل التفاعل وعرض مؤشر التحميل فور النقر عليه لحين معالجة البيانات وتحديد الوجهة.
-• تذييل الصفحة الثابت (.welcome-footer):
-• يحمل التوقيع الرسمي والحقوق الفكرية الخاصة بالمنصة لترسيخ الهوية المؤسساتية للبرنامج.
-• المنطق الوظيفي وبوابة التوجيه المركزي (عبر ملف onboarding/welcome.js):
-• مراقب حالة التحقق وجلسات النشاط (onAuthStateChanged):
-• بمجرد تحميل الواجهة، يقوم الملف بفحص جلسة المستخدم مع خوادم الـ Firebase Auth. إذا تبين عدم وجود جلسة نشطة، يتم فورا تفعيل بروتوكول الارتداد التلقائي والآمن وتوجيهه إلى واجهة الدخول (../register/login.html) لحماية ملفات الـ Onboarding من التصفح العشوائي.
-• منطق قراءة مستندات الـ Firestore وعزل الأسماء:
-• عند رصد حساب نشط، يستعلم البرمجي فوراً من مجموعة users في الـ Firestore لجلب وثيقة المستخدم. ويقوم بفصل الاسم الكامل وعزل الاسم الأول (fullName.split(' ')[0]) لحقنه ديناميكياً داخل عنوان الترحيب.
-• ميكانيزم التوجيه النظيف والأمن (Central Router):
-• عند نقر المستخدم على زر البدء، يحلل البرمجي حقل الرتبة (role) المعتمد والمخزن في مستنده (مثل: salon أو store أو customer)، ويوجهه تلقائياً وبشكل صارم إلى استمارة التهيئة المطابقة له تماماً:
-• رتبة متجر تجاري (store) ⬅️ يوجه إلى استمارة إضافة بيانات المتجر التجارية (add-store.html).
-• رتبة زبون (customer) ⬅️ يوجه إلى استمارة تفضيلات العميل الشخصية (add-customer.html).
-• رتبة صالون تجميل (salon) أو أي رتبة أخرى افتراضية ⬅️ يوجه إلى استمارة إعداد بيانات الصالون العملية (add-salon.html).
-• حماية ثغرات الروابط (Security Guard): تتم عملية التوجيه بشكل نظيف وبنيوي تماماً دون تمرير معرّف المستخدم الرقمي (UID) أو أي بيانات حساسة داخل رابط الـ URL، وذلك لمنع المستخدمين من التلاعب بالروابط يدوياً وتأمين خصوصية البيانات وسير العمليات الرقمية.
-• بروتوكول معالجة الأخطاء وحظر الحسابات المعلقة:
-• إذا تبين برمجياً وجود حساب توثيقي نشط ولكن بدون مستند في الـ Firestore، يطلق النظام ميكانيزم الطرد التلقائي (signOut) لإلغاء الجلسة الفاسدة وحماية الحساب من التعليق، وإعادته فوراً لصفحة تسجيل الدخول.
-📝: واجهة المعلومات الأساسية للصالون (onboarding/add-salon.html)
-• ترويسة الواجهة وجزء التوجيه البصري (<header class="header">):
-• رسائل ترحيبية وتوجيهية ثابتة تحث الشريك الجديد على بدء إدخال البيانات الأساسية لتفعيل نظام الحجوزات الفوري داخل المنصة.
-• استمارة المعطيات البنيوية للصالون (#addSalonForm):
-• مجموعة البيانات الهيكلية والاتصال (.section-card): حقول إدخال إلزامية ومباشرة لالتقاط هويّة العمل:
-• حقل اسم الصالون (#salonName): حقل نصي مخصص لتسجيل الاسم التجاري للصالون.
-• حقل المدينة / الحي (#salonLocation): حقل نصي لتحديد النطاق الجغرافي والمحلي للخدمة داخل المملكة المغربية.
-• حقل رقم الهاتف (#salonPhone): حقل مخصص لجمع رقم هاتف التواصل المباشر مع الزبائن.
-• مكون تحديد الصنف والخدمات (.section-card):
-• قائمة نوع الصالون (#salonCategory): قائمة منسدلة لتوجيه وتصنيف الصالون برمجياً بالفهرس العام وضبط الفلاتر (مثل: صالون حلاقة رجال أو صالون تجميل نساء).
-• مكون منطق تأكيد الحجوزات الآلي واليدوي (.section-card):
-• قائمة آلية الحجز (#bookingType): ميكانيزم تكميلي يتيح لمالك الصالون التحكم في طريقة معالجة طلبات الزبائن وتحديد نوع التشغيل:
-• خيار تأكيد فوري وتلقائي لتفعيل نظام الحجوزات الأوتوماتيكي.
-• خيار موافقة يدوية من طرفي لإعطاء تحكم كامل للمالك للموافقة أو الرفض.
-• مكون جدول أوقات العمل الأسبوعي (.section-card):
-• شبكة أيام العمل (#daysSelector): واجهة حركية مرنة مبنية بصيغة Grid لتحديد أيام العمل النشطة وأيام العطل.
-• حقول التوقيت الزمني الحركي (#openTime / #closeTime): حقول مخصصة لالتقاط النطاق الزمني اليومي الفعلي لبدء وانتهاء استقبال الحجوزات (افتراضيًا من الساعة 09:00 إلى 21:00).
-• أزرار الإجراء السريع والإلغاء المعلق:
-• زر الحفظ والمتابعة (#submitBtn): يقود معالجة الاستمارة، ويقوم بقفل التفاعل ورفع البيانات الأساسية إلى مستند الصالون في الـ Firestore.
-• رابط التراجع والفسخ الفوري (#cancelLink): مسار طوارئ يتيح للمالك إلغاء الإعداد وحذف الحساب توثيقياً في حال التراجع عن الانضمام.
-• مستقبل الإشعارات الفورية (#notification-container): حاوية مخصصة لحقن رسائل الأخطاء أو نجاح الحفظ برمجياً.
-🪄: واجهة إعداد الهوية والبناء البصري (onboarding/setup-salon.html)
-• ترويسة الخطوة الأخيرة وجزء التحفيز (<header class="header">):
-• رسالة هندسية تركز على إتمام المرحلة البصرية النهائية لتبدو واجهة الصالون احترافية ومكتملة أمام الزبائن المستكشفين.
-• استمارة الهوية المهنية وبناء الملف الشخصي (#setupSalonForm):
-• مكون أداة رفع صورة الواجهة الرئيسية (.section-card):
-• منطقة الرفع التفاعلية (#coverUploader): حاوية حركية مرنة تحتوي على أيقونة الكاميرا الافتراضية، وترتبط بملف تحويل ومعالجة الصور المخصص لتخزين غلاف الصالون الفردي، مع محاذاة ومعاينة فورية للصورة (#salonImg) بمجرد اختيارها.
-• حقل الملف المخفي (#coverFileInput): حقل لالتقاط وضغط الصورة المرفوعة.
-• مكون الوصف التعريفي للخدمة (.section-card):
-• صندوق النص التعريفي (#salonBio): حقل نصي متعدد الأسطر يتيح لصاحب الصالون صياغة نبذة مهنية عن خبراته، نوع القصات، والبيئة والأجواء الداخلية لجذب العملاء.
-• مكون معرض أعمال الصالون الديناميكي (.section-card):
-• شبكة استعراض الصور (#workPhotosGrid): حاوية تفاعلية بنظام Grid تُحقن بداخلها صور قصات الشعر وخدمات الصالون السابقة المرفوعة.
-• مستقبل رفع الصور المتعدد (#galleryFileInput): حقل معالجة مخفي يدعم ميزة اختيار ورفع ملفات متعددة في آن واحد.
-• مكون توثيق الدبلومات والشهادات المعتمدة (.section-card):
-• حقل النص التوثيقي (#certificateText): حقل نصي مخصص لكتابة المسميات الرسمية للشهادات والجوائز (مثال: شهادة الحلاقة العصرية).
-• شبكة صور الشهادات الموثقة (#certPhotosGrid): شبكة حركية مخصصة لعرض الصور الدبلومية المعززة لمصداقية الصالون برمجياً.
-• مستقبل رفع صور الشهادات (#certFileInput): حقل التقاط الصور الرسمي الخاص بالشهادات مع ميزة التعدد.
-• مسارات الإنهاء والتخطي المؤقت للواجهة:
-• زر الحفظ والإنشاء النهائي (#submitBtn): الزر الرئيسي المسؤول عن تجميع كل وسائط الـ Base64 والنصوص، وحفظ الهوية الفردية وتفعيل حالة الصالون الرسمية كملف جاهز للعرض.
-• زر التخطي المشروط (#skipBtn): مسار اختياري مرن يتيح للمالك تخطي بناء الهوية البصرية مؤقتاً والانتقال المباشر للوحة التحكم لتهيئة الصالون لاحقاً دون إجبار.
+---
+
+## 📁 الهيكلية النهائية للمشروع
+
+```
+barber-flow/
+├── assets/
+│   ├── icons/
+│   ├── images/
+│   └── sounds/
+├── core/
+│   ├── config.js              (مفاتيح Firebase)
+│   └── firebase-init.js       (تهيئة Firebase)
+├── dashboard/
+│   ├── analytics/             (فارغ - لاحقاً)
+│   ├── appointments/          (فارغ - لاحقاً)
+│   ── settings/
+│       ├── css/
+│       │   ├── settings-general.css
+│       │   ├── settings-salon.css
+│       │   └── settings-store.css
+│       ├── js/
+│       │   ├── settings-general.js
+│       │   ├── settings-salon.js
+│       │   └── settings-store.js
+│       ├── settings-general.html
+│       ├── settings-salon.html
+│       └── settings-store.html
+├── home/
+│   ├── components/
+│   │   └── js/
+│   │       ├── card-Concierge.js
+│   │       ├── card-offer.js
+│   │       ├── card-salon.js
+│   │       └── card-store.js
+│   ├── css/
+│   │   ├── details-salon.css
+│   │   ├── details-store.css
+│   │   ├── explore-salon.css
+│   │   ├── explore-store.css
+│   │   └── index.css
+│   ├── js/
+│   │   ├── details-salon.js
+│   │   ├── details-store.js
+│   │   ├── explore-salon.js
+│   │   ├── explore-store.js
+│   │   └── home-controller.js
+│   ├── details-salon.html
+│   ├── details-store.html
+│   ├── explore-salon.html
+│   └── explore-store.html
+├── middleware/
+│   ├── auth/
+│   │   ├── auth-state.js
+│   │   └── index.js
+│   ├── guards/
+│   │   ├── booking-guard.js
+│   │   ├── index.js
+│   │   └── role-guard.js
+│   ├── routing/
+│   │   ├── index.js
+│   │   ├── page-router.js
+│   │   └── profile-route.js
+│   ├── validation/
+│   │   ├── images-sanitizer.js
+│   │   ├── index.js
+│   │   └── input-sanitizer.js
+│   └── index.js
+├── onboarding/
+│   ├── css/
+│   │   ├── add-style.css
+│   │   ├── setup-style.css
+│   │   └── welcome.css
+│   ├── js/
+│   │   ├── add-customer.js
+│   │   ├── add-salon.js
+│   │   ├── add-store.js
+│   │   ├── setup-customer.js
+│   │   ├── setup-salon.js
+│   │   ├── setup-store.js
+│   │   └── welcome.js
+│   ├── add-customer.html
+│   ├── add-salon.html
+│   ├── add-store.html
+│   ├── setup-customer.html
+│   ├── setup-salon.html
+│   ├── setup-store.html
+│   └── welcome.html
+├── profiles/
+│   ├── css/
+│   │   ├── profile-customer.css
+│   │   ├── profile-salon.css
+│   │   └── profile-store.css
+│   ├── js/
+│   │   ├── profile-customer.js
+│   │   ├── profile-salon.js
+│   │   ── profile-store.js
+│   ├── profile-customer.html
+│   ├── profile-salon.html
+│   └── profile-store.html
+├── register/
+│   ├── login.html
+│   ├── login.js
+│   ├── register.css
+│   ├── register.html
+│   └── register.js
+├── shared/
+│   ├── css/
+│   │   ├── global-navbar.css
+│   │   ├── global.css
+│   │   └── notifications.css
+│   ├── js/
+│   │   ├── global-navbar.js
+│   │   ├── images-utils.js
+│   │   ├── notifications.js
+│   │   └── paths.js
+│   └── global-navbar.html
+├── support/
+│   ├── css/
+│   │   ├── about.css
+│   │   ├── contact.css
+│   │   └── survey.css
+│   ├── js/
+│   │   ├── about.js
+│   │   ├── contact.js
+│   │   └── survey.js
+│   ├── about.html
+│   ├── contact.html
+│   └── survey.html
+├── index.html
+└── livre.md
+```
+
+---
+
+## ⚠️ القواعد الذهبية (يجب الالتزام بها دائماً)
+
+### 1. **عدم تكرار الدوال**
+-  لا تضع نفس الدالة في ملفين مختلفين
+- ✅ استورد الدوال من الملفات المركزية
+
+### 2. **احترام التقسيم الوظيفي**
+- **`shared/`** = أدوات مساعدة عامة (Utilities)
+- **`middleware/`** = حماية وفلترة وتوجيه (Security & Validation)
+
+### 3. **توحيد المسارات**
+- ✅ استخدم دائماً `PATHS` من `shared/js/paths.js`
+- ❌ لا تكتب المسارات يدوياً في الكود
+- ✅ جميع المسارات نسبية (تبدأ بـ `../`)
+
+### 4. **استدعاء الملفات المشتركة**
+- ✅ كل صفحة تستدعي `global.css` أولاً
+- ✅ الصفحات التي تحتاج navbar تستدعي `global-navbar.js`
+- ✅ الصفحات المحمية تستدعي middleware المناسب
+
+### 5. **عدم الافتراض**
+- ✅ إذا لم تكن متأكداً من معلومة، اسأل
+- ✅ إذا شعرت بارتباك، أخبر المستخدم لبدء محادثة جديدة
+
+---
+
+## 📦 الملفات المشتركة (shared/) - محدثة وجاهزة
+
+### **`shared/css/global.css`** ✅
+- يحتوي على جميع متغيرات CSS (Colors, Shadows, Radius, Spacing)
+- يدعم الثيم الفاتح والداكن
+- يحتوي على Reset, Typography, Cards, Buttons, Forms, Responsive
+- **لا يحتاج تحديث**
+
+### **`shared/css/global-navbar.css`** ✅
+- تنسيقات الشريط العلوي والقائمة الجانبية
+- يدعم RTL
+- Responsive Design
+- **تم تحديثه** (إزالة @import الخاطئ)
+
+### **`shared/css/notifications.css`** ✅
+- تنسيقات التنبيهات (success, error, info, warning)
+- أنيميشن الدخول والخروج
+- نافذة OTP المنبثقة
+- **تم إنشاؤه جديداً**
+
+### **`shared/js/paths.js`** ✅
+```javascript
+export const PATHS = {
+    INDEX: '../index.html',
+    LOGIN: '../register/login.html',
+    REGISTER: '../register/register.html',
+    WELCOME: '../onboarding/welcome.html',
+    ADD_SALON: '../onboarding/add-salon.html',
+    ADD_STORE: '../onboarding/add-store.html',
+    ADD_CUSTOMER: '../onboarding/add-customer.html',
+    SETUP_SALON: '../onboarding/setup-salon.html',
+    SETUP_STORE: '../onboarding/setup-store.html',
+    SETUP_CUSTOMER: '../onboarding/setup-customer.html',
+    PROFILE_SALON: '../profiles/profile-salon.html',
+    PROFILE_STORE: '../profiles/profile-store.html',
+    PROFILE_CUSTOMER: '../profiles/profile-customer.html',
+    EXPLORE_SALON: '../home/explore-salon.html',
+    EXPLORE_STORE: '../home/explore-store.html',
+    DETAILS_SALON: '../home/details-salon.html',
+    DETAILS_STORE: '../home/details-store.html',
+    APPOINTMENTS: '../dashboard/appointments/',
+    ANALYTICS: '../dashboard/analytics/',
+    SETTINGS_GENERAL: '../dashboard/settings/settings-general.html',
+    SETTINGS_SALON: '../dashboard/settings/settings-salon.html',
+    SETTINGS_STORE: '../dashboard/settings/settings-store.html',
+    ADMIN_DASHBOARD: '../dashboard/admin.html',
+    ABOUT: '../support/about.html',
+    CONTACT: '../support/contact.html',
+    SURVEY: '../support/survey.html'
+};
+```
+
+### **`shared/js/notifications.js`** ✅
+- `showNotification(message, type, duration)` - عرض التنبيهات
+- `showOtpModal()` - نافذة OTP المنبثقة
+- **تم إنشاؤه جديداً**
+
+### **`shared/js/images-utils.js`** ✅
+- `processImage(file, maxWidth, quality, format)` - ضغط وتحويل الصور لـ Base64
+- `removeImageFromGallery(...)` - حذف صورة من الواجهة
+- **أدوات تقنية فقط** (بدون دوال حماية)
+
+### **`shared/js/global-navbar.js`** ✅
+- تحميل navbar ديناميكياً
+- تبديل الثيم
+- إدارة حالة المستخدم
+- عداد السلة
+- تمييز الصفحة النشطة
+- **تم تحديثه** لاستخدام `PATHS`
+
+### **`shared/global-navbar.html`** ✅
+- هيكل الشريط العلوي
+- القائمة الجانبية (Drawer)
+- **تم تحديثه** لاستخدام `data-path`
+
+---
+
+## 🛡️ ملفات Middleware - محدثة وجاهزة
+
+### **`middleware/auth/auth-state.js`** ✅
+- `getCurrentUser()` - جلب بيانات المستخدم الحالي
+- `isUserLoggedIn()` - التحقق من تسجيل الدخول
+- `getCurrentUserId()` - جلب UID
+
+### **`middleware/auth/index.js`** ✅
+- تصدير مركزي لدوال auth
+
+### **`middleware/guards/role-guard.js`** ✅
+- `checkRole(userData, requiredRole)` - التحقق من الدور
+- `checkUserStatus(userData, requiredStatus)` - التحقق من الحالة
+- `handleUnauthorizedAccess(redirectPath)` - معالجة الوصول غير المصرح
+- `hasCompletedOnboarding(userData)` - التحقق من إكمال الإعداد
+
+### **`middleware/guards/booking-guard.js`** ✅
+- `isSlotAvailable(salonId, date, time)` - التحقق من توفر الوقت
+- `validateBookingData(data)` - التحقق من بيانات الحجز
+- `isWithinWorkingHours(workingHours, time, day)` - التحقق من أوقات العمل
+- `getAvailableSlots(salonId, date, workingHours)` - جلب الأوقات المتاحة
+
+### **`middleware/guards/index.js`** ✅
+- تصدير مركزي لدوال guards
+
+### **`middleware/routing/profile-route.js`** ✅
+- `navigateToUserDashboard(uid)` - توجيه حسب الدور
+- `getProfileRoute(role)` - جلب مسار البروفايل
+- `verifyProfileAccess()` - التحقق من الصفحة الصحيحة
+
+### **`middleware/routing/page-router.js`** ✅
+- `initPageRouter()` - المراقب الرئيسي للمصادقة
+- `triggerRecoveryModal(role, currentStep, targetPath)` - نافذة إكمال الإعداد
+- `showPageContent()` - إظهار المحتوى
+
+### **`middleware/routing/index.js`** ✅
+- تصدير مركزي لدوال routing
+
+### **`middleware/validation/input-sanitizer.js`** ✅
+- `sanitizeText(input)` - تنظيف النصوص
+- `sanitizeEmail(email)` - تنظيف البريد
+- `sanitizePhone(phone)` - تنظيف الهاتف
+- `sanitizeURL(url)` - تنظيف الروابط
+- `validateLength(text, min, max)` - التحقق من الطول
+- `sanitizeUserData(userData)` - تنظيف بيانات المستخدم
+- `sanitizeSalonData(salonData)` - تنظيف بيانات الصالون
+- `sanitizeBookingData(bookingData)` - تنظيف بيانات الحجز
+
+### **`middleware/validation/images-sanitizer.js`** ✅
+- `validateImageType(file)` - التحقق من نوع الصورة
+- `validateImageSize(file, maxSizeMB)` - التحقق من الحجم
+- `validateImageDimensions(img)` - التحقق من الأبعاد
+- `detectInappropriateContent(img)` - كشف المحتوى غير اللائق
+- `validateAndProcessImage(file, processImageFn)` - التحقق الشامل
+- **يستورد `processImage` من `shared/js/images-utils.js`**
+
+### **`middleware/validation/index.js`** ✅
+- تصدير مركزي لدوال validation
+
+### **`middleware/index.js`** ✅
+- التصدير المركزي لجميع دوال middleware
+
+---
+
+## 🔧 ملفات Core - ثابتة
+
+### **`core/config.js`** ✅
+```javascript
+export const firebaseConfig = {
+    apiKey: "AIzaSyBFiH280bRmNs-I21zQwHDGpkwOI5dOVe0",
+    authDomain: "barberplatform-root-3a92d.firebaseapp.com",
+    projectId: "barberplatform-root-3a92d",
+    storageBucket: "barberplatform-root-3a92d.firebasestorage.app",
+    messagingSenderId: "384762065712",
+    appId: "1:384762065712:web:67efcf8c8cfa6fb1260ef5",
+    measurementId: "G-ZQ24ZVYJWP"
+};
+```
+
+### **`core/firebase-init.js`** ✅
+- تهيئة Firebase App
+- تهيئة Auth مع `browserLocalPersistence`
+- تهيئة Firestore و Storage
+- تصدير: `auth`, `db`, `storage`
+
+---
+
+## ✅ ما تم إنجازه
+
+1. ✅ إنشاء وتحديث جميع ملفات `shared/`
+2. ✅ إنشاء وتحديث جميع ملفات `middleware/`
+3. ✅ إنشاء ملف `paths.js` المركزي
+4. ✅ إصلاح الأخطاء في المسارات
+5. ✅ فصل دوال الحماية عن الأدوات التقنية
+6. ✅ توحيد التصدير المركزي في كل مجلد
+
+---
+
+##  ما تبقى (حسب أولوية التحديث)
+
+### **المرحلة 1: ملفات Register** (التالية)
+- `register/login.html`
+- `register/login.js`
+- `register/register.html`
+- `register/register.js`
+- `register/register.css`
+
+### **المرحلة 2: ملفات Onboarding**
+- `onboarding/welcome.html` + `welcome.js`
+- `onboarding/add-salon.html` + `add-salon.js`
+- `onboarding/add-store.html` + `add-store.js`
+- `onboarding/add-customer.html` + `add-customer.js`
+- `onboarding/setup-salon.html` + `setup-salon.js`
+- `onboarding/setup-store.html` + `setup-store.js`
+- `onboarding/setup-customer.html` + `setup-customer.js`
+
+### **المرحلة 3: ملفات Profiles**
+- `profiles/profile-salon.html` + `profile-salon.js`
+- `profiles/profile-store.html` + `profile-store.js`
+- `profiles/profile-customer.html` + `profile-customer.js`
+
+### **المرحلة 4: ملفات Home**
+- `index.html` + `home/js/home-controller.js`
+- `home/explore-salon.html` + `explore-salon.js`
+- `home/explore-store.html` + `explore-store.js`
+- `home/details-salon.html` + `details-salon.js`
+- `home/details-store.html` + `details-store.js`
+
+### **المرحلة 5: ملفات Dashboard**
+- `dashboard/settings/settings-salon.html` + `settings-salon.js`
+- `dashboard/settings/settings-store.html` + `settings-store.js`
+- `dashboard/settings/settings-general.html` + `settings-general.js`
+- `dashboard/appointments/` (فارغ - لاحقاً)
+- `dashboard/analytics/` (فارغ - لاحقاً)
+
+### **المرحلة 6: ملفات Support**
+- `support/about.html` + `about.js`
+- `support/contact.html` + `contact.js`
+- `support/survey.html` + `survey.js`
+
+---
+
+## 📝 معايير تحديث كل صفحة
+
+### **لكل ملف HTML:**
+```html
+<head>
+    <!-- 1. CSS المركزي -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    
+    <!-- 2. CSS الخاص بالصفحة -->
+    <link rel="stylesheet" href="css/page-name.css">
+    
+    <!-- 3. CSS الـ navbar (إذا لزم) -->
+    <link rel="stylesheet" href="../shared/css/global-navbar.css">
+    
+    <!-- 4. CSS التنبيهات -->
+    <link rel="stylesheet" href="../shared/css/notifications.css">
+</head>
+
+<body>
+    <!-- حاوية الـ navbar -->
+    <div id="global-navbar-container"></div>
+    
+    <!-- محتوى الصفحة -->
+    <main>...</main>
+    
+    <!-- حاوية التنبيهات -->
+    <div id="notification-container"></div>
+    
+    <!-- السكريبتات -->
+    <script type="module" src="../shared/js/paths.js"></script>
+    <script type="module" src="../shared/js/notifications.js"></script>
+    <script type="module" src="../shared/js/global-navbar.js"></script>
+    <script type="module" src="js/page-name.js"></script>
+</body>
+```
+
+### **لكل ملف JS:**
+```javascript
+/**
+ * اسم الملف: page-name.js
+ * المسار: folder/js/page-name.js
+ * الدور: وصف الوظيفة
+ */
+
+// الاستيرادات
+import { PATHS } from '../shared/js/paths.js';
+import { showNotification } from '../shared/js/notifications.js';
+import { getCurrentUser } from '../middleware/auth/auth-state.js';
+import { sanitizeText } from '../middleware/validation/input-sanitizer.js';
+
+// الثوابت
+const ELEMENTS = {
+    form: document.getElementById('form')
+};
+
+// الدوال الرئيسية
+async function initPage() {
+    // 1. التحقق من الصلاحيات
+    // 2. جلب البيانات
+    // 3. عرض المحتوى
+}
+
+// Event Listeners
+ELEMENTS.form?.addEventListener('submit', handleSubmit);
+
+// بدء التنفيذ
+initPage();
+```
+
+---
+
+##  نقاط التحقق قبل إرسال أي صفحة
+
+- [ ] تم استدعاء `global.css`
+- [ ] تم استدعاء `global-navbar.js` (إذا لزم)
+- [ ] تم استدعاء `paths.js`
+- [ ] تم استدعاء `notifications.js`
+- [ ] تم تطبيق الحماية المناسبة (middleware)
+- [ ] تم validation المدخلات (إن وجدت)
+- [ ] تم معالجة الأخطاء (try-catch)
+- [ ] تم إضافة تنبيهات النجاح/الفشل
+- [ ] المسارات صحيحة (نسبية)
+- [ ] الكود منظم ومعلق
+- [ ] لا توجد دوال مكررة
+- [ ] لا توجد أخطاء في Console
+
+---
+
+## 🚀 طريقة العمل في المحادثة الجديدة
+
+1. **المستخدم يرسل:** "ابدأ بصفحة X"
+2. **أنا أرسل:** الملفين (HTML + JS) كاملين وجاهزين
+3. **المستخدم يختبر:** الصفحة في مشروعه
+4. **إذا وجد خطأ:** يخبرني فأصلحه فوراً
+5. **إذا كانت صحيحة:** ننتقل للصفحة التالية
+
+---
+
+## ⚠️ الأخطاء التي يجب تجنبها
+
+1. ❌ **تكرار الدوال** في ملفات مختلفة
+2. ❌ **كتابة المسارات يدوياً** بدلاً من استخدام `PATHS`
+3. ❌ **وضع دوال الحماية في `shared/`** (يجب أن تكون في `middleware/`)
+4. ❌ **الافتراض** بدلاً من السؤال
+. يجب طرح سؤال دائما بدل افتراضات  قد تكون مخطئة
+5. ❌ **استخدام مسارات مطلقة** (`/register/login.html`) - يجب استخدام نسبية (`../register/login.html`)
+6. ❌ **نسيان استدعاء `global.css`** في أي صفحة
+7. ❌ **نسيان حاوية التنبيهات** `<div id="notification-container"></div>`
+
+---
+
+## 📞 معلومات التواصل مع Firebase
+
+- **Project ID:** `barberplatform-root-3a92d`
+- **Collection الرئيسي:** `users`
+- **Collection الحجوزات:** `bookings`
+- **Collection الصالونات:** `salons` (متوقع)
+- **Collection المتاجر:** `stores` (متوقع)
+
+### **هيكل مستند المستخدم (users/{uid}):**
+```javascript
+{
+    uid: string,
+    email: string,
+    phoneNumber: string,
+    displayName: string,
+    photoURL: string,
+    role: 'customer' | 'salon' | 'store' | 'admin',
+    status: 'new' | 'active' | 'suspended',
+    onboardingStatus: 'none' | 'basic_done' | 'completed',
+    fullName: string,
+    bio: string,
+    // ... حقول أخرى حسب الدور
+}
+```
+
+---
+
+## ✅ رسالة البدء في المحادثة الجديدة
+
+عند بدء المحادثة الجديدة، الصق هذه الرسالة:
+
+> "مرحباً، هذا ملخص مشروع BarberFlow-Pro. جميع ملفات `shared/` و `middleware/` و `core/` محدثة وجاهزة. نريد الآن البدء في تحديث ملفات `register/` (login.html, login.js, register.html, register.js, register.css). هل أنت جاهز؟"
+
+---

@@ -1,7 +1,6 @@
 /**
 BarberFlow Pro - صفحة تسجيل الدخول
 المسار: register/login.js
-الدور: إدارة تسجيل الدخول بالبريد/الهاتف/Google
 */
 
 // ============================================
@@ -25,6 +24,7 @@ import {
     where,
     getDocs
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// ✅ إصلاح المسار
 import { showNotification, showOtpModal } from "../shared/js/notifications.js";
 import { PATHS } from "../shared/js/paths.js";
 import { sanitizeEmail, sanitizePhone } from "../middleware/validation/index.js";
@@ -36,6 +36,7 @@ const loginForm = document.getElementById('loginForm');
 const googleBtn = document.getElementById('googleBtn');
 const submitBtn = document.getElementById('mainSubmitBtn');
 const forgotModal = document.getElementById('forgotModal');
+const registerOptionsModal = document.getElementById('registerOptionsModal'); // ✅ النافذة المضمنة
 const backToHomeBtn = document.getElementById('backToHomeBtn');
 const passwordGroup = document.getElementById('passwordGroup');
 const loginEmailInput = document.getElementById('loginEmail');
@@ -45,11 +46,6 @@ const loginPasswordInput = document.getElementById('loginPassword');
 // دوال مساعدة
 // ============================================
 
-/**
-تنسيق رقم الهاتف المغربي
-@param {string} phone
-@returns {string}
-*/
 function formatMoroccanPhoneNumber(phone) {
     let cleaned = phone.replace(/\s+/g, '');
     if (cleaned.startsWith('06') || cleaned.startsWith('07')) {
@@ -58,11 +54,6 @@ function formatMoroccanPhoneNumber(phone) {
     return cleaned;
 }
 
-/**
-التحقق من وجود حساب المستخدم
-@param {string} identifier - البريد أو الهاتف
-@returns {Promise<Object>}
-*/
 async function checkUserAccountExists(identifier) {
     try {
         const usersRef = collection(db, "users");
@@ -79,10 +70,6 @@ async function checkUserAccountExists(identifier) {
     }
 }
 
-/**
-توجيه المستخدم حسب دوره
-@param {string} uid
-*/
 async function routeUserByRole(uid) {
     try {
         const userDoc = await getDoc(doc(db, "users", uid));
@@ -198,7 +185,6 @@ if (loginForm) {
 
                 const confirmationResult = await signInWithPhoneNumber(auth, sanitizedPhone, window.recaptchaVerifier);
                 
-                // استخدام showOtpModal من notifications.js
                 const code = await showOtpModal();
                 
                 if (code) {
@@ -262,56 +248,37 @@ if (googleBtn) {
 // نافذة اختيار الدور لحسابات Google الجديدة
 // ============================================
 function showRegisterOptionsModalForGoogle(firebaseUser) {
-    const oldOverlay = document.getElementById('registerOptionsModalOverlay');
-    if (oldOverlay) oldOverlay.remove();
+    const modal = document.getElementById('registerOptionsModal');
+    if (!modal) return;
     
-    const modalOverlay = document.createElement('div');
-    modalOverlay.id = 'registerOptionsModalOverlay';
-    modalOverlay.className = 'modal-overlay show-step-animation';
-
-    modalOverlay.innerHTML = `
-        <div class="auth-container">
-            <h2>تحديد نوع الحساب</h2>
-            <p class="step-desc">اختر دورك في المنصة لإكمال إعداد حسابك</p>
-            
-            <div class="suggestion-grid">
-                <button type="button" class="suggest-link google-role-select-btn" data-role="customer">
-                    <i class="fas fa-user"></i>
-                    <span>حساب عميل</span>
-                </button>
-                <button type="button" class="suggest-link google-role-select-btn" data-role="salon">
-                    <i class="fas fa-scissors"></i>
-                    <span>صالون تجميل</span>
-                </button>
-                <button type="button" class="suggest-link google-role-select-btn" data-role="store">
-                    <i class="fas fa-store"></i>
-                    <span>متجر تجاري</span>
-                </button>
-            </div>
-            
-            <button type="button" id="closeRegisterModal" class="back-link-btn">
-                إلغاء والخروج
-            </button>
-        </div>
-    `;
-
-    document.body.appendChild(modalOverlay);
-
-    document.getElementById('closeRegisterModal').onclick = () => {
-        modalOverlay.remove();
+    modal.classList.remove('hidden-step');
+    modal.classList.add('show-step-animation');
+    
+    const closeBtn = modal.querySelector('#closeRegisterModal');
+    const roleBtns = modal.querySelectorAll('.select-role-action-btn');
+    
+    const cleanup = () => {
+        modal.classList.add('hidden-step');
+        modal.classList.remove('show-step-animation');
+        closeBtn.onclick = null;
+        roleBtns.forEach(btn => btn.onclick = null);
+    };
+    
+    closeBtn.onclick = () => {
+        cleanup();
         googleBtn.disabled = false;
         googleBtn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> <span>Google</span>';
     };
-
-    modalOverlay.onclick = (e) => {
-        if (e.target === modalOverlay) {
-            modalOverlay.remove();
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            cleanup();
             googleBtn.disabled = false;
             googleBtn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> <span>Google</span>';
         }
     };
-
-    modalOverlay.querySelectorAll('.google-role-select-btn').forEach(button => {
+    
+    roleBtns.forEach(button => {
         button.onclick = async () => {
             const role = button.getAttribute('data-role');
             
@@ -328,7 +295,7 @@ function showRegisterOptionsModalForGoogle(firebaseUser) {
                     status: "new"
                 });
 
-                modalOverlay.remove();
+                cleanup();
                 window.location.replace(PATHS.WELCOME + `?uid=${firebaseUser.uid}`);
             } catch (error) {
                 console.error("Error saving Google user:", error);
@@ -404,61 +371,41 @@ if (backToHomeBtn) {
 }
 
 // ============================================
-// زر "إنشاء حساب جديد"
+// ✅ زر "إنشاء حساب جديد" - فتح النافذة المضمنة
 // ============================================
 const showRegisterOptions = document.getElementById('showRegisterOptions');
 if (showRegisterOptions) {
     showRegisterOptions.onclick = (e) => {
         e.preventDefault();
-        const oldOverlay = document.getElementById('registerOptionsModalOverlay');
-        if (oldOverlay) oldOverlay.remove();
-        
-        const modalOverlay = document.createElement('div'); 
-        modalOverlay.id = 'registerOptionsModalOverlay';
-        modalOverlay.className = 'modal-overlay show-step-animation';
-
-        modalOverlay.innerHTML = `
-            <div class="auth-container">
-                <h2>إنشاء حساب جديد</h2>
-                <p class="step-desc">اختر نوع الحساب للانتقال إلى استمارة التسجيل</p>
-                
-                <div class="suggestion-grid">
-                    <button type="button" class="suggest-link select-role-action-btn" data-role="customer">
-                        <i class="fas fa-user"></i>
-                        <span>حساب عميل</span>
-                    </button>
-                    <button type="button" class="suggest-link select-role-action-btn" data-role="salon">
-                        <i class="fas fa-scissors"></i>
-                        <span>صالون تجميل</span>
-                    </button>
-                    <button type="button" class="suggest-link select-role-action-btn" data-role="store">
-                        <i class="fas fa-store"></i>
-                        <span>متجر تجاري</span>
-                    </button>
-                </div>
-                
-                <button type="button" id="closeRegisterModal" class="back-link-btn">
-                    إلغاء والعودة
-                </button>
-            </div>
-        `;
-
-        document.body.appendChild(modalOverlay);
-
-        document.getElementById('closeRegisterModal').onclick = () => {
-            modalOverlay.remove();
-        };
-
-        modalOverlay.onclick = (e) => {
-            if (e.target === modalOverlay) modalOverlay.remove();
-        };
-
-        modalOverlay.querySelectorAll('.select-role-action-btn').forEach(button => {
-            button.onclick = () => {
-                const role = button.getAttribute('data-role');
-                modalOverlay.remove();
-                window.location.href = PATHS.REGISTER + `?role=${role}`;
+        if (registerOptionsModal) {
+            registerOptionsModal.classList.remove('hidden-step');
+            registerOptionsModal.classList.add('show-step-animation');
+            
+            // إعداد أزرار الاختيار
+            const roleBtns = registerOptionsModal.querySelectorAll('.select-role-action-btn');
+            const closeBtn = registerOptionsModal.querySelector('#closeRegisterModal');
+            
+            const closeModalFunc = () => {
+                registerOptionsModal.classList.add('hidden-step');
+                registerOptionsModal.classList.remove('show-step-animation');
             };
-        });
+            
+            closeBtn.onclick = closeModalFunc;
+            
+            registerOptionsModal.onclick = (e) => {
+                if (e.target === registerOptionsModal) {
+                    closeModalFunc();
+                }
+            };
+            
+            roleBtns.forEach(button => {
+                button.onclick = () => {
+                    const role = button.getAttribute('data-role');
+                    closeModalFunc();
+                    window.location.href = PATHS.REGISTER + `?role=${role}`;
+                };
+            });
+        }
     };
 }
+

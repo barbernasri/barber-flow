@@ -5,14 +5,14 @@
 import { auth, db } from "../../core/firebase-init.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { PATHS } from "./paths.js";
 
 // ============================================
-// دوال مساعدة للمسارات الديناميكية
+// دالة حساب المسار النسبي
 // ============================================
-
 /**
- * حساب بادئة المسار النسبي من الصفحة الحالية إلى جذر المشروع
- */
+حساب بادئة المسار النسبي من الصفحة الحالية إلى جذر المشروع
+*/
 function getRelativePrefix() {
     const path = window.location.pathname;
     const parts = path.split('/').filter(p => p);
@@ -21,41 +21,15 @@ function getRelativePrefix() {
 }
 
 /**
- * إصلاح مسار رابط ليكون صحيحاً نسبياً من الصفحة الحالية
- */
-function fixPath(href) {
-    if (!href || href.startsWith('#') || href.startsWith('http') || 
-        href.startsWith('mailto:') || href.startsWith('javascript:')) {
-        return href;
-    }
-    const cleanHref = href.replace(/^\.\.\//g, '').replace(/^\.\//g, '').replace(/^\//g, '');
-    return getRelativePrefix() + cleanHref;
-}
-
-/**
- * تحديث جميع المسارات في الشريط بعد تحميله
- */
-function updateAllPaths() {
-    const container = document.getElementById('global-navbar-container');
-    if (!container) return;
-    
-    // تحديث جميع الروابط التي تحتوي على data-path
-    const links = container.querySelectorAll('[data-path]');
-    links.forEach(link => {
-        const basePath = link.getAttribute('data-path');
-        const fixedPath = fixPath(basePath);
-        link.setAttribute('href', fixedPath);
-    });
-    
-    // تحديث الروابط الأخرى التي ليس لها data-path
-    const otherLinks = container.querySelectorAll('a[href]:not([data-path])');
-    otherLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && !href.startsWith('#')) {
-            const fixedHref = fixPath(href);
-            link.setAttribute('href', fixedHref);
-        }
-    });
+تحويل مسار من PATHS إلى مسار نسبي صحيح
+*/
+function resolvePath(pathKey) {
+    if (!pathKey) return '#';
+    const prefix = getRelativePrefix();
+    // PATHS تحتوي على مسارات مثل '../register/login.html'
+    // نحتاج لإزالة '../' وإضافة البادئة الصحيحة
+    const cleanPath = pathKey.replace(/^\.\.\//g, '');
+    return prefix + cleanPath;
 }
 
 // ============================================
@@ -64,7 +38,7 @@ function updateAllPaths() {
 document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("global-navbar-container");
     if (!container) return;
-    
+
     try {
         const currentScriptUrl = new URL(import.meta.url);
         const navbarPath = new URL('../global-navbar.html', currentScriptUrl).href;
@@ -74,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         container.innerHTML = await response.text();
         
-        // ✅ تحديث جميع المسارات
+        // تحديث جميع المسارات
         updateAllPaths();
         
         // تشغيل المنطق
@@ -91,6 +65,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ============================================
+// تحديث جميع المسارات
+// ============================================
+function updateAllPaths() {
+    const container = document.getElementById('global-navbar-container');
+    if (!container) return;
+
+    // تحديث جميع الروابط التي تحتوي على data-path
+    const links = container.querySelectorAll('[data-path]');
+    links.forEach(link => {
+        const pathKey = link.getAttribute('data-path');
+        const resolvedPath = resolvePath(pathKey);
+        link.setAttribute('href', resolvedPath);
+    });
+}
+
+// ============================================
 // منطق القائمة الجانبية
 // ============================================
 function setupNavigationLogic() {
@@ -98,7 +88,7 @@ function setupNavigationLogic() {
     const closeBtn = document.getElementById("closeMenuBtn");
     const drawer = document.getElementById("sideDrawer");
     const overlay = document.getElementById("drawerOverlay");
-    
+
     if (!menuBtn || !drawer || !overlay) return;
 
     const openDrawer = () => {
@@ -131,17 +121,16 @@ function setupNavigationLogic() {
 }
 
 // ============================================
-// تبديل الثيم (أبيض/أسود) - من القائمة الجانبية فقط
+// تبديل الثيم (أبيض/أسود)
 // ============================================
 function setupThemeToggle() {
     const drawerThemeBtn = document.getElementById('drawerThemeToggle');
     const drawerThemeText = document.getElementById('drawerThemeText');
-    
+
     // تحميل الثيم المحفوظ
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
 
-    // زر الثيم في القائمة الجانبية فقط
     if (drawerThemeBtn) {
         drawerThemeBtn.onclick = () => toggleTheme();
     }
@@ -188,19 +177,20 @@ function setupUserState() {
     const drawerSettingsLink = document.getElementById('drawerSettingsLink');
     const drawerLoginLink = document.getElementById('drawerLoginLink');
     const drawerLogoutLink = document.getElementById('drawerLogoutLink');
-    
+
     if (!userBtn) return;
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            userBtn.href = fixPath('profiles/profile-customer.html');
+            // تحديث زر المستخدم في الـ navbar
+            userBtn.href = resolvePath(PATHS.PROFILE_CUSTOMER);
             userBtn.setAttribute('aria-label', 'ملفي الشخصي');
             
             try {
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    const userName = userData.fullName || 'مستخدم';
+                    const userName = userData.fullName || userData.displayName || 'مستخدم';
                     const userRole = userData.role || 'customer';
                     
                     if (drawerUserInfo) drawerUserInfo.style.display = 'flex';
@@ -208,31 +198,36 @@ function setupUserState() {
                     
                     const roleText = {
                         'customer': 'زبون',
-                        'salon': 'صاحب صالون',
+                        'salon': 'صاحب صالون', 
                         'store': 'صاحب متجر'
                     };
                     if (drawerUserRole) drawerUserRole.textContent = roleText[userRole] || 'زبون';
                     
+                    // إظهار روابط لوحة التحكم والإعدادات لأصحاب الأعمال
                     if (userRole === 'salon' || userRole === 'store') {
                         if (drawerDashboardLink) drawerDashboardLink.style.display = 'flex';
                         if (drawerSettingsLink) drawerSettingsLink.style.display = 'flex';
                         
                         if (drawerDashboardLink) {
-                            drawerDashboardLink.href = fixPath('dashboard/appointment.html');
+                            drawerDashboardLink.href = resolvePath(PATHS.APPOINTMENTS);
                         }
                         
                         if (drawerSettingsLink) {
-                            drawerSettingsLink.href = fixPath('dashboard/settings-salon.html');
+                            const settingsPath = userRole === 'salon' 
+                                ? PATHS.SETTINGS_SALON 
+                                : PATHS.SETTINGS_STORE;
+                            drawerSettingsLink.href = resolvePath(settingsPath);
                         }
                     }
                     
+                    // تحديث رابط البروفايل حسب الدور
                     if (drawerProfileLink) {
                         const profileLinks = {
-                            'customer': 'profiles/profile-customer.html',
-                            'salon': 'profiles/profile-salon.html',
-                            'store': 'profiles/profile-store.html'
+                            'customer': PATHS.PROFILE_CUSTOMER,
+                            'salon': PATHS.PROFILE_SALON,
+                            'store': PATHS.PROFILE_STORE
                         };
-                        drawerProfileLink.href = fixPath(profileLinks[userRole] || 'profiles/profile-customer.html');
+                        drawerProfileLink.href = resolvePath(profileLinks[userRole] || PATHS.PROFILE_CUSTOMER);
                     }
                 }
             } catch (error) {
@@ -247,7 +242,7 @@ function setupUserState() {
                     e.preventDefault();
                     try {
                         await signOut(auth);
-                        window.location.href = fixPath('index.html');
+                        window.location.href = resolvePath(PATHS.INDEX);
                     } catch (error) {
                         console.error('خطأ في تسجيل الخروج:', error);
                     }
@@ -255,7 +250,8 @@ function setupUserState() {
             }
             
         } else {
-            userBtn.href = fixPath('register/login.html');
+            // المستخدم غير مسجل
+            userBtn.href = resolvePath(PATHS.LOGIN);
             userBtn.setAttribute('aria-label', 'تسجيل الدخول');
             
             if (drawerUserInfo) drawerUserInfo.style.display = 'none';
@@ -273,7 +269,7 @@ function setupUserState() {
 function setupCartBadge() {
     const badge = document.getElementById('cartBadge');
     if (!badge) return;
-    
+
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     badge.textContent = cart.length;
 
@@ -289,13 +285,24 @@ function setupCartBadge() {
 function setupSettingsButton() {
     const settingsBtn = document.getElementById('settingsBtn');
     if (!settingsBtn) return;
-    
+
     settingsBtn.onclick = () => {
         const user = auth.currentUser;
         if (user) {
-            window.location.href = fixPath('dashboard/settings-salon.html');
+            // توجيه حسب دور المستخدم
+            getDoc(doc(db, "users", user.uid)).then((userDoc) => {
+                if (userDoc.exists()) {
+                    const role = userDoc.data().role;
+                    const settingsPath = role === 'store' 
+                        ? PATHS.SETTINGS_STORE 
+                        : PATHS.SETTINGS_SALON;
+                    window.location.href = resolvePath(settingsPath);
+                } else {
+                    window.location.href = resolvePath(PATHS.SETTINGS_SALON);
+                }
+            });
         } else {
-            window.location.href = fixPath('register/login.html');
+            window.location.href = resolvePath(PATHS.LOGIN);
         }
     };
 }
@@ -312,7 +319,6 @@ function highlightActivePage() {
 
     if (currentPath.includes('explore-salon')) activePage = 'salons';
     else if (currentPath.includes('explore-store')) activePage = 'store';
-    else if (currentPath.includes('home-services')) activePage = 'services';
     else if (currentPath.includes('about')) activePage = 'about';
     else if (currentPath.includes('contact')) activePage = 'contact';
 
