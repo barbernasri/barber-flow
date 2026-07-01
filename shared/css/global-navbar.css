@@ -111,6 +111,11 @@
     font-size: 1.1rem;
 }
 
+/* زر السلة */
+.cart-btn {
+    position: relative;
+}
+
 /* شارة السلة */
 .cart-badge {
     position: absolute;
@@ -127,9 +132,170 @@
     align-items: center;
     justify-content: center;
     border: 2px solid var(--bg-primary);
+    animation: badgePulse 2s infinite;
 }
 
-/* القائمة الجانبية (Drawer) */
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* ============================================
+قائمة الإعدادات المنسدلة
+============================================ */
+.settings-dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10001;
+    overflow: hidden;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--brand-accent);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.dropdown-header i {
+    font-size: 1.2rem;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 5px 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    text-align: right;
+    position: relative;
+}
+
+.dropdown-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--brand-accent);
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--brand-accent);
+}
+
+/* القائمة الفرعية للغة */
+.has-submenu {
+    position: relative;
+}
+
+.submenu-arrow {
+    margin-right: auto;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.has-submenu:hover .submenu-arrow {
+    transform: translateX(-5px);
+}
+
+.submenu {
+    position: absolute;
+    top: 0;
+    right: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    z-index: 10002;
+}
+
+.has-submenu:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.submenu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.submenu-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--brand-accent);
+}
+
+.submenu-item.active {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--brand-accent);
+    font-weight: 600;
+}
+
+.submenu-item i {
+    color: var(--brand-accent);
+    font-size: 0.9rem;
+}
+
+/* ============================================
+القائمة الجانبية (Drawer)
+============================================ */
 .side-drawer {
     position: fixed;
     top: 0;
@@ -296,40 +462,28 @@
     font-size: 1rem;
 }
 
-/* Footer القائمة */
+/* تذييل القائمة */
 .drawer-footer {
     padding: 20px;
     border-top: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.theme-toggle-btn {
-    width: 100%;
-    padding: 12px;
-    background: rgba(212, 175, 55, 0.1);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 10px;
-    color: var(--text-primary);
-    cursor: pointer;
+.drawer-footer-info {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    font-family: 'Cairo', sans-serif;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
 }
 
-.theme-toggle-btn:hover {
-    background: rgba(212, 175, 55, 0.2);
-    border-color: var(--brand-accent);
-}
-
-.theme-toggle-btn i {
-    font-size: 1.1rem;
+.footer-separator {
     color: var(--brand-accent);
 }
 
-/* Responsive Design */
+/* ============================================
+Responsive Design
+============================================ */
 @media (max-width: 1024px) {
     .navbar-links {
         display: none;
@@ -340,21 +494,26 @@
     .navbar-content {
         padding: 12px 15px;
     }
+    
     .navbar-brand {
         font-size: 1.1rem;
     }
+    
     .navbar-brand i {
         font-size: 1.3rem;
     }
+    
     .action-btn {
         width: 38px;
         height: 38px;
     }
+    
     .action-btn i {
         font-size: 1rem;
     }
-    .settings-btn {
-        display: none;
+    
+    .dropdown-menu {
+        min-width: 220px;
     }
 }
 
@@ -362,11 +521,46 @@
     .navbar-content {
         padding: 10px;
     }
+    
     .navbar-brand span {
         display: none;
     }
+    
     .navbar-brand i {
         font-size: 1.5rem;
+    }
+    
+    .dropdown-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transform: translateY(100%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .dropdown-menu.show {
+        transform: translateY(0);
+    }
+    
+    .submenu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        background: rgba(212, 175, 55, 0.05);
+        border-radius: var(--radius-sm);
+        margin-top: 5px;
+        display: none;
+    }
+    
+    .has-submenu:hover .submenu {
+        display: block;
     }
 }
 

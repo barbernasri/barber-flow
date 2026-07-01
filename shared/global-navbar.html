@@ -45,23 +45,78 @@
 
         <!-- أزرار الإجراءات -->
         <div class="navbar-actions">
-            <!-- سلة التسوق (مخفية حالياً حتى إنشاء صفحة السلة) -->
-            <!-- 
-            <a href="#" class="action-btn" aria-label="سلة التسوق" data-path="CART">
+            <!-- زر السلة -->
+            <a href="#" class="action-btn cart-btn" aria-label="سلة التسوق" data-path="CART">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="cart-badge" id="cartBadge">0</span>
             </a>
-            -->
 
             <!-- زر المستخدم -->
             <a href="#" id="userBtn" class="action-btn" aria-label="تسجيل الدخول" data-path="LOGIN">
                 <i class="fas fa-user"></i>
             </a>
 
-            <!-- زر الإعدادات -->
-            <button id="settingsBtn" class="action-btn" aria-label="الإعدادات">
-                <i class="fas fa-cog"></i>
-            </button>
+            <!-- زر الإعدادات مع القائمة المنسدلة -->
+            <div class="settings-dropdown">
+                <button id="settingsBtn" class="action-btn" aria-label="الإعدادات">
+                    <i class="fas fa-cog"></i>
+                </button>
+                
+                <div class="dropdown-menu" id="settingsDropdown">
+                    <div class="dropdown-header">
+                        <i class="fas fa-cog"></i>
+                        <span>الإعدادات</span>
+                    </div>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <!-- تغيير الثيم -->
+                    <button class="dropdown-item" id="themeToggleBtn">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                        <span id="themeText">الوضع الداكن</span>
+                    </button>
+                    
+                    <!-- اللغة -->
+                    <div class="dropdown-item has-submenu">
+                        <i class="fas fa-globe"></i>
+                        <span>اللغة</span>
+                        <i class="fas fa-chevron-left submenu-arrow"></i>
+                        
+                        <div class="submenu">
+                            <button class="submenu-item active" data-lang="ar">
+                                <span>العربية</span>
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="submenu-item" data-lang="fr">
+                                <span>Français</span>
+                            </button>
+                            <button class="submenu-item" data-lang="en">
+                                <span>English</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- الإشعارات -->
+                    <button class="dropdown-item" id="notificationsToggleBtn">
+                        <i class="fas fa-bell" id="notifIcon"></i>
+                        <span id="notifText">تفعيل الإشعارات</span>
+                    </button>
+                    
+                    <!-- الخصوصية -->
+                    <button class="dropdown-item" id="privacyBtn">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>الخصوصية</span>
+                    </button>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <!-- المساعدة -->
+                    <button class="dropdown-item" id="helpBtn">
+                        <i class="fas fa-question-circle"></i>
+                        <span>المساعدة والدعم</span>
+                    </button>
+                </div>
+            </div>
 
             <!-- زر القائمة الجانبية -->
             <button id="navMenuBtn" class="action-btn" aria-label="القائمة">
@@ -191,10 +246,11 @@
 
     <!-- تذييل القائمة -->
     <div class="drawer-footer">
-        <button id="drawerThemeToggle" class="theme-toggle-btn">
-            <i class="fas fa-moon"></i>
-            <span id="drawerThemeText">الوضع الداكن</span>
-        </button>
+        <div class="drawer-footer-info">
+            <span>BarberFlow Pro v1.0</span>
+            <span class="footer-separator">•</span>
+            <span>جميع الحقوق محفوظة</span>
+        </div>
     </div>
 </aside>
 

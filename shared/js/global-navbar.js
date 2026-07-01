@@ -1,15 +1,18 @@
 /**
 شريط التنقل العام - محدّث
 المسار: shared/js/global-navbar.js
+الدور: تحميل الشريط العلوي وإدارة جميع وظائفه
 */
 import { auth, db } from "../../core/firebase-init.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { PATHS } from "./paths.js";
+import { showNotification } from "./notifications.js";
 
 // ============================================
-// دالة حساب المسار النسبي
+// دوال مساعدة للمسارات
 // ============================================
+
 /**
 حساب بادئة المسار النسبي من الصفحة الحالية إلى جذر المشروع
 */
@@ -25,9 +28,13 @@ function getRelativePrefix() {
 */
 function resolvePath(pathKey) {
     if (!pathKey) return '#';
+    
+    // إذا كان المسار يبدأ بـ http أو # أو javascript، اتركه كما هو
+    if (pathKey.startsWith('http') || pathKey.startsWith('#') || pathKey.startsWith('javascript:')) {
+        return pathKey;
+    }
+    
     const prefix = getRelativePrefix();
-    // PATHS تحتوي على مسارات مثل '../register/login.html'
-    // نحتاج لإزالة '../' وإضافة البادئة الصحيحة
     const cleanPath = pathKey.replace(/^\.\.\//g, '');
     return prefix + cleanPath;
 }
@@ -54,9 +61,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // تشغيل المنطق
         setupNavigationLogic();
         setupThemeToggle();
+        setupLanguageSelector();
+        setupNotificationsToggle();
+        setupPrivacyButton();
+        setupHelpButton();
         setupUserState();
         setupCartBadge();
-        setupSettingsButton();
+        setupSettingsDropdown();
         highlightActivePage();
         
     } catch (error) {
@@ -75,7 +86,7 @@ function updateAllPaths() {
     const links = container.querySelectorAll('[data-path]');
     links.forEach(link => {
         const pathKey = link.getAttribute('data-path');
-        const resolvedPath = resolvePath(pathKey);
+        const resolvedPath = resolvePath(PATHS[pathKey] || pathKey);
         link.setAttribute('href', resolvedPath);
     });
 }
@@ -121,46 +132,181 @@ function setupNavigationLogic() {
 }
 
 // ============================================
-// تبديل الثيم (أبيض/أسود)
+// قائمة الإعدادات المنسدلة
+// ============================================
+function setupSettingsDropdown() {
+    const settingsBtn = document.getElementById('settingsBtn');
+    const dropdown = document.getElementById('settingsDropdown');
+    
+    if (!settingsBtn || !dropdown) return;
+
+    // فتح/إغلاق القائمة
+    settingsBtn.onclick = (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    };
+
+    // إغلاق عند النقر خارج القائمة
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && e.target !== settingsBtn) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // إغلاق بزر Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+// ============================================
+// تبديل الثيم
 // ============================================
 function setupThemeToggle() {
-    const drawerThemeBtn = document.getElementById('drawerThemeToggle');
-    const drawerThemeText = document.getElementById('drawerThemeText');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
 
     // تحميل الثيم المحفوظ
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
 
-    if (drawerThemeBtn) {
-        drawerThemeBtn.onclick = () => toggleTheme();
-    }
-
-    function toggleTheme() {
-        const currentTheme = document.body.getAttribute('data-theme') || 'dark';
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        applyTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        if (drawerThemeText) {
-            drawerThemeText.textContent = newTheme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
-        }
+    if (themeToggleBtn) {
+        themeToggleBtn.onclick = () => {
+            const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            showNotification(
+                newTheme === 'dark' ? 'تم التبديل إلى الوضع الداكن' : 'تم التبديل إلى الوضع الفاتح',
+                'success'
+            );
+        };
     }
 
     function applyTheme(theme) {
         document.body.setAttribute('data-theme', theme);
-        updateThemeIcons(theme);
         
-        if (drawerThemeText) {
-            drawerThemeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
+        if (themeIcon) {
+            themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        
+        if (themeText) {
+            themeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
         }
     }
+}
 
-    function updateThemeIcons(theme) {
-        const drawerIcon = drawerThemeBtn?.querySelector('i');
-        const iconClass = theme === 'dark' ? 'fa-moon' : 'fa-sun';
+// ============================================
+// اختيار اللغة
+// ============================================
+function setupLanguageSelector() {
+    const langItems = document.querySelectorAll('.submenu-item[data-lang]');
+    
+    // تحميل اللغة المحفوظة
+    const savedLang = localStorage.getItem('language') || 'ar';
+    updateLanguageUI(savedLang);
+
+    langItems.forEach(item => {
+        item.onclick = () => {
+            const lang = item.getAttribute('data-lang');
+            localStorage.setItem('language', lang);
+            updateLanguageUI(lang);
+            
+            const langNames = {
+                'ar': 'العربية',
+                'fr': 'Français',
+                'en': 'English'
+            };
+            
+            showNotification(`تم تغيير اللغة إلى ${langNames[lang]}`, 'success');
+            
+            // هنا يمكن إضافة منطق تغيير اللغة الفعلي
+            // window.location.reload();
+        };
+    });
+
+    function updateLanguageUI(lang) {
+        langItems.forEach(item => {
+            item.classList.remove('active');
+            const checkIcon = item.querySelector('.fa-check');
+            if (checkIcon) checkIcon.remove();
+            
+            if (item.getAttribute('data-lang') === lang) {
+                item.classList.add('active');
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-check';
+                item.appendChild(icon);
+            }
+        });
+    }
+}
+
+// ============================================
+// تبديل الإشعارات
+// ============================================
+function setupNotificationsToggle() {
+    const notifToggleBtn = document.getElementById('notificationsToggleBtn');
+    const notifIcon = document.getElementById('notifIcon');
+    const notifText = document.getElementById('notifText');
+
+    // تحميل الحالة المحفوظة
+    const notificationsEnabled = localStorage.getItem('notifications') !== 'false';
+    updateNotificationsUI(notificationsEnabled);
+
+    if (notifToggleBtn) {
+        notifToggleBtn.onclick = () => {
+            const newState = !notificationsEnabled;
+            localStorage.setItem('notifications', newState);
+            updateNotificationsUI(newState);
+            
+            showNotification(
+                newState ? 'تم تفعيل الإشعارات' : 'تم إيقاف الإشعارات',
+                'success'
+            );
+        };
+    }
+
+    function updateNotificationsUI(enabled) {
+        if (notifIcon) {
+            notifIcon.className = enabled ? 'fas fa-bell' : 'fas fa-bell-slash';
+        }
         
-        if (drawerIcon) drawerIcon.className = `fas ${iconClass}`;
+        if (notifText) {
+            notifText.textContent = enabled ? 'إيقاف الإشعارات' : 'تفعيل الإشعارات';
+        }
+    }
+}
+
+// ============================================
+// زر الخصوصية
+// ============================================
+function setupPrivacyButton() {
+    const privacyBtn = document.getElementById('privacyBtn');
+    
+    if (privacyBtn) {
+        privacyBtn.onclick = () => {
+            showNotification('صفحة إعدادات الخصوصية قيد التطوير', 'info');
+            // window.location.href = resolvePath(PATHS.PRIVACY);
+        };
+    }
+}
+
+// ============================================
+// زر المساعدة
+// ============================================
+function setupHelpButton() {
+    const helpBtn = document.getElementById('helpBtn');
+    
+    if (helpBtn) {
+        helpBtn.onclick = () => {
+            showNotification('صفحة المساعدة والدعم قيد التطوير', 'info');
+            // window.location.href = resolvePath(PATHS.HELP);
+        };
     }
 }
 
@@ -242,9 +388,11 @@ function setupUserState() {
                     e.preventDefault();
                     try {
                         await signOut(auth);
+                        showNotification('تم تسجيل الخروج بنجاح', 'success');
                         window.location.href = resolvePath(PATHS.INDEX);
                     } catch (error) {
                         console.error('خطأ في تسجيل الخروج:', error);
+                        showNotification('حدث خطأ أثناء تسجيل الخروج', 'error');
                     }
                 };
             }
@@ -277,34 +425,6 @@ function setupCartBadge() {
         const updatedCart = JSON.parse(localStorage.getItem('cart') || '[]');
         badge.textContent = updatedCart.length;
     });
-}
-
-// ============================================
-// زر الإعدادات العامة
-// ============================================
-function setupSettingsButton() {
-    const settingsBtn = document.getElementById('settingsBtn');
-    if (!settingsBtn) return;
-
-    settingsBtn.onclick = () => {
-        const user = auth.currentUser;
-        if (user) {
-            // توجيه حسب دور المستخدم
-            getDoc(doc(db, "users", user.uid)).then((userDoc) => {
-                if (userDoc.exists()) {
-                    const role = userDoc.data().role;
-                    const settingsPath = role === 'store' 
-                        ? PATHS.SETTINGS_STORE 
-                        : PATHS.SETTINGS_SALON;
-                    window.location.href = resolvePath(settingsPath);
-                } else {
-                    window.location.href = resolvePath(PATHS.SETTINGS_SALON);
-                }
-            });
-        } else {
-            window.location.href = resolvePath(PATHS.LOGIN);
-        }
-    };
 }
 
 // ============================================
