@@ -16,7 +16,7 @@ import { createSalonCard } from "../components/js/card-salon.js";
 import { createStoreCard } from "../components/js/card-store.js";
 import { createOfferCard } from "../components/js/card-offer.js";
 import { createConciergeCard } from "../components/js/card-Concierge.js";
-import { showNotification } from "../../auth/js/notifications.js";
+import { showNotification } from "../../shared/js/notifications.js";
 
 // ============================================
 // المتغيرات العامة
