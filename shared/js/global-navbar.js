@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         setupNavigationLogic();
         setupSettingsDropdown();
         setupThemeToggle();
+        setupLanguageSelector();
+        setupNotificationsToggle();
+        setupPrivacyButton();
+        setupHelpButton();
         setupUserState();
         setupCartBadge();
         highlightActivePage();
@@ -46,7 +50,8 @@ function updateAllPaths() {
     const links = container.querySelectorAll('[data-path]');
     links.forEach(link => {
         const key = link.getAttribute('data-path');
-        link.setAttribute('href', resolvePath(key));
+        const fullPath = resolvePath(key);
+        link.setAttribute('href', fullPath);
     });
 }
 
@@ -87,7 +92,7 @@ function setupNavigationLogic() {
 }
 
 // ============================================
-// ✅ قائمة الإعدادات المنسدلة
+// قائمة الإعدادات المنسدلة
 // ============================================
 function setupSettingsDropdown() {
     const settingsBtn = document.getElementById('settingsBtn');
@@ -99,7 +104,6 @@ function setupSettingsDropdown() {
         e.stopPropagation();
         const isOpen = dropdown.classList.contains('show');
         
-        // إغلاق أي قائمة مفتوحة
         document.querySelectorAll('.dropdown-menu.show').forEach(d => {
             d.classList.remove('show');
         });
@@ -109,61 +113,151 @@ function setupSettingsDropdown() {
         }
     });
 
-    // إغلاق عند النقر خارجاً
     document.addEventListener('click', (e) => {
         if (!dropdown.contains(e.target) && !settingsBtn.contains(e.target)) {
             dropdown.classList.remove('show');
         }
     });
 
-    // زر الثيم في القائمة المنسدلة
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+// ============================================
+// تبديل الثيم
+// ============================================
+function setupThemeToggle() {
     const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const drawerThemeBtn = document.getElementById('drawerThemeToggle');
+    const drawerThemeText = document.getElementById('drawerThemeText');
+
+    const savedTheme = localStorage.getItem('bf-theme') || 'dark';
+    applyTheme(savedTheme);
+
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             toggleTheme();
-            dropdown.classList.remove('show');
+            document.getElementById('settingsDropdown').classList.remove('show');
+        });
+    }
+
+    if (drawerThemeBtn) {
+        drawerThemeBtn.addEventListener('click', toggleTheme);
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('bf-theme', newTheme);
+    }
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.setAttribute('data-theme', theme);
+
+        if (themeIcon) themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        if (themeText) themeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
+        if (drawerThemeText) drawerThemeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
+        
+        const drawerIcon = drawerThemeBtn?.querySelector('i');
+        if (drawerIcon) drawerIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+}
+
+// ============================================
+// اختيار اللغة
+// ============================================
+function setupLanguageSelector() {
+    const langItems = document.querySelectorAll('.submenu-item[data-lang]');
+    const savedLang = localStorage.getItem('bf-language') || 'ar';
+    updateLanguageUI(savedLang);
+
+    langItems.forEach(item => {
+        item.onclick = () => {
+            const lang = item.getAttribute('data-lang');
+            localStorage.setItem('bf-language', lang);
+            updateLanguageUI(lang);
+            
+            const langNames = { 'ar': 'العربية', 'fr': 'Français', 'en': 'English' };
+            alert(`تم تغيير اللغة إلى ${langNames[lang]}`);
+            
+            document.getElementById('settingsDropdown').classList.remove('show');
+        };
+    });
+
+    function updateLanguageUI(lang) {
+        langItems.forEach(item => {
+            item.classList.remove('active');
+            const checkIcon = item.querySelector('.fa-check');
+            if (checkIcon) checkIcon.remove();
+            
+            if (item.getAttribute('data-lang') === lang) {
+                item.classList.add('active');
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-check';
+                item.appendChild(icon);
+            }
         });
     }
 }
 
 // ============================================
-// تبديل الثيم (يعمل على global.css)
+// تبديل الإشعارات
 // ============================================
-function setupThemeToggle() {
-    // تحميل الثيم المحفوظ وتطبيقه
-    const savedTheme = localStorage.getItem('bf-theme') || 'dark';
-    applyTheme(savedTheme);
+function setupNotificationsToggle() {
+    const notifToggleBtn = document.getElementById('notificationsToggleBtn');
+    const notifIcon = document.getElementById('notifIcon');
+    const notifText = document.getElementById('notifText');
 
-    // زر الثيم في القائمة الجانبية
-    const drawerThemeBtn = document.getElementById('drawerThemeToggle');
-    if (drawerThemeBtn) {
-        drawerThemeBtn.addEventListener('click', toggleTheme);
+    const notificationsEnabled = localStorage.getItem('bf-notifications') !== 'false';
+    updateNotificationsUI(notificationsEnabled);
+
+    if (notifToggleBtn) {
+        notifToggleBtn.onclick = () => {
+            const newState = !notificationsEnabled;
+            localStorage.setItem('bf-notifications', newState);
+            updateNotificationsUI(newState);
+            
+            document.getElementById('settingsDropdown').classList.remove('show');
+        };
+    }
+
+    function updateNotificationsUI(enabled) {
+        if (notifIcon) notifIcon.className = enabled ? 'fas fa-bell' : 'fas fa-bell-slash';
+        if (notifText) notifText.textContent = enabled ? 'إيقاف الإشعارات' : 'تفعيل الإشعارات';
     }
 }
 
-function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const newTheme = current === 'dark' ? 'light' : 'dark';
-    applyTheme(newTheme);
-    localStorage.setItem('bf-theme', newTheme);
+// ============================================
+// زر الخصوصية
+// ============================================
+function setupPrivacyButton() {
+    const privacyBtn = document.getElementById('privacyBtn');
+    if (privacyBtn) {
+        privacyBtn.onclick = () => {
+            alert('صفحة إعدادات الخصوصية قيد التطوير');
+            document.getElementById('settingsDropdown').classList.remove('show');
+        };
+    }
 }
 
-function applyTheme(theme) {
-    // تطبيق على html element (أهم من body)
-    document.documentElement.setAttribute('data-theme', theme);
-    // تطبيق على body أيضاً
-    document.body.setAttribute('data-theme', theme);
-
-    // تحديث أيقونات ونصوص الثيم
-    const themeIcon = document.getElementById('themeIcon');
-    const themeText = document.getElementById('themeText');
-    const drawerThemeText = document.getElementById('drawerThemeText');
-    const drawerIcon = document.querySelector('#drawerThemeToggle i');
-
-    if (themeIcon) themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-    if (themeText) themeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
-    if (drawerThemeText) drawerThemeText.textContent = theme === 'dark' ? 'الوضع الداكن' : 'الوضع الفاتح';
-    if (drawerIcon) drawerIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+// ============================================
+// زر المساعدة
+// ============================================
+function setupHelpButton() {
+    const helpBtn = document.getElementById('helpBtn');
+    if (helpBtn) {
+        helpBtn.onclick = () => {
+            alert('صفحة المساعدة والدعم قيد التطوير');
+            document.getElementById('settingsDropdown').classList.remove('show');
+        };
+    }
 }
 
 // ============================================

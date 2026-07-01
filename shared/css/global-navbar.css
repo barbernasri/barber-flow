@@ -1,12 +1,8 @@
 /* ==========================================================================
 شريط التنقل - Navbar
 المسار: shared/css/global-navbar.css
-⚠️ لا تستخدم @import - global.css يُستدعى في كل صفحة HTML
 ========================================================================== */
 
-/* ============================================
-الشريط العلوي
-============================================ */
 .global-navbar {
     background: var(--bg-secondary, #1a1a2e);
     border-bottom: 1px solid var(--border-color, rgba(212, 175, 55, 0.15));
@@ -25,7 +21,6 @@
     gap: 15px;
 }
 
-/* الشعار */
 .navbar-brand {
     display: flex;
     align-items: center;
@@ -40,7 +35,6 @@
 .navbar-brand i { font-size: 1.5rem; }
 .navbar-brand strong { color: var(--text-primary, #fff); }
 
-/* روابط التنقل */
 .navbar-links {
     display: flex;
     align-items: center;
@@ -76,7 +70,6 @@
     background: rgba(212, 175, 55, 0.15);
 }
 
-/* أزرار الإجراءات */
 .navbar-actions {
     display: flex;
     align-items: center;
@@ -106,7 +99,6 @@
     color: var(--brand-accent, #d4af37);
 }
 
-/* شارة السلة */
 .cart-badge {
     position: absolute;
     top: -4px;
@@ -168,6 +160,12 @@
     margin-bottom: 4px;
 }
 
+.dropdown-divider {
+    height: 1px;
+    background: var(--border-color, rgba(255, 255, 255, 0.1));
+    margin: 8px 0;
+}
+
 .dropdown-item {
     display: flex;
     align-items: center;
@@ -193,6 +191,75 @@
     width: 20px;
     text-align: center;
     color: var(--brand-accent, #d4af37);
+}
+
+.has-submenu {
+    position: relative;
+}
+
+.submenu-arrow {
+    margin-right: auto;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.has-submenu:hover .submenu-arrow {
+    transform: translateX(-5px);
+}
+
+.submenu {
+    position: absolute;
+    top: 0;
+    right: 100%;
+    background: var(--bg-secondary, #1a1a2e);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    z-index: 10002;
+    padding: 8px 0;
+}
+
+.has-submenu:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.submenu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 18px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary, #fff);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.submenu-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--brand-accent, #d4af37);
+}
+
+.submenu-item.active {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--brand-accent, #d4af37);
+    font-weight: 600;
+}
+
+.submenu-item i {
+    color: var(--brand-accent, #d4af37);
+    font-size: 0.9rem;
 }
 
 /* ============================================
@@ -406,5 +473,19 @@ Responsive
     .dropdown-menu.show {
         transform: translateY(0);
     }
+    .submenu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        background: rgba(212, 175, 55, 0.05);
+        border-radius: 8px;
+        margin-top: 5px;
+        display: none;
+    }
+    .has-submenu:hover .submenu {
+        display: block;
+    }
 }
-

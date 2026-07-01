@@ -1,8 +1,7 @@
 /**
  * shared/js/paths.js
  * مركزية جميع مسارات مشروع BarberFlow-Pro
- * ⚠️ جميع المسارات مطلقة (تبدأ بـ /)
- * يتم تحويلها إلى نسبية ديناميكياً بواسطة resolvePath()
+ * ️ جميع المسارات مطلقة (تبدأ بـ /)
  */
 
 export const PATHS = {
@@ -47,28 +46,21 @@ export const PATHS = {
 };
 
 /**
- * تحويل مفتاح المسار إلى مسار نسبي صحيح حسب عمق الصفحة الحالية
- * @param {string} key - مفتاح المسار من PATHS (مثل 'INDEX', 'LOGIN')
- * @returns {string} المسار النسبي الصحيح
+ * تحويل مفتاح المسار إلى URL كامل
+ * @param {string} key - مفتاح المسار من PATHS
+ * @returns {string} URL كامل (مثل: https://site.com/index.html)
  */
 export function resolvePath(key) {
     const absolutePath = PATHS[key];
     if (!absolutePath) return '#';
-
-    // حساب عمق الصفحة الحالية
-    const pathSegments = window.location.pathname.split('/').filter(Boolean);
-    const depth = pathSegments.length - 1;
-
-    // إزالة الـ / الأولى من المسار المطلق
-    const cleanPath = absolutePath.substring(1);
-
-    // بناء المسار النسبي
-    if (depth <= 0) {
-        return cleanPath;
+    
+    // إذا كان المسار يبدأ بـ http، اتركه كما هو
+    if (absolutePath.startsWith('http')) {
+        return absolutePath;
     }
     
-    const prefix = '../'.repeat(depth);
-    return prefix + cleanPath;
+    // بناء URL كامل من جذر الموقع
+    return window.location.origin + absolutePath;
 }
 
 export default PATHS;
